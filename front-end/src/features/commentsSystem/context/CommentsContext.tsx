@@ -3,7 +3,7 @@ import { useAsync } from "../../../hooks/useAsync";
 import { getComments } from "../services/comments";
 
 const exampleDate = new Date();
-type CommentsProviderProps = { children: ReactNode };
+type CommentsProviderProps = { children: ReactNode; userId: string };
 
 type Comment = { content: string; _id: string; createdAt: Date };
 
@@ -21,9 +21,11 @@ type ContextType = {
     {
       parentId: string;
     }[];
+  userId: string;
 };
 
 const defaultState = {
+  userId: "",
   comments: [
     {
       content: "",
@@ -55,9 +57,16 @@ export const useComment = () => {
   return useContext(Context);
 };
 
-export const CommentsProvider: FC<CommentsProviderProps> = ({ children }) => {
-  const { value: comments, error, loading } = useAsync(getComments);
-
+export const CommentsProvider: FC<CommentsProviderProps> = ({
+  children,
+  userId,
+}) => {
+  const {
+    value: comments,
+    error,
+    loading,
+  } = useAsync(() => getComments({ userId }));
+  console.log(comments);
   const commentsByParentId = useMemo(() => {
     if (comments == null) return [];
     const group = {} as any;
@@ -86,6 +95,7 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({ children }) => {
         comments: comments,
         rootComments: commentsByParentId["root"],
         getReplies,
+        userId,
       }}
     >
       {children}

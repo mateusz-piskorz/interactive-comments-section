@@ -18,6 +18,7 @@ router.post("/add", async (req, res) => {
   const user = new User({
     avatar: req.body.avatar,
     name: req.body.name,
+    color: req.body.color,
   });
 
   try {
@@ -25,6 +26,22 @@ router.post("/add", async (req, res) => {
     res.send(newUser);
   } catch (err) {
     res.send(err);
+  }
+});
+
+// login
+router.post("/login", async (req, res) => {
+  try {
+    const user = await User.findById(req.body.userId);
+    if (user === null) {
+      res.status(404);
+      res.send("user not found");
+    } else {
+      res.send(user);
+    }
+  } catch (err) {
+    res.status(404);
+    res.send("user not found");
   }
 });
 

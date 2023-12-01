@@ -1,22 +1,27 @@
 import { makeRequest } from "../../../services/makeRequest";
 
-export const getComments: GetComments = () => {
-  return makeRequest("/comments");
-};
-
-export const addComment: AddComment = ({ content, parentId }) => {
-  return makeRequest("/comments/add", {
+export const getComments: GetComments = ({ userId }) => {
+  return makeRequest("/comments", {
     method: "post",
-    data: { content, parentId },
+    data: { userId },
   });
 };
 
-export type GetComments = () => Promise<any>;
+export const addComment: AddComment = ({ content, parentId, userId }) => {
+  return makeRequest("/comments/add", {
+    method: "post",
+    data: { content, parentId, userId },
+  });
+};
+
+export type GetComments = ({ userId }: { userId: string }) => Promise<any>;
 
 export type AddComment = ({
   content,
   parentId,
+  userId,
 }: {
   content: string;
+  userId: string;
   parentId?: string | undefined;
 }) => Promise<any>;

@@ -3,6 +3,7 @@ import { styled, css } from "styled-components";
 import { useAsyncFn } from "../../../hooks/useAsync";
 import { addComment } from "../services/comments";
 import { ProfileAvatar } from "../../../components/ProfileAvatar";
+import { useComment } from "../context/CommentsContext";
 
 type AddCommentFormProps = {
   onSubmit?: () => void;
@@ -15,14 +16,14 @@ export const AddCommentForm: FC<AddCommentFormProps> = ({
   parentId,
   nestedClass,
 }) => {
+  const { userId } = useComment();
   const [content, setContent] = useState("");
   const { loading, error, execute } = useAsyncFn(addComment);
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
     if (content !== "") {
-      return execute({ content, parentId }).then((comment) => {
-        console.log(comment);
+      return execute({ content, parentId, userId }).then((comment) => {
         onSubmit && onSubmit();
       });
     }

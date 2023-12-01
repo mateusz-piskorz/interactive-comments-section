@@ -2,9 +2,13 @@ import { FC } from "react";
 import { App } from "./App";
 import { CommentsProvider } from "./context/CommentsContext";
 
-export const CommentsSystem: FC = () => {
+type CommentsSystemProps = {
+  userId: string;
+};
+
+export const CommentsSystem: FC<CommentsSystemProps> = ({ userId }) => {
   return (
-    <CommentsProvider>
+    <CommentsProvider userId={userId}>
       <App />
     </CommentsProvider>
   );

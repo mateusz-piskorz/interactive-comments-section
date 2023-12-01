@@ -3,12 +3,14 @@ import {
   AddComment,
   GetComments,
 } from "../features/commentsSystem/services/comments";
+import { Register, Login } from "../features/login/services/login";
 
-type FunctionType = AddComment | GetComments;
+type FunctionType = AddComment | GetComments | Register | Login;
 
 export function useAsync(fn: FunctionType, dependencies = []) {
   const { execute, ...state } = useAsyncInternal(fn, dependencies, true);
   useEffect(() => {
+    // @ts-ignore
     execute();
   }, [execute]);
 

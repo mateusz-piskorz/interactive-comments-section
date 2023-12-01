@@ -13,12 +13,16 @@ const commentSchema = new mongoose.Schema({
   parentId: {
     type: String,
   },
-
-  //   author: {
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     required: true,
-  //     ref: "Author",
-  //   },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  yourComment: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 export const Comment = mongoose.model("Comment", commentSchema);

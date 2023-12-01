@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 // import { Post } from "./models/post.js";
 import { router as commentsRouter } from "./routes/comments.js";
+import { router as usersRouter } from "./routes/users.js";
 
 const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
 const corsOptions = {
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 
 app.use("/comments", commentsRouter);
+app.use("/users", usersRouter);
 
 const server = new Server(app);
 const io = new ioServer(server, {
