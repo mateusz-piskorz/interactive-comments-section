@@ -1,9 +1,17 @@
 import React, { ReactNode, useMemo, FC, useContext } from "react";
 import { useAsync } from "../../../hooks/useAsync";
 import { getComments } from "../services/comments";
+import { availableAvatars } from "../../../components/ProfileAvatar";
+
+type UserDetails = {
+  avatar: (typeof availableAvatars)[number];
+  color: string;
+  name: string;
+  _id: string;
+};
 
 const exampleDate = new Date();
-type CommentsProviderProps = { children: ReactNode; userId: string };
+type CommentsProviderProps = { children: ReactNode; userDetails: UserDetails };
 
 type Comment = { content: string; _id: string; createdAt: Date };
 
@@ -21,11 +29,11 @@ type ContextType = {
     {
       parentId: string;
     }[];
-  userId: string;
+  userDetails: UserDetails;
 };
 
 const defaultState = {
-  userId: "",
+  userDetails: { avatar: "avatar1", color: "", name: "", _id: "" } as const,
   comments: [
     {
       content: "",
@@ -59,14 +67,18 @@ export const useComment = () => {
 
 export const CommentsProvider: FC<CommentsProviderProps> = ({
   children,
-  userId,
+  userDetails,
 }) => {
+  console.log(userDetails);
+
   const {
     value: comments,
     error,
     loading,
-  } = useAsync(() => getComments({ userId }));
+  } = useAsync(() => getComments({ userId: userDetails._id }));
+
   console.log(comments);
+
   const commentsByParentId = useMemo(() => {
     if (comments == null) return [];
     const group = {} as any;
@@ -95,7 +107,7 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
         comments: comments,
         rootComments: commentsByParentId["root"],
         getReplies,
-        userId,
+        userDetails,
       }}
     >
       {children}

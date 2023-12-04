@@ -19,7 +19,7 @@ router.post("/", async function (req, res) {
   res.send(filteredComments);
 });
 
-//create new comment
+//add a comment
 router.post("/add", async (req, res) => {
   const comment = new Comment({
     content: req.body.content,
@@ -30,6 +30,32 @@ router.post("/add", async (req, res) => {
   try {
     const newComment = await comment.save();
     res.send(newComment);
+  } catch (err) {
+    console.log(err);
+    res.send("error");
+  }
+});
+
+//edit a comment
+router.put("/edit", async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.body.commentId);
+    comment.content = req.body.content;
+    const updatedComment = await comment.save();
+    res.send(updatedComment);
+  } catch (err) {
+    console.log(err);
+    res.send("error");
+  }
+});
+
+//add a like
+router.put("/likes", async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.body.commentId);
+    comment.likes = comment.likes + +req.body.likes;
+    const updatedComment = await comment.save();
+    res.send(updatedComment);
   } catch (err) {
     console.log(err);
     res.send("error");
@@ -50,10 +76,13 @@ router.get("/removeall", async (req, res) => {
   });
 
   try {
+    const users = await User.find();
+    newComment.author = users[0]._id;
+    newComment2.author = users[0]._id;
     await Comment.deleteMany({});
     await newComment.save();
     await newComment2.save();
-    res.send("succes");
+    res.send("success");
   } catch (err) {
     console.log(err);
     res.send("error");

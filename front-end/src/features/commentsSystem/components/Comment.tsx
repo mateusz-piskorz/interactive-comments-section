@@ -4,51 +4,92 @@ import { useComment } from "../context/CommentsContext";
 import { CommentList } from "./CommentList";
 import { AddCommentForm } from "./AddCommentForm";
 import { LikesBtn } from "./LikesBtn";
-import { ProfileAvatar } from "../../../components/ProfileAvatar";
+import {
+  ProfileAvatar,
+  availableAvatars,
+} from "../../../components/ProfileAvatar";
 import { CommentCTABtns } from "./CommentCTABtns";
 
 type CommentProps = {
   _id: string;
   content: string;
+  color: string;
   nestingLevel: number;
+  authorAvatar: (typeof availableAvatars)[number];
+  authorName: string;
+  yourComment: boolean;
 };
 
-export const Comment: FC<CommentProps> = ({ _id, content, nestingLevel }) => {
+export const Comment: FC<CommentProps> = ({
+  _id,
+  content,
+  nestingLevel,
+  color,
+  authorAvatar,
+  authorName,
+  yourComment,
+}) => {
   nestingLevel += 1;
-  const [isAddReplyVisible, setIsAddReplyVisible] = useState(false);
+  const [isAddCommentFormVisible, setIsAddCommentFormVisible] = useState<
+    string | boolean
+  >(false);
   const { getReplies } = useComment();
   const childComments = getReplies(_id);
   return (
     <>
-      <StyledComment>
+      <StyledComment $color={color}>
+        <div className="circle"></div>
         <LikesBtn numberOfLikes={nestingLevel} />
         <div className="main-container">
           <div className="profile-container">
-            <ProfileAvatar imgName="avatar1" />
-            <strong className="name">amyrobson</strong>
+            <ProfileAvatar imgName={authorAvatar} />
+            <strong className="name">{authorName}</strong>
+            {yourComment && <strong className="your-name">you</strong>}
             <p className="time-ago">1 month ago</p>
           </div>
           <p className="description">{content}</p>
         </div>
 
-        {nestingLevel < 4 && (
+        {nestingLevel < 4 && yourComment ? (
+          <CommentCTABtns
+            isYourComment={true}
+            onDelete={() => {}}
+            onEdit={() =>
+              setIsAddCommentFormVisible((prev) =>
+                typeof prev === "string" ? false : "edit"
+              )
+            }
+          />
+        ) : (
           <CommentCTABtns
             isYourComment={false}
-            // onDelete={() => {}}
-            // onEdit={() => setIsAddReplyVisible((prev) => !prev)}
-            onReply={() => setIsAddReplyVisible((prev) => !prev)}
+            onReply={() =>
+              setIsAddCommentFormVisible((prev) =>
+                typeof prev === "string" ? false : "add"
+              )
+            }
           />
         )}
       </StyledComment>
 
-      {(isAddReplyVisible || childComments?.length > 0) && (
+      {(isAddCommentFormVisible || childComments?.length > 0) && (
         <>
-          {isAddReplyVisible && (
+          {isAddCommentFormVisible === "add" ? (
             <AddCommentForm
+              action="add"
               nestedClass={true}
-              onSubmit={() => setIsAddReplyVisible(false)}
+              onSubmit={() => setIsAddCommentFormVisible(false)}
               parentId={_id}
             />
+          ) : (
+            isAddCommentFormVisible === "edit" && (
+              <AddCommentForm
+                action="edit"
+                onSubmit={() => setIsAddCommentFormVisible(false)}
+                commentId={_id}
+                content={content}
+              />
+            )
           )}
           {childComments?.length > 0 && (
             <CommentList
@@ -63,10 +104,16 @@ export const Comment: FC<CommentProps> = ({ _id, content, nestingLevel }) => {
   );
 };
 
-const StyledComment = styled.div(({ theme }) => {
+const StyledComment = styled.div<{ $color: string }>(({ theme, $color }) => {
   return css`
     --paddingValue: 15px;
-
+    filter: blur(5px);
+    animation: example 1s forwards;
+    @keyframes example {
+      to {
+        filter: blur(0px);
+      }
+    }
     position: relative;
     border-radius: 7px;
     background-color: white;
@@ -75,7 +122,19 @@ const StyledComment = styled.div(({ theme }) => {
     flex-direction: column-reverse;
     gap: 15px;
     padding: var(--paddingValue);
+    overflow: hidden;
 
+    > .circle {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      background-color: ${$color};
+      position: absolute;
+      left: 0;
+      top: 0%;
+      z-index: -1;
+      transform: translate(-40%, -40%);
+    }
     > .main-container {
       display: flex;
       flex-direction: column;
@@ -85,11 +144,18 @@ const StyledComment = styled.div(({ theme }) => {
         align-items: center;
         gap: 15px;
 
-        > strong {
+        > .your-name {
+          color: white;
+          font-size: 0.8rem;
+          background-color: ${theme.moderateBlue};
+          padding: 3px 5px 3px 5px;
+        }
+        > .name {
           font-size: 0.9rem;
         }
-        > p {
+        > .time-ago {
           font-size: 0.9rem;
+          color: ${theme.grayishBlue};
         }
       }
       > p {

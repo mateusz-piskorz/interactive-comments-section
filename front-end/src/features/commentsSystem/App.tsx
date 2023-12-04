@@ -12,7 +12,7 @@ export const App: FC = () => {
       <CommentsWrapper>
         <CommentList comments={rootComments} nestingLevel={0} />
       </CommentsWrapper>
-      <AddCommentForm />
+      <AddCommentForm action="add" />
     </Wrapper>
   );
 };

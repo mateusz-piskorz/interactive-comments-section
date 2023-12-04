@@ -1,43 +1,82 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { styled, css } from "styled-components";
 import { useAsyncFn } from "../../../hooks/useAsync";
-import { addComment } from "../services/comments";
+import { addComment, editComment } from "../services/comments";
 import { ProfileAvatar } from "../../../components/ProfileAvatar";
 import { useComment } from "../context/CommentsContext";
 
-type AddCommentFormProps = {
+type EditCase = {
+  action: "edit";
+  onSubmit?: () => void;
+  content: string;
+  commentId: string;
+  nestedClass?: boolean;
+};
+
+type AddCase = {
+  action: "add";
   onSubmit?: () => void;
   parentId?: string;
   nestedClass?: boolean;
 };
 
-export const AddCommentForm: FC<AddCommentFormProps> = ({
-  onSubmit,
-  parentId,
-  nestedClass,
-}) => {
-  const { userId } = useComment();
-  const [content, setContent] = useState("");
-  const { loading, error, execute } = useAsyncFn(addComment);
+type AddCommentFormProps = EditCase | AddCase;
+
+// editComment;
+
+export const AddCommentForm: FC<AddCommentFormProps> = (props) => {
+  const { userDetails } = useComment();
+  const [content, setContent] = useState(
+    props.action === "edit" ? props.content : ""
+  );
+  const { loading, execute } = useAsyncFn(addComment);
+  const {
+    loading: editLoading,
+
+    execute: editExecute,
+  } = useAsyncFn(editComment);
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
-    if (content !== "") {
-      return execute({ content, parentId, userId }).then((comment) => {
-        onSubmit && onSubmit();
+
+    if (content !== "" && props.action === "add") {
+      return execute({
+        content,
+        parentId: props.parentId,
+        userId: userDetails._id,
+      }).then(() => {
+        setContent("");
+        props.onSubmit && props.onSubmit();
+      });
+    } else if (content !== "" && props.action === "edit") {
+      return editExecute({
+        content,
+        commentId: props.commentId,
+      }).then(() => {
+        setContent("");
+        props.onSubmit && props.onSubmit();
       });
     }
   };
+
   return (
-    <Form onSubmit={submitHandler} className={nestedClass ? "nested" : ""}>
-      <ProfileAvatar imgName="avatar1" />
+    <Form
+      onSubmit={submitHandler}
+      className={props.nestedClass ? "nested" : ""}
+    >
+      <ProfileAvatar imgName={userDetails.avatar} />
       <textarea
-        autoFocus={nestedClass}
+        autoFocus={props.nestedClass}
         placeholder="Add a comment..."
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
-      <button type="submit">Send</button>
+      <button
+        type="submit"
+        disabled={props.action === "add" ? loading : editLoading}
+      >
+        Send
+      </button>
     </Form>
   );
 };
@@ -113,6 +152,7 @@ const Form = styled.form(({ theme }) => {
       letter-spacing: 0.5px;
       border-radius: 10px;
       text-transform: uppercase;
+      cursor: pointer;
     }
 
     @media screen and (min-width: 768px) {

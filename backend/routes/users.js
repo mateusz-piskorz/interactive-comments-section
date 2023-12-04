@@ -6,7 +6,7 @@ export const router = express.Router();
 // get a user
 router.post("/", async function (req, res) {
   try {
-    const user = await User.findById(req.body.id);
+    const user = await User.findById(req.body.userId);
     res.send(user);
   } catch (err) {
     res.send(err);

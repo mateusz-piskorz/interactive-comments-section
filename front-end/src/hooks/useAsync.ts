@@ -2,10 +2,18 @@ import { useCallback, useEffect, useState } from "react";
 import {
   AddComment,
   GetComments,
+  EditComment,
 } from "../features/commentsSystem/services/comments";
+import { GetUserDetails } from "../features/commentsSystem/services/user";
 import { Register, Login } from "../features/login/services/login";
 
-type FunctionType = AddComment | GetComments | Register | Login;
+type FunctionType =
+  | AddComment
+  | GetComments
+  | Register
+  | Login
+  | GetUserDetails
+  | EditComment;
 
 export function useAsync(fn: FunctionType, dependencies = []) {
   const { execute, ...state } = useAsyncInternal(fn, dependencies, true);
