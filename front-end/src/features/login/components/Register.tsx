@@ -5,6 +5,7 @@ import { OnLogin } from "../index";
 import { RadioInputList } from "./RadioInputList";
 import { styled, css } from "styled-components";
 import { localStorageKey } from "../constants";
+import { Dialog } from "../../../components/Dialog";
 
 type RegisterProps = {
   onLogin: OnLogin;
@@ -33,60 +34,63 @@ export const Register: FC<RegisterProps> = ({ onLogin }) => {
     [value]
   );
   return (
-    <RegisterForm>
-      <form onSubmit={submitHandler}>
-        {error && (
-          <strong className="error">register error: {error.code}</strong>
-        )}
-        <div className="name-wrapper">
-          <label htmlFor={nameId}>Name</label>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            type="text"
-            required
-            placeholder="name"
-            id={nameId}
+    <Dialog>
+      <RegisterForm>
+        <form onSubmit={submitHandler}>
+          {error && (
+            <strong className="error">register error: {error.code}</strong>
+          )}
+          <div className="name-wrapper">
+            <label htmlFor={nameId}>Name</label>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              type="text"
+              required
+              placeholder="name"
+              id={nameId}
+            />
+          </div>
+          <RadioInputList
+            selected={avatar}
+            setSelected={setAvatar}
+            choiceCase="avatar"
+            list={[
+              "avatar1",
+              "avatar6",
+              "avatar4",
+              "avatar3",
+              "avatar5",
+              "avatar2",
+            ]}
           />
-        </div>
-        <RadioInputList
-          selected={avatar}
-          setSelected={setAvatar}
-          choiceCase="avatar"
-          list={[
-            "avatar1",
-            "avatar6",
-            "avatar4",
-            "avatar3",
-            "avatar5",
-            "avatar2",
-          ]}
-        />
-        <RadioInputList
-          selected={color}
-          setSelected={setColor}
-          choiceCase="color"
-          list={["orange", "teal", "violet", "seagreen", "burlywood", "tomato"]}
-        />
-        <button disabled={loading} type="submit">
-          Submit
-        </button>
-      </form>
-    </RegisterForm>
+          <RadioInputList
+            selected={color}
+            setSelected={setColor}
+            choiceCase="color"
+            list={[
+              "orange",
+              "teal",
+              "violet",
+              "seagreen",
+              "burlywood",
+              "tomato",
+            ]}
+          />
+          <button disabled={loading} type="submit">
+            Submit
+          </button>
+        </form>
+      </RegisterForm>
+    </Dialog>
   );
 };
 
 const RegisterForm = styled.div(({ theme }) => {
   return css`
     z-index: 5;
-    position: absolute;
-    left: 50%;
-    top: 20%;
-    transform: translateX(-50%);
-    max-width: 300px;
     border-radius: 15px;
     background-color: white;
-    width: 90%;
     padding: 40px;
 
     > form {

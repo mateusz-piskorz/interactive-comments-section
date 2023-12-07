@@ -2,19 +2,59 @@ import { FC } from "react";
 import { styled, css } from "styled-components";
 import iconMinus from "../assets/icon-minus.svg";
 import iconPlus from "../assets/icon-plus.svg";
+import { useAsyncFn } from "../../../hooks/useAsync";
+import { addLike } from "../services/comments";
+import { useComment } from "../context/CommentsContext";
+import { Likes } from "./Comment";
 
 type LikesBtnProps = {
-  numberOfLikes: number;
+  commentId: string;
+  commentLikes: Likes;
 };
 
-export const LikesBtn: FC<LikesBtnProps> = ({ numberOfLikes }) => {
+export const LikesBtn: FC<LikesBtnProps> = ({ commentId, commentLikes }) => {
+  const { userDetails } = useComment();
+  const { error, loading, execute } = useAsyncFn(addLike);
+  const likeIGave = commentLikes[userDetails._id];
+
+  const numberOfLikes = Object.values(commentLikes).reduce(
+    (accumulator, currentValue) => {
+      const helper = { plus: 1, minus: -1 };
+
+      if (typeof accumulator === "string") {
+        return helper[accumulator] + helper[currentValue];
+      } else {
+        return accumulator + helper[currentValue];
+      }
+    },
+    0
+  );
+
+  const onBtnClick = (like: "plus" | "minus") => {
+    if (likeIGave) {
+      if (likeIGave === like) {
+        alert("You already rated this");
+      } else {
+        execute({ commentId, like, userId: userDetails._id });
+      }
+    } else {
+      execute({ commentId, like, userId: userDetails._id });
+    }
+  };
+
   return (
     <Wrapper className="like-container">
-      <button>
+      <button
+        disabled={likeIGave === "plus"}
+        onClick={() => onBtnClick("plus")}
+      >
         <img src={iconPlus} alt="plus icon" />
       </button>
       <strong>{numberOfLikes}</strong>
-      <button>
+      <button
+        disabled={likeIGave === "minus"}
+        onClick={() => onBtnClick("minus")}
+      >
         <img src={iconMinus} alt="minus icon" />
       </button>
     </Wrapper>
@@ -40,10 +80,16 @@ const Wrapper = styled.div(({ theme }) => {
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      opacity: 0.3;
+      &:disabled {
+        cursor: default;
+        opacity: 0.5;
+        &:hover {
+          opacity: 0.5;
+        }
+      }
       cursor: pointer;
       &:hover {
-        opacity: 1;
+        opacity: 0.8;
       }
     }
 

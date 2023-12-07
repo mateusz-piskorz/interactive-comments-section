@@ -69,8 +69,6 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
   children,
   userDetails,
 }) => {
-  console.log(userDetails);
-
   const {
     value: comments,
     error,

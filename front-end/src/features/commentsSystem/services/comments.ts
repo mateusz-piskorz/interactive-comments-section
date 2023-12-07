@@ -21,14 +21,39 @@ export const editComment: EditComment = ({ content, commentId }) => {
   });
 };
 
-export const addLikes: EditComment = ({ commentId, likes }) => {
+export const addLike: AddLike = ({ commentId, userId, like }) => {
   return makeRequest("/comments/likes", {
-    method: "put",
-    data: { content, commentId },
+    method: "post",
+    data: { like, commentId, userId },
   });
 };
 
+export const removeComment: RemoveComment = ({ commentId, userId }) => {
+  return makeRequest("/comments/remove", {
+    method: "post",
+    data: { commentId, userId },
+  });
+};
+
+export type RemoveComment = ({
+  userId,
+  commentId,
+}: {
+  userId: string;
+  commentId: string;
+}) => Promise<any>;
+
 export type GetComments = ({ userId }: { userId: string }) => Promise<any>;
+
+export type AddLike = ({
+  commentId,
+  like,
+  userId,
+}: {
+  commentId: string;
+  like: "plus" | "minus";
+  userId: string;
+}) => Promise<any>;
 
 export type EditComment = ({
   content,

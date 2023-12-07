@@ -65,12 +65,14 @@ const ChoiceWrapper = styled.div<{ $isSelected: boolean; $color: string }>(
 
       > label {
         > img {
+          cursor: pointer;
           opacity: ${$isSelected ? "1" : ".5"};
           ${$isSelected && "transform: scale(1.1)"};
           width: 40px;
           height: 40px;
         }
         > .color-div {
+          cursor: pointer;
           opacity: ${$isSelected ? "1" : ".5"};
           ${$isSelected && "transform: scale(1.1)"};
           width: 40px;

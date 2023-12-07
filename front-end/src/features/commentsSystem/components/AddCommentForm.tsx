@@ -1,9 +1,10 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { styled, css } from "styled-components";
 import { useAsyncFn } from "../../../hooks/useAsync";
 import { addComment, editComment } from "../services/comments";
 import { ProfileAvatar } from "../../../components/ProfileAvatar";
 import { useComment } from "../context/CommentsContext";
+import { Button } from "../../../components/Button";
 
 type EditCase = {
   action: "edit";
@@ -21,8 +22,6 @@ type AddCase = {
 };
 
 type AddCommentFormProps = EditCase | AddCase;
-
-// editComment;
 
 export const AddCommentForm: FC<AddCommentFormProps> = (props) => {
   const { userDetails } = useComment();
@@ -71,12 +70,12 @@ export const AddCommentForm: FC<AddCommentFormProps> = (props) => {
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
-      <button
-        type="submit"
+      <Button
+        background="blue"
         disabled={props.action === "add" ? loading : editLoading}
       >
         Send
-      </button>
+      </Button>
     </Form>
   );
 };
@@ -103,7 +102,6 @@ const Form = styled.form(({ theme }) => {
         }
       }
       > button {
-        padding: 10px 15px 10px 15px;
         font-size: 0.8rem;
         text-transform: unset;
       }
@@ -143,16 +141,7 @@ const Form = styled.form(({ theme }) => {
     }
 
     > button {
-      padding: 15px 25px 15px 25px;
-      border: none;
-      background-color: ${theme.moderateBlue};
-      color: white;
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      border-radius: 10px;
       text-transform: uppercase;
-      cursor: pointer;
     }
 
     @media screen and (min-width: 768px) {

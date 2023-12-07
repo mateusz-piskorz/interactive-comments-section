@@ -50,12 +50,38 @@ router.put("/edit", async (req, res) => {
 });
 
 //add a like
-router.put("/likes", async (req, res) => {
+router.post("/likes", async (req, res) => {
   try {
     const comment = await Comment.findById(req.body.commentId);
-    comment.likes = comment.likes + +req.body.likes;
+    comment.likes = { ...comment.likes, [req.body.userId]: req.body.like };
     const updatedComment = await comment.save();
     res.send(updatedComment);
+  } catch (err) {
+    console.log(err);
+    res.send("error");
+  }
+});
+
+// delete one
+router.post("/remove", async (req, res) => {
+  try {
+    const user = await User.findById(req.body.userId);
+    const comment = await Comment.findById(req.body.commentId);
+    const childComment = await Comment.findOne({
+      parentId: req.body.commentId,
+    }).exec();
+    if (user?._id?.toHexString() == comment?.author?.toHexString()) {
+      if (!childComment) {
+        await Comment.deleteOne();
+        res.send("success");
+      } else {
+        res.status(400);
+        res.send("you cannot delete a comment that has replies");
+      }
+    } else {
+      res.status(401);
+      res.send("unauthorized");
+    }
   } catch (err) {
     console.log(err);
     res.send("error");

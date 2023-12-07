@@ -9,6 +9,17 @@ import {
   availableAvatars,
 } from "../../../components/ProfileAvatar";
 import { CommentCTABtns } from "./CommentCTABtns";
+import { Dialog } from "../../../components/Dialog";
+import { useAsyncFn } from "../../../hooks/useAsync";
+import { removeComment } from "../services/comments";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
+import { RemoveCommentDialog } from "./RemoveCommentDialog";
+
+TimeAgo.addDefaultLocale(en);
+const timeAgo = new TimeAgo("en-US");
+
+export type Likes = { [key: string]: "plus" | "minus" };
 
 type CommentProps = {
   _id: string;
@@ -18,6 +29,9 @@ type CommentProps = {
   authorAvatar: (typeof availableAvatars)[number];
   authorName: string;
   yourComment: boolean;
+  likes: Likes;
+  createdAt: string;
+  parentId: string;
 };
 
 export const Comment: FC<CommentProps> = ({
@@ -28,32 +42,48 @@ export const Comment: FC<CommentProps> = ({
   authorAvatar,
   authorName,
   yourComment,
+  likes,
+  createdAt,
+  parentId,
 }) => {
   nestingLevel += 1;
   const [isAddCommentFormVisible, setIsAddCommentFormVisible] = useState<
     string | boolean
   >(false);
-  const { getReplies } = useComment();
+  const { getReplies, userDetails } = useComment();
   const childComments = getReplies(_id);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { execute, loading, error } = useAsyncFn(removeComment);
+
   return (
     <>
+      {isDialogOpen && (
+        <RemoveCommentDialog
+          commentId={_id}
+          onClose={() => setIsDialogOpen(false)}
+        />
+      )}
       <StyledComment $color={color}>
         <div className="circle"></div>
-        <LikesBtn numberOfLikes={nestingLevel} />
+        <LikesBtn commentLikes={likes} commentId={_id} />
         <div className="main-container">
           <div className="profile-container">
             <ProfileAvatar imgName={authorAvatar} />
             <strong className="name">{authorName}</strong>
             {yourComment && <strong className="your-name">you</strong>}
-            <p className="time-ago">1 month ago</p>
+            <p className="time-ago">
+              {timeAgo.format(
+                +new Date() - (+new Date() - +new Date(createdAt))
+              )}
+            </p>
           </div>
           <p className="description">{content}</p>
         </div>
 
-        {nestingLevel < 4 && yourComment ? (
+        {yourComment ? (
           <CommentCTABtns
             isYourComment={true}
-            onDelete={() => {}}
+            onDelete={() => setIsDialogOpen(true)}
             onEdit={() =>
               setIsAddCommentFormVisible((prev) =>
                 typeof prev === "string" ? false : "edit"
@@ -79,7 +109,7 @@ export const Comment: FC<CommentProps> = ({
               action="add"
               nestedClass={true}
               onSubmit={() => setIsAddCommentFormVisible(false)}
-              parentId={_id}
+              parentId={nestingLevel >= 4 ? parentId : _id}
             />
           ) : (
             isAddCommentFormVisible === "edit" && (

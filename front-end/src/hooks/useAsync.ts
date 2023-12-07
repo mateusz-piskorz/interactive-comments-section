@@ -3,6 +3,8 @@ import {
   AddComment,
   GetComments,
   EditComment,
+  AddLike,
+  RemoveComment,
 } from "../features/commentsSystem/services/comments";
 import { GetUserDetails } from "../features/commentsSystem/services/user";
 import { Register, Login } from "../features/login/services/login";
@@ -13,7 +15,9 @@ type FunctionType =
   | Register
   | Login
   | GetUserDetails
-  | EditComment;
+  | EditComment
+  | AddLike
+  | RemoveComment;
 
 export function useAsync(fn: FunctionType, dependencies = []) {
   const { execute, ...state } = useAsyncInternal(fn, dependencies, true);
