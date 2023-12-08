@@ -1,13 +1,14 @@
 import { FC, ReactNode } from "react";
 import { styled, css } from "styled-components";
 
-type Bg = "gray" | "red" | "blue";
+type Bg = "gray" | "red" | "blue" | "gold";
 
 type ButtonProps = {
   background: Bg;
   children?: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
+  linkBtn?: string;
 };
 
 export const Button: FC<ButtonProps> = ({
@@ -15,11 +16,22 @@ export const Button: FC<ButtonProps> = ({
   onClick,
   background,
   disabled,
+  linkBtn,
 }) => {
   return (
-    <Btn disabled={disabled} $background={background} onClick={onClick}>
-      {children}
-    </Btn>
+    <>
+      {linkBtn ? (
+        <a href={linkBtn} target="_blank">
+          <Btn disabled={disabled} $background={background} onClick={onClick}>
+            {children}
+          </Btn>
+        </a>
+      ) : (
+        <Btn disabled={disabled} $background={background} onClick={onClick}>
+          {children}
+        </Btn>
+      )}
+    </>
   );
 };
 
@@ -29,14 +41,15 @@ const Btn = styled.button<{ $background: Bg }>(
       --gray: ${grayishBlue};
       --red: ${softRed};
       --blue: ${moderateBlue};
+      --gold: rgb(243, 193, 27);
 
       border: none;
-      color: white;
-      font-size: 0.8rem;
+      color: ${$background === "gold" ? "black" : "white"};
+      font-size: 0.9rem;
       font-weight: 700;
       letter-spacing: 0.5px;
-      border-radius: 7px;
-      padding: 10px 20px;
+      border-radius: 10px;
+      padding: 15px 25px;
       background-color: ${`var(--${$background})`};
       cursor: pointer;
       &:hover {

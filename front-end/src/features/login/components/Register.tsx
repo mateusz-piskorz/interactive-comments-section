@@ -12,7 +12,7 @@ type RegisterProps = {
 };
 
 export const Register: FC<RegisterProps> = ({ onLogin }) => {
-  const { loading, error, value, execute } = useAsyncFn(register);
+  const { setLoading, loading, error, value, execute } = useAsyncFn(register);
   const nameId = useId();
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -21,7 +21,11 @@ export const Register: FC<RegisterProps> = ({ onLogin }) => {
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
     if (name !== "" && avatar !== "" && color !== "") {
-      return execute({ name, avatar, color });
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+        execute({ name, avatar, color });
+      }, 10000);
     }
   };
   useEffect(

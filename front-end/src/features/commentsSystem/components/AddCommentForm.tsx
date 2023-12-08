@@ -5,6 +5,7 @@ import { addComment, editComment } from "../services/comments";
 import { ProfileAvatar } from "../../../components/ProfileAvatar";
 import { useComment } from "../context/CommentsContext";
 import { Button } from "../../../components/Button";
+import { HoldYourHorses } from "./HoldYourHorses";
 
 type EditCase = {
   action: "edit";
@@ -24,16 +25,28 @@ type AddCase = {
 type AddCommentFormProps = EditCase | AddCase;
 
 export const AddCommentForm: FC<AddCommentFormProps> = (props) => {
-  const { userDetails } = useComment();
+  const [isHoldingHorses, setIsHoldingHorses] = useState(false);
+  const { userDetails, canIAddComment, setCanIAddComment, countDown } =
+    useComment();
   const [content, setContent] = useState(
     props.action === "edit" ? props.content : ""
   );
   const { loading, execute } = useAsyncFn(addComment);
-  const {
-    loading: editLoading,
+  const { loading: editLoading, execute: editExecute } =
+    useAsyncFn(editComment);
 
-    execute: editExecute,
-  } = useAsyncFn(editComment);
+  const submitFunc = () => {
+    if (canIAddComment) {
+      setContent("");
+      setTimeout(() => {
+        setIsHoldingHorses(false);
+      }, 60000);
+      props.onSubmit && props.onSubmit();
+      setCanIAddComment(false);
+    } else {
+      setIsHoldingHorses(true);
+    }
+  };
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,39 +57,48 @@ export const AddCommentForm: FC<AddCommentFormProps> = (props) => {
         parentId: props.parentId,
         userId: userDetails._id,
       }).then(() => {
-        setContent("");
-        props.onSubmit && props.onSubmit();
+        submitFunc();
       });
     } else if (content !== "" && props.action === "edit") {
       return editExecute({
         content,
         commentId: props.commentId,
       }).then(() => {
-        setContent("");
-        props.onSubmit && props.onSubmit();
+        submitFunc();
       });
     }
   };
 
+  console.log(canIAddComment);
+
   return (
-    <Form
-      onSubmit={submitHandler}
-      className={props.nestedClass ? "nested" : ""}
-    >
-      <ProfileAvatar imgName={userDetails.avatar} />
-      <textarea
-        autoFocus={props.nestedClass}
-        placeholder="Add a comment..."
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
-      <Button
-        background="blue"
-        disabled={props.action === "add" ? loading : editLoading}
+    <>
+      {isHoldingHorses && (
+        <HoldYourHorses
+          countDown={countDown}
+          onClose={() => setIsHoldingHorses(false)}
+        />
+      )}
+
+      <Form
+        onSubmit={submitHandler}
+        className={props.nestedClass ? "nested" : ""}
       >
-        Send
-      </Button>
-    </Form>
+        <ProfileAvatar imgName={userDetails.avatar} />
+        <textarea
+          autoFocus={props.nestedClass}
+          placeholder="Add a comment..."
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
+        <Button
+          background="blue"
+          disabled={props.action === "add" ? loading : editLoading}
+        >
+          Send
+        </Button>
+      </Form>
+    </>
   );
 };
 

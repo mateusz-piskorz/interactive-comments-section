@@ -1,7 +1,15 @@
-import React, { ReactNode, useMemo, FC, useContext } from "react";
+import React, {
+  ReactNode,
+  useMemo,
+  FC,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
 import { useAsync } from "../../../hooks/useAsync";
 import { getComments } from "../services/comments";
 import { availableAvatars } from "../../../components/ProfileAvatar";
+import Countdown from "react-countdown";
 
 type UserDetails = {
   avatar: (typeof availableAvatars)[number];
@@ -16,6 +24,9 @@ type CommentsProviderProps = { children: ReactNode; userDetails: UserDetails };
 type Comment = { content: string; _id: string; createdAt: Date };
 
 type ContextType = {
+  countDown: JSX.Element;
+  setCanIAddComment: React.Dispatch<React.SetStateAction<boolean>>;
+  canIAddComment: boolean;
   comments: (
     | (Comment & {
         parentId?: undefined;
@@ -33,6 +44,9 @@ type ContextType = {
 };
 
 const defaultState = {
+  countDown: <></>,
+  setCanIAddComment: () => {},
+  canIAddComment: true,
   userDetails: { avatar: "avatar1", color: "", name: "", _id: "" } as const,
   comments: [
     {
@@ -69,13 +83,28 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
   children,
   userDetails,
 }) => {
+  const [canIAddComment, setCanIAddComment] = useState(true);
   const {
     value: comments,
     error,
     loading,
   } = useAsync(() => getComments({ userId: userDetails._id }));
 
-  console.log(comments);
+  useEffect(
+    function canIAddCommentEffect() {
+      if (!canIAddComment) {
+        setTimeout(() => {
+          setCanIAddComment(true);
+        }, 60000);
+      }
+    },
+    [canIAddComment]
+  );
+
+  const countDown = useMemo(
+    () => <Countdown date={Date.now() + 60000} />,
+    [canIAddComment]
+  );
 
   const commentsByParentId = useMemo(() => {
     if (comments == null) return [];
@@ -102,6 +131,9 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
   return (
     <Context.Provider
       value={{
+        countDown,
+        setCanIAddComment,
+        canIAddComment,
         comments: comments,
         rootComments: commentsByParentId["root"],
         getReplies,
