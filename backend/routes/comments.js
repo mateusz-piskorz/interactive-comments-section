@@ -84,7 +84,8 @@ router.post("/remove", async (req, res) => {
     }).exec();
     if (user?._id?.toHexString() == comment?.author?.toHexString()) {
       if (!childComment) {
-        await Comment.deleteOne();
+        await Comment.deleteOne({ _id: comment._id });
+        io.emit("comment-removed", { commentId: comment._id });
         res.send("success");
       } else {
         res.status(400);

@@ -24,7 +24,7 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
     loading,
     setLoading,
     setError,
-    setValue,
+    setValue: setComments,
   } = useAsync(() => getComments({ userId: userDetails._id }));
 
   useEffect(
@@ -43,23 +43,31 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
       setLoading(true);
       getComment({ userId: userDetails._id, commentId: props.commentId })
         .then((newComment: any) => {
-          setValue((prev: any) => [...prev, newComment]);
+          setComments((prev: any) => [...prev, newComment]);
           setError(undefined);
           return newComment;
         })
         .catch((error: any) => {
           setError(error);
-          setValue(undefined);
+          setComments(undefined);
         })
         .finally(() => {
           setLoading(false);
         });
     };
 
+    const onCommentRemoved = (props: any) => {
+      setComments((prev: Comment[]) =>
+        prev.filter((comment) => comment._id !== props.commentId)
+      );
+    };
+
     socket.on("new-comment-added", onNewCommentAdded);
+    socket.on("comment-removed", onCommentRemoved);
 
     return () => {
       socket.off("new-comment-added", onNewCommentAdded);
+      socket.on("comment-removed", onCommentRemoved);
     };
   }, []);
 
@@ -100,7 +108,7 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
       }}
     >
       {error && <h1>{error.code}</h1>}
-      {loading && <h1>Loading...</h1>}
+      {loading && <Loading topRightCorner={true} />}
       {comments && children}
     </Context.Provider>
   );

@@ -97,7 +97,7 @@ export const AddCommentForm: FC<AddCommentFormProps> = (props) => {
           Send
         </Button>
       </Form>
-      {isLoading && <Loading />}
+      {isLoading && <Loading topRightCorner={true} />}
     </>
   );
 };
