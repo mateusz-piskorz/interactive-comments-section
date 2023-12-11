@@ -30,21 +30,38 @@ router.post("/one-comment", async function (req, res) {
   res.send(comment);
 });
 
+const lastPostAddedArray = {};
 //add a comment
 router.post("/add", async (req, res) => {
-  const comment = new Comment({
-    content: req.body.content,
-    parentId: req.body.parentId,
-    author: req.body.userId,
-  });
+  let canAddPost = false;
+  if (lastPostAddedArray[req.body.userId]) {
+    const diff = Date.now() - lastPostAddedArray[req.body.userId];
+    if (diff >= 60000) {
+      canAddPost = true;
+    }
+  } else {
+    canAddPost = true;
+  }
 
-  try {
-    const newComment = await comment.save();
-    io.emit("new-comment-added", { commentId: newComment._id });
-    res.send(newComment);
-  } catch (err) {
-    console.log(err);
-    res.send("error");
+  if (canAddPost) {
+    const comment = new Comment({
+      content: req.body.content,
+      parentId: req.body.parentId,
+      author: req.body.userId,
+    });
+
+    try {
+      const newComment = await comment.save();
+      io.emit("new-comment-added", { commentId: newComment._id });
+      lastPostAddedArray[req.body.userId] = Date.now();
+      res.send(newComment);
+    } catch (err) {
+      console.log(err);
+      res.send("error");
+    }
+  } else {
+    res.status(400);
+    res.send("Hold Your Horses!");
   }
 });
 
