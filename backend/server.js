@@ -26,7 +26,7 @@ app.use("/comments", commentsRouter);
 app.use("/users", usersRouter);
 
 const server = new Server(app);
-const io = new ioServer(server, {
+export const io = new ioServer(server, {
   cors: {
     origin: corsOrigin,
   },

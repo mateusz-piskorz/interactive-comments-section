@@ -7,6 +7,13 @@ export const getComments: GetComments = ({ userId }) => {
   });
 };
 
+export const getComment: GetComment = ({ commentId, userId }) => {
+  return makeRequest("/comments/one-comment", {
+    method: "post",
+    data: { commentId, userId },
+  });
+};
+
 export const addComment: AddComment = ({ content, parentId, userId }) => {
   return makeRequest("/comments/add", {
     method: "post",
@@ -45,6 +52,14 @@ export type RemoveComment = ({
 
 export type GetComments = ({ userId }: { userId: string }) => Promise<any>;
 
+export type GetComment = ({
+  commentId,
+  userId,
+}: {
+  commentId: string;
+  userId: string;
+}) => Promise<any>;
+
 export type AddLike = ({
   commentId,
   like,
@@ -62,6 +77,7 @@ export type EditComment = ({
   content: string;
   commentId: string;
 }) => Promise<any>;
+
 export type AddComment = ({
   content,
   parentId,

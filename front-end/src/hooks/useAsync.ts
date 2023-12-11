@@ -60,5 +60,5 @@ function useAsyncInternal(
       });
   }, dependencies);
 
-  return { loading, error, value, execute, setLoading };
+  return { loading, error, value, execute, setLoading, setError, setValue };
 }

@@ -2,7 +2,7 @@ import { FC } from "react";
 import { CommentList } from "./components/CommentList";
 import { useComment } from "./context/CommentsContext";
 import { AddCommentForm } from "./components/AddCommentForm";
-import { styled, css } from "styled-components";
+import { styled } from "styled-components";
 
 export const App: FC = () => {
   const { rootComments } = useComment();

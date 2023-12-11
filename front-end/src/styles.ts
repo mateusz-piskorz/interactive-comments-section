@@ -27,6 +27,21 @@ export const GlobalStyle = createGlobalStyle(
     p {
       font-size: 1rem;
     }
+
+    .description {
+      font-size: 1rem;
+      line-height: 1.1rem;
+      color: ${theme.grayishBlue};
+
+      &.error {
+        color: ${theme.softRed};
+      }
+    }
+
+    > .title {
+      font-size: 1.3rem;
+      color: ${theme.darkBlue};
+    }
   `
 );
 

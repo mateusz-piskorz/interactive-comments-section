@@ -4,6 +4,7 @@ import { login } from "../services/login";
 import { styled } from "styled-components";
 import { OnLogin } from "../index";
 import { localStorageKey } from "../constants";
+import { Dialog } from "../../../components/Dialog";
 
 type LoginProps = {
   onLogin: OnLogin;
@@ -24,15 +25,13 @@ export const Login: FC<LoginProps> = ({ onLogin, newUser }) => {
 
   useEffect(
     function onSuccessLogin() {
-      if (value) {
-        onLogin(value._id);
-      }
+      value && onLogin(value._id);
     },
     [value]
   );
 
   return (
-    <>
+    <Dialog>
       <LoginWrapper>
         {loading ? (
           <strong>Loading...</strong>
@@ -46,18 +45,11 @@ export const Login: FC<LoginProps> = ({ onLogin, newUser }) => {
           )
         )}
       </LoginWrapper>
-    </>
+    </Dialog>
   );
 };
 
 const LoginWrapper = styled.div`
-  z-index: 5;
-  position: absolute;
-  left: 50%;
-  top: 20%;
-  transform: translateX(-50%);
-  max-width: 300px;
   background-color: white;
-  width: 90%;
   padding: 40px;
 `;

@@ -29,7 +29,7 @@ export const RemoveCommentDialog: FC<Props> = ({ commentId, onClose }) => {
   );
 
   return (
-    <Dialog deleteCommentCase={true}>
+    <Dialog wider={true}>
       <Wrapper>
         <h2 className="title">Delete comment</h2>
         <p className={error ? "description error" : "description"}>
@@ -52,30 +52,14 @@ export const RemoveCommentDialog: FC<Props> = ({ commentId, onClose }) => {
   );
 };
 
-const Wrapper = styled.div(({ theme }) => {
-  return css`
-    padding: 25px;
+const Wrapper = styled.div`
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  > .btn-container {
     display: flex;
-    flex-direction: column;
     gap: 15px;
-
-    > .title {
-      font-size: 1.3rem;
-      color: ${theme.darkBlue};
-    }
-
-    > .description {
-      color: ${theme.grayishBlue};
-      line-height: 1.2rem;
-
-      &.error {
-        color: ${theme.softRed};
-      }
-    }
-
-    > .btn-container {
-      display: flex;
-      gap: 15px;
-    }
-  `;
-});
+  }
+`;

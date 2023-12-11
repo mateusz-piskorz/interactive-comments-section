@@ -6,6 +6,7 @@ import { RadioInputList } from "./RadioInputList";
 import { styled, css } from "styled-components";
 import { localStorageKey } from "../constants";
 import { Dialog } from "../../../components/Dialog";
+import { Loading } from "../../../components/Loading";
 
 type RegisterProps = {
   onLogin: OnLogin;
@@ -25,7 +26,7 @@ export const Register: FC<RegisterProps> = ({ onLogin }) => {
       setTimeout(() => {
         setLoading(false);
         execute({ name, avatar, color });
-      }, 10000);
+      }, 7000);
     }
   };
   useEffect(
@@ -38,55 +39,61 @@ export const Register: FC<RegisterProps> = ({ onLogin }) => {
     [value]
   );
   return (
-    <Dialog>
-      <RegisterForm>
-        <form onSubmit={submitHandler}>
-          {error && (
-            <strong className="error">register error: {error.code}</strong>
-          )}
-          <div className="name-wrapper">
-            <label htmlFor={nameId}>Name</label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              type="text"
-              required
-              placeholder="name"
-              id={nameId}
-            />
-          </div>
-          <RadioInputList
-            selected={avatar}
-            setSelected={setAvatar}
-            choiceCase="avatar"
-            list={[
-              "avatar1",
-              "avatar6",
-              "avatar4",
-              "avatar3",
-              "avatar5",
-              "avatar2",
-            ]}
-          />
-          <RadioInputList
-            selected={color}
-            setSelected={setColor}
-            choiceCase="color"
-            list={[
-              "orange",
-              "teal",
-              "violet",
-              "seagreen",
-              "burlywood",
-              "tomato",
-            ]}
-          />
-          <button disabled={loading} type="submit">
-            Submit
-          </button>
-        </form>
-      </RegisterForm>
-    </Dialog>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <Dialog>
+          <RegisterForm>
+            <form onSubmit={submitHandler}>
+              {error && (
+                <strong className="error">register error: {error.code}</strong>
+              )}
+              <div className="name-wrapper">
+                <label htmlFor={nameId}>Name</label>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  type="text"
+                  required
+                  placeholder="name"
+                  id={nameId}
+                />
+              </div>
+              <RadioInputList
+                selected={avatar}
+                setSelected={setAvatar}
+                choiceCase="avatar"
+                list={[
+                  "avatar1",
+                  "avatar6",
+                  "avatar4",
+                  "avatar3",
+                  "avatar5",
+                  "avatar2",
+                ]}
+              />
+              <RadioInputList
+                selected={color}
+                setSelected={setColor}
+                choiceCase="color"
+                list={[
+                  "orange",
+                  "teal",
+                  "violet",
+                  "seagreen",
+                  "burlywood",
+                  "tomato",
+                ]}
+              />
+              <button disabled={loading} type="submit">
+                Submit
+              </button>
+            </form>
+          </RegisterForm>
+        </Dialog>
+      )}
+    </>
   );
 };
 
@@ -117,6 +124,7 @@ const RegisterForm = styled.div(({ theme }) => {
         border-radius: 7px;
         color: white;
       }
+
       > .name-wrapper {
         display: flex;
         flex-direction: column;

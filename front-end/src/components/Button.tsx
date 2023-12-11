@@ -18,18 +18,19 @@ export const Button: FC<ButtonProps> = ({
   disabled,
   linkBtn,
 }) => {
+  const btn = (
+    <Btn disabled={disabled} $background={background} onClick={onClick}>
+      {children}
+    </Btn>
+  );
   return (
     <>
       {linkBtn ? (
         <a href={linkBtn} target="_blank">
-          <Btn disabled={disabled} $background={background} onClick={onClick}>
-            {children}
-          </Btn>
+          {btn}
         </a>
       ) : (
-        <Btn disabled={disabled} $background={background} onClick={onClick}>
-          {children}
-        </Btn>
+        btn
       )}
     </>
   );

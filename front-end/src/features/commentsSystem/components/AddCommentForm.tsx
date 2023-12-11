@@ -6,6 +6,7 @@ import { ProfileAvatar } from "../../../components/ProfileAvatar";
 import { useComment } from "../context/CommentsContext";
 import { Button } from "../../../components/Button";
 import { HoldYourHorses } from "./HoldYourHorses";
+import { Loading } from "../../../components/Loading";
 
 type EditCase = {
   action: "edit";
@@ -35,7 +36,7 @@ export const AddCommentForm: FC<AddCommentFormProps> = (props) => {
   const { loading: editLoading, execute: editExecute } =
     useAsyncFn(editComment);
 
-  const submitFunc = () => {
+  const afterCommentAdded = () => {
     if (canIAddComment) {
       setContent("");
       setTimeout(() => {
@@ -44,33 +45,34 @@ export const AddCommentForm: FC<AddCommentFormProps> = (props) => {
       props.onSubmit && props.onSubmit();
       setCanIAddComment(false);
     } else {
-      setIsHoldingHorses(true);
     }
   };
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (content !== "" && props.action === "add") {
-      return execute({
-        content,
-        parentId: props.parentId,
-        userId: userDetails._id,
-      }).then(() => {
-        submitFunc();
-      });
-    } else if (content !== "" && props.action === "edit") {
-      return editExecute({
-        content,
-        commentId: props.commentId,
-      }).then(() => {
-        submitFunc();
-      });
+    if (canIAddComment) {
+      if (content !== "" && props.action === "add") {
+        return execute({
+          content,
+          parentId: props.parentId,
+          userId: userDetails._id,
+        }).then(() => {
+          afterCommentAdded();
+        });
+      } else if (content !== "" && props.action === "edit") {
+        return editExecute({
+          content,
+          commentId: props.commentId,
+        }).then(() => {
+          afterCommentAdded();
+        });
+      }
+    } else {
+      setIsHoldingHorses(true);
     }
   };
 
-  console.log(canIAddComment);
-
+  const isLoading = loading || editLoading;
   return (
     <>
       {isHoldingHorses && (
@@ -91,13 +93,11 @@ export const AddCommentForm: FC<AddCommentFormProps> = (props) => {
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
-        <Button
-          background="blue"
-          disabled={props.action === "add" ? loading : editLoading}
-        >
+        <Button background="blue" disabled={isLoading}>
           Send
         </Button>
       </Form>
+      {isLoading && <Loading />}
     </>
   );
 };

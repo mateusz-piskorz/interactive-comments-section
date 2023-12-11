@@ -1,5 +1,5 @@
 import { FC, ReactNode } from "react";
-import { styled, css } from "styled-components";
+import { styled } from "styled-components";
 import { Dialog } from "../../../components/Dialog";
 import { Button } from "../../../components/Button";
 
@@ -10,7 +10,7 @@ type Props = {
 
 export const HoldYourHorses: FC<Props> = ({ onClose, countDown }) => {
   return (
-    <Dialog deleteCommentCase={true}>
+    <Dialog wider={true}>
       <Wrapper>
         <h4 className="title">Hold Your Horses!</h4>
         <p className="description">
@@ -18,7 +18,6 @@ export const HoldYourHorses: FC<Props> = ({ onClose, countDown }) => {
           minute
         </p>
         {countDown}
-        {/* <strong className="time-left">4min 52sec</strong> */}
         <div className="btn-wrapper">
           <Button background="gray" onClick={onClose}>
             OK
@@ -35,27 +34,14 @@ export const HoldYourHorses: FC<Props> = ({ onClose, countDown }) => {
   );
 };
 
-const Wrapper = styled.div(({ theme }) => {
-  return css`
-    padding: 30px;
+const Wrapper = styled.div`
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  > .btn-wrapper {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-
-    > .title {
-      font-size: 1.3rem;
-      color: ${theme.darkBlue};
-    }
-
-    > .description {
-      font-size: 1rem;
-      line-height: 1.1rem;
-      color: ${theme.grayishBlue};
-    }
-
-    > .btn-wrapper {
-      display: flex;
-      gap: 25px;
-    }
-  `;
-});
+    gap: 25px;
+  }
+`;

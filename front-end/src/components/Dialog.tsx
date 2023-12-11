@@ -4,15 +4,13 @@ import { styled, css } from "styled-components";
 
 type DialogProps = {
   children: ReactNode;
-  deleteCommentCase?: boolean;
+  wider?: boolean;
 };
 
-export const Dialog: FC<DialogProps> = ({ children, deleteCommentCase }) => {
+export const Dialog: FC<DialogProps> = ({ children, wider }) => {
   return ReactDom.createPortal(
     <>
-      <Modal $maxWidth={deleteCommentCase ? "350px" : "300px"}>
-        {children}
-      </Modal>
+      <Modal $maxWidth={wider ? "350px" : "300px"}>{children}</Modal>
       <BackDrop />
     </>,
     document.getElementById("portal")!

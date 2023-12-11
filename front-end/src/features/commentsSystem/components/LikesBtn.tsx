@@ -5,7 +5,7 @@ import iconPlus from "../assets/icon-plus.svg";
 import { useAsyncFn } from "../../../hooks/useAsync";
 import { addLike } from "../services/comments";
 import { useComment } from "../context/CommentsContext";
-import { Likes } from "./Comment";
+import { Likes } from "../context/CommentsContext/types";
 
 type LikesBtnProps = {
   commentId: string;
@@ -14,7 +14,7 @@ type LikesBtnProps = {
 
 export const LikesBtn: FC<LikesBtnProps> = ({ commentId, commentLikes }) => {
   const { userDetails } = useComment();
-  const { error, loading, execute } = useAsyncFn(addLike);
+  const { execute } = useAsyncFn(addLike);
   const likeIGave = commentLikes[userDetails._id];
 
   const numberOfLikes = Object.values(commentLikes).reduce(

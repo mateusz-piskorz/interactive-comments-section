@@ -1,12 +1,13 @@
 import express from "express";
 import { Comment } from "../models/comments.js";
 import { User } from "../models/users.js";
+import { io } from "../server.js";
 
 export const router = express.Router();
 
 // get all comments
 router.post("/", async function (req, res) {
-  const comments = await Comment.find().sort({ createdAt: "desc" }).lean();
+  const comments = await Comment.find().sort({ createdAt: "asc" }).lean();
 
   const filteredComments = comments.map((comment) => {
     if (comment.author == req.body.userId) {
@@ -19,6 +20,16 @@ router.post("/", async function (req, res) {
   res.send(filteredComments);
 });
 
+// get single comment
+router.post("/one-comment", async function (req, res) {
+  const comment = await Comment.findById(req.body.commentId).lean();
+  if (comment.author == req.body.userId) {
+    comment.yourComment = true;
+  }
+  delete comment.author;
+  res.send(comment);
+});
+
 //add a comment
 router.post("/add", async (req, res) => {
   const comment = new Comment({
@@ -29,6 +40,7 @@ router.post("/add", async (req, res) => {
 
   try {
     const newComment = await comment.save();
+    io.emit("new-comment-added", { commentId: newComment._id });
     res.send(newComment);
   } catch (err) {
     console.log(err);

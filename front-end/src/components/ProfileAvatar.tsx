@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { styled, css } from "styled-components";
+import { styled } from "styled-components";
 
 export const availableAvatars = [
   "avatar1",
@@ -22,6 +22,5 @@ export const ProfileAvatar: FC<ProfileAvatarProps> = ({ imgName }) => {
 const Img = styled.img`
   width: 30px;
   height: 30px;
-
   border-radius: 50%;
 `;

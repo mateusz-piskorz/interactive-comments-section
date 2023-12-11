@@ -6,18 +6,19 @@ import {
   availableAvatars,
 } from "../../../components/ProfileAvatar";
 
-type RadioInputListPropsAvatar = {
-  list: (typeof availableAvatars)[number][];
-  choiceCase: "avatar";
+type StateType = {
   selected: string;
   setSelected: React.Dispatch<React.SetStateAction<string>>;
 };
 
-type RadioInputListPropsColor = {
+type RadioInputListPropsAvatar = StateType & {
+  list: (typeof availableAvatars)[number][];
+  choiceCase: "avatar";
+};
+
+type RadioInputListPropsColor = StateType & {
   list: any[];
   choiceCase: "color";
-  selected: string;
-  setSelected: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const RadioInputList: FC<
@@ -58,7 +59,7 @@ export const RadioInputList: FC<
 };
 
 const ChoiceWrapper = styled.div<{ $isSelected: boolean; $color: string }>(
-  ({ $isSelected, $color, theme }) => {
+  ({ $isSelected, $color }) => {
     return css`
       width: 40px;
       height: 40px;

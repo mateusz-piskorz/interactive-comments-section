@@ -4,34 +4,18 @@ import { useComment } from "../context/CommentsContext";
 import { CommentList } from "./CommentList";
 import { AddCommentForm } from "./AddCommentForm";
 import { LikesBtn } from "./LikesBtn";
-import {
-  ProfileAvatar,
-  availableAvatars,
-} from "../../../components/ProfileAvatar";
+import { ProfileAvatar } from "../../../components/ProfileAvatar";
 import { CommentCTABtns } from "./CommentCTABtns";
-import { Dialog } from "../../../components/Dialog";
-import { useAsyncFn } from "../../../hooks/useAsync";
-import { removeComment } from "../services/comments";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import { RemoveCommentDialog } from "./RemoveCommentDialog";
+import { Comment as CommentApi } from "../context/CommentsContext/types";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
-export type Likes = { [key: string]: "plus" | "minus" };
-
-type CommentProps = {
-  _id: string;
-  content: string;
-  color: string;
+type CommentProps = CommentApi & {
   nestingLevel: number;
-  authorAvatar: (typeof availableAvatars)[number];
-  authorName: string;
-  yourComment: boolean;
-  likes: Likes;
-  createdAt: string;
-  parentId: string;
 };
 
 export const Comment: FC<CommentProps> = ({
@@ -50,10 +34,9 @@ export const Comment: FC<CommentProps> = ({
   const [isAddCommentFormVisible, setIsAddCommentFormVisible] = useState<
     string | boolean
   >(false);
-  const { getReplies, userDetails } = useComment();
+  const { getReplies } = useComment();
   const childComments = getReplies(_id);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { execute, loading, error } = useAsyncFn(removeComment);
 
   return (
     <>
