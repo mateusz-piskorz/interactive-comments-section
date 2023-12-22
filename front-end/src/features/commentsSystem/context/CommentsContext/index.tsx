@@ -58,11 +58,34 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
         });
     };
 
+    const onCommentEdited = (props: any) => {
+      getComment({ userId: userDetails._id, commentId: props.commentId })
+        .then((newComment: any) => {
+          setComments((prev: any) =>
+            prev.map((comment: any) => {
+              if (comment._id === newComment._id) {
+                return newComment;
+              } else {
+                return comment;
+              }
+            })
+          );
+          setError(undefined);
+          return newComment;
+        })
+        .catch((error: any) => {
+          setError(error);
+          setComments(undefined);
+        });
+    };
+
     const onCommentRemoved = (props: any) => {
       setComments((prev: Comment[]) =>
         prev.filter((comment) => comment._id !== props.commentId)
       );
     };
+
+    socket.on("comment-edited", onCommentEdited);
 
     socket.on("new-comment-added", onNewCommentAdded);
     socket.on("comment-removed", onCommentRemoved);
@@ -70,6 +93,7 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
     return () => {
       socket.off("new-comment-added", onNewCommentAdded);
       socket.off("comment-removed", onCommentRemoved);
+      socket.off("comment-edited", onCommentEdited);
     };
   }, []);
 

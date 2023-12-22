@@ -71,7 +71,7 @@ router.put("/edit", async (req, res) => {
     const comment = await Comment.findById(req.body.commentId);
     comment.content = req.body.content;
     const updatedComment = await comment.save();
-    io.emit("new-comment-added", { commentId: updatedComment._id });
+    io.emit("comment-edited", { commentId: updatedComment._id });
     res.send(updatedComment);
   } catch (err) {
     console.log(err);
@@ -97,7 +97,8 @@ router.post("/likes", async (req, res) => {
       const comment = await Comment.findById(req.body.commentId);
       comment.likes = { ...comment.likes, [req.body.userId]: req.body.like };
       const updatedComment = await comment.save();
-      io.emit("new-comment-added", { commentId: updatedComment._id });
+      lastLikeAddedArray[req.body.userId] = Date.now();
+      io.emit("comment-edited", { commentId: updatedComment._id });
       res.send(updatedComment);
     } catch (err) {
       console.log(err);
@@ -138,24 +139,9 @@ router.post("/remove", async (req, res) => {
 
 // delete all data
 router.get("/removeall", async (req, res) => {
-  const newComment = new Comment({
-    author: "6569cd51ae0d895dc36c431d",
-    content:
-      "Impressive! Though it seems the drag feature could be improved. But overall it looks incredible. You've nailed the design and the responsiveness at various breakpoints works really well.",
-  });
-  const newComment2 = new Comment({
-    author: "6569cd51ae0d895dc36c431d",
-    content:
-      "If you're still new. i'd recommend focusing on the fundamentals of HTML, CSS, and JS before considering React. it's very tempting to jump ahead but lay a sold foundation first.",
-  });
-
   try {
-    const users = await User.find();
-    newComment.author = users[0]._id;
-    newComment2.author = users[0]._id;
     await Comment.deleteMany({});
-    await newComment.save();
-    await newComment2.save();
+
     res.send("success");
   } catch (err) {
     console.log(err);

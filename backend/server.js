@@ -3,8 +3,6 @@ import { Server } from "http";
 import { Server as ioServer } from "socket.io";
 import cors from "cors";
 import mongoose from "mongoose";
-import bodyParser from "body-parser";
-// import { Post } from "./models/post.js";
 import { router as commentsRouter } from "./routes/comments.js";
 import { router as usersRouter } from "./routes/users.js";
 
@@ -32,12 +30,6 @@ export const io = new ioServer(server, {
   },
 });
 
-// logging variables
-console.log("corsOrigin");
-console.log(corsOrigin);
-console.log("mongoDbUrl");
-console.log(mongoDbUrl);
-
 server.listen(PORT, () => {
   console.log(`listening at ${PORT}`);
 });
@@ -59,25 +51,3 @@ mongoose.connect(mongoDbUrl).then(() => console.log("Connected to mongoose"));
 app.get("/hi", async function (req, res) {
   res.send("Hello world");
 });
-
-// app.get("/", async function (req, res) {
-//   const posts = await Post.find().sort({ createdAt: "desc" });
-//   console.log("get posts");
-//   res.send(posts);
-// });
-
-// app.post("/add", async function (req, res) {
-//   const { postName } = req.body;
-//   let post = new Post();
-//   post.title = postName;
-
-//   try {
-//     post = await post.save();
-//     io.emit("new-post-added");
-//     console.log("post sie dodal");
-//     res.send("Success");
-//   } catch (e) {
-//     console.log(e);
-//     res.send("failed");
-//   }
-// });

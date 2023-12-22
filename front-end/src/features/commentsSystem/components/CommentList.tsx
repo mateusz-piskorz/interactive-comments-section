@@ -15,7 +15,7 @@ export const CommentList: FC<CommentListProps> = ({
 }) => {
   return (
     <CommentsWrapper className={nestedClass ? "nested" : ""}>
-      {comments.map((comment) => (
+      {comments?.map((comment) => (
         <Comment key={comment._id} {...comment} nestingLevel={nestingLevel} />
       ))}
     </CommentsWrapper>
