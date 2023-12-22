@@ -2,7 +2,12 @@ import React, { useMemo, FC, useContext, useState, useEffect } from "react";
 import { useAsync } from "../../../../hooks/useAsync";
 import { getComments, getComment } from "../../services/comments";
 import Countdown from "react-countdown";
-import { CommentsProviderProps, ContextType, Comment } from "./types";
+import {
+  CommentsProviderProps,
+  ContextType,
+  Comment,
+  WritingArr,
+} from "./types";
 import { defaultState } from "./constants";
 import { Loading } from "../../../../components/Loading";
 import { socket } from "../../../../socket";
@@ -18,6 +23,7 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
   userDetails,
 }) => {
   const [canIAddComment, setCanIAddComment] = useState(true);
+  const [writingArr, setWritingArr] = useState<WritingArr>();
   const {
     value: comments,
     error,
@@ -40,7 +46,6 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
 
   useEffect(function onFirstRender() {
     const onNewCommentAdded = (props: any) => {
-      setLoading(true);
       getComment({ userId: userDetails._id, commentId: props.commentId })
         .then((newComment: any) => {
           setComments((prev: any) => [...prev, newComment]);
@@ -50,9 +55,6 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
         .catch((error: any) => {
           setError(error);
           setComments(undefined);
-        })
-        .finally(() => {
-          setLoading(false);
         });
     };
 
@@ -67,7 +69,7 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
 
     return () => {
       socket.off("new-comment-added", onNewCommentAdded);
-      socket.on("comment-removed", onCommentRemoved);
+      socket.off("comment-removed", onCommentRemoved);
     };
   }, []);
 
@@ -105,6 +107,7 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
         rootComments: commentsByParentId["root"],
         getReplies,
         userDetails,
+        writingArr,
       }}
     >
       {error && <h1>{error.code}</h1>}

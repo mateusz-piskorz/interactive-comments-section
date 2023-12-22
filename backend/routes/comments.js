@@ -71,6 +71,7 @@ router.put("/edit", async (req, res) => {
     const comment = await Comment.findById(req.body.commentId);
     comment.content = req.body.content;
     const updatedComment = await comment.save();
+    io.emit("new-comment-added", { commentId: updatedComment._id });
     res.send(updatedComment);
   } catch (err) {
     console.log(err);
@@ -79,15 +80,32 @@ router.put("/edit", async (req, res) => {
 });
 
 //add a like
+const lastLikeAddedArray = {};
 router.post("/likes", async (req, res) => {
-  try {
-    const comment = await Comment.findById(req.body.commentId);
-    comment.likes = { ...comment.likes, [req.body.userId]: req.body.like };
-    const updatedComment = await comment.save();
-    res.send(updatedComment);
-  } catch (err) {
-    console.log(err);
-    res.send("error");
+  let canAddLike = false;
+  if (lastLikeAddedArray[req.body.userId]) {
+    const diff = Date.now() - lastLikeAddedArray[req.body.userId];
+    if (diff >= 60000) {
+      canAddLike = true;
+    }
+  } else {
+    canAddLike = true;
+  }
+
+  if (canAddLike) {
+    try {
+      const comment = await Comment.findById(req.body.commentId);
+      comment.likes = { ...comment.likes, [req.body.userId]: req.body.like };
+      const updatedComment = await comment.save();
+      io.emit("new-comment-added", { commentId: updatedComment._id });
+      res.send(updatedComment);
+    } catch (err) {
+      console.log(err);
+      res.send("error");
+    }
+  } else {
+    res.status(400);
+    res.send("Hold Your Horses!");
   }
 });
 

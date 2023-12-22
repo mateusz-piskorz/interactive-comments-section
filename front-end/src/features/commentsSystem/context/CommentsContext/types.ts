@@ -8,6 +8,8 @@ type UserDetails = {
   _id: string;
 };
 
+export type WritingArr = { parentId: string; authorColor: string }[];
+
 export type Comment = {
   content: string;
   _id: string;
@@ -29,6 +31,7 @@ export type CommentsProviderProps = {
 
 export type ContextType = {
   countDown: JSX.Element;
+  writingArr: WritingArr | undefined;
   setCanIAddComment: React.Dispatch<React.SetStateAction<boolean>>;
   canIAddComment: boolean;
   comments: Comment[];

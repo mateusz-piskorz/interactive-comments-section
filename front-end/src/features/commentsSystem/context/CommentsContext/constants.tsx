@@ -14,6 +14,7 @@ const defaultComment: Comment = {
 };
 
 export const defaultState = {
+  writingArr: undefined,
   countDown: <></>,
   setCanIAddComment: () => {},
   canIAddComment: true,

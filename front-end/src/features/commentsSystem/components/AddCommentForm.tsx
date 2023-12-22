@@ -7,6 +7,7 @@ import { useComment } from "../context/CommentsContext";
 import { Button } from "../../../components/Button";
 import { HoldYourHorses } from "./HoldYourHorses";
 import { Loading } from "../../../components/Loading";
+import { socket } from "../../../socket";
 
 type EditCase = {
   action: "edit";
@@ -44,7 +45,6 @@ export const AddCommentForm: FC<AddCommentFormProps> = (props) => {
       }, 60000);
       props.onSubmit && props.onSubmit();
       setCanIAddComment(false);
-    } else {
     }
   };
 

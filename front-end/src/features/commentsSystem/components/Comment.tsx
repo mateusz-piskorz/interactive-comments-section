@@ -104,6 +104,7 @@ export const Comment: FC<CommentProps> = ({
               />
             )
           )}
+
           {childComments?.length > 0 && (
             <CommentList
               comments={childComments}
