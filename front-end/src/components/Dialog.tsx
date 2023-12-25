@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 import ReactDom from "react-dom";
 import { styled, css } from "styled-components";
 
@@ -8,13 +8,22 @@ type DialogProps = {
 };
 
 export const Dialog: FC<DialogProps> = ({ children, wider }) => {
-  return ReactDom.createPortal(
-    <>
-      <Modal $maxWidth={wider ? "350px" : "300px"}>{children}</Modal>
-      <BackDrop />
-    </>,
-    document.getElementById("portal")!
-  );
+  const [isDomReady, setIsDomReady] = useState<any>(false);
+
+  useEffect(() => {
+    setIsDomReady(document.getElementById("portal"));
+  }, []);
+  if (isDomReady) {
+    return ReactDom.createPortal(
+      <>
+        <Modal $maxWidth={wider ? "350px" : "300px"}>{children}</Modal>
+        <BackDrop />
+      </>,
+      isDomReady
+    );
+  } else {
+    return null;
+  }
 };
 
 const Modal = styled.div<{ $maxWidth: string }>(({ $maxWidth }) => {

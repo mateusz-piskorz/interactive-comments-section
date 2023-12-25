@@ -22,7 +22,6 @@ export const Comment: FC<CommentProps> = ({
   _id,
   content,
   nestingLevel,
-  color,
   authorAvatar,
   authorName,
   yourComment,
@@ -46,7 +45,7 @@ export const Comment: FC<CommentProps> = ({
           onClose={() => setIsDialogOpen(false)}
         />
       )}
-      <StyledComment $color={color}>
+      <StyledComment>
         <div className="circle"></div>
         <LikesBtn commentLikes={likes} commentId={_id} />
         <div className="main-container">
@@ -118,7 +117,7 @@ export const Comment: FC<CommentProps> = ({
   );
 };
 
-const StyledComment = styled.div<{ $color: string }>(({ theme, $color }) => {
+const StyledComment = styled.div(({ theme }) => {
   return css`
     --paddingValue: 15px;
     filter: blur(5px);
@@ -142,7 +141,6 @@ const StyledComment = styled.div<{ $color: string }>(({ theme, $color }) => {
       border-radius: 50%;
       width: 100px;
       height: 100px;
-      background-color: ${$color};
       position: absolute;
       left: 0;
       top: 0%;

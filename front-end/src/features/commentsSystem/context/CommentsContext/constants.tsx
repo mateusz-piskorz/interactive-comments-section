@@ -5,7 +5,6 @@ const exampleDate = new Date();
 const defaultComment: Comment = {
   authorAvatar: "avatar1",
   authorName: "",
-  color: "",
   likes: { authorIdTest: "plus" },
   yourComment: false,
   content: "",

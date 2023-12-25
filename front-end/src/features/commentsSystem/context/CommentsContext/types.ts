@@ -14,7 +14,6 @@ export type Comment = {
   content: string;
   _id: string;
   createdAt: Date;
-  color: string;
   authorAvatar: (typeof availableAvatars)[number];
   authorName: string;
   yourComment: boolean;

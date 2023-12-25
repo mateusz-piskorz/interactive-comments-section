@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { styled, css } from "styled-components";
 import iconMinus from "../assets/icon-minus.svg";
 import iconPlus from "../assets/icon-plus.svg";
@@ -13,6 +13,7 @@ type LikesBtnProps = {
 };
 
 export const LikesBtn: FC<LikesBtnProps> = ({ commentId, commentLikes }) => {
+  const [canIAddLike, setCanIAddLike] = useState(true);
   const { userDetails } = useComment();
   const { execute } = useAsyncFn(addLike);
   const likeIGave = commentLikes[userDetails._id];
@@ -31,14 +32,21 @@ export const LikesBtn: FC<LikesBtnProps> = ({ commentId, commentLikes }) => {
   );
 
   const onBtnClick = (like: "plus" | "minus") => {
-    if (likeIGave) {
-      if (likeIGave === like) {
-        alert("You already rated this");
+    if (canIAddLike) {
+      console.log("HI");
+      setCanIAddLike(false);
+      setTimeout(() => {
+        setCanIAddLike(true);
+      }, 60000);
+      if (likeIGave) {
+        if (likeIGave === like) {
+          alert("You already rated this");
+        } else {
+          execute({ commentId, like, userId: userDetails._id });
+        }
       } else {
         execute({ commentId, like, userId: userDetails._id });
       }
-    } else {
-      execute({ commentId, like, userId: userDetails._id });
     }
   };
 

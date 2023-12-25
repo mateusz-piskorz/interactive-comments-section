@@ -28,7 +28,6 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
     value: comments,
     error,
     loading,
-    setLoading,
     setError,
     setValue: setComments,
   } = useAsync(() => getComments({ userId: userDetails._id }));
