@@ -19,7 +19,7 @@ const PORT = 3001;
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-if (corsOptions === "*") {
+if (corsOptions == "*") {
   app.use(cors());
 } else {
   app.use(cors(corsOptions));
