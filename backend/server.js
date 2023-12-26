@@ -11,6 +11,7 @@ const corsOptions = {
   origin: corsOrigin,
   optionsSuccessStatus: 200,
 };
+console.log(corsOrigin);
 const mongoDbUrl =
   process.env.MONGO_DB_URL || "mongodb://127.0.0.1:27017/myapp";
 // commit
