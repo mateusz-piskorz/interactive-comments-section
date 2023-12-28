@@ -1,7 +1,9 @@
 import axios, { AxiosRequestConfig } from "axios";
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_BACKEND_SERVER_URL || "http://localhost:3001",
+  baseURL:
+    `${process.env.REACT_APP_BACKEND_SERVER_URL}/systemcomments` ||
+    "http://localhost:3001",
 });
 
 export function makeRequest(
