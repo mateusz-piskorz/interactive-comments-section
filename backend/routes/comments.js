@@ -136,15 +136,3 @@ router.post("/remove", async (req, res) => {
     res.send("error");
   }
 });
-
-// delete all data
-router.get("/removeall", async (req, res) => {
-  try {
-    await Comment.deleteMany({});
-
-    res.send("success");
-  } catch (err) {
-    console.log(err);
-    res.send("error");
-  }
-});

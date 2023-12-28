@@ -89,11 +89,11 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
     socket.on("new-comment-added", onNewCommentAdded);
     socket.on("comment-removed", onCommentRemoved);
 
-    return () => {
-      socket.off("new-comment-added", onNewCommentAdded);
-      socket.off("comment-removed", onCommentRemoved);
-      socket.off("comment-edited", onCommentEdited);
-    };
+    // return () => {
+    //   socket.off("new-comment-added", onNewCommentAdded);
+    //   socket.off("comment-removed", onCommentRemoved);
+    //   socket.off("comment-edited", onCommentEdited);
+    // };
   }, []);
 
   const countDown = useMemo(

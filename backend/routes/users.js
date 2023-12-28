@@ -44,14 +44,3 @@ router.post("/login", async (req, res) => {
     res.send("user not found");
   }
 });
-
-// delete all data
-router.get("/removeall", async (req, res) => {
-  try {
-    await User.deleteMany({});
-    res.send("succes");
-  } catch (err) {
-    console.log(err);
-    res.send(error);
-  }
-});
