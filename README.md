@@ -1,3 +1,5 @@
-<h1>interactive-comments-section</h1>
+<h1>Interactive Comments Section</h1>
 
-live: https://interactive-comments-section-4tdmf5nyo-epickaowca.vercel.app/
+live: https://interactive-comments-section-virid-three.vercel.app
+
+portfolio: http://mateuszpiskorz.pl
