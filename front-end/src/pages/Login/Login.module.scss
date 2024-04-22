@@ -1,0 +1,42 @@
+.Form {
+  background-color: white;
+  position: fixed;
+  left: 50%;
+  top: 20%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 40px;
+  border-radius: 15px;
+
+  &_nameLabel {
+    color: var(--grayishBlue);
+  }
+
+  &_nameInput {
+    margin-top: 10px;
+    padding: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    width: 100%;
+  }
+
+  &_button {
+    padding: 15px;
+    border: none;
+    margin: auto;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: rgb(103, 114, 126);
+    border-radius: 7px;
+    color: white;
+    text-wrap: nowrap;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}

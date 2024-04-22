@@ -3,15 +3,18 @@ import { Server } from "http";
 import { Server as ioServer } from "socket.io";
 import cors from "cors";
 import mongoose from "mongoose";
-import { router as commentsRouter } from "./routes/comments.js";
+import { router as commentsRouter } from "./routes/comments/index.js";
 import { router as usersRouter } from "./routes/users.js";
 
-const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
-const corsOptions = {
-  origin: corsOrigin,
-  optionsSuccessStatus: 200,
-};
-console.log(corsOrigin);
+const origin = process.env.CORS_ORIGIN || "http://localhost:3000";
+
+const corsOptions = origin
+  ? {
+      origin,
+      optionsSuccessStatus: 200,
+    }
+  : "*";
+
 const mongoDbUrl =
   process.env.MONGO_DB_URL || "mongodb://127.0.0.1:27017/myapp";
 // commit
@@ -28,10 +31,14 @@ if (corsOptions == "*") {
 app.use("/comments", commentsRouter);
 app.use("/users", usersRouter);
 
+app.get("/hi", async function (req, res) {
+  res.send("hi");
+});
+
 const server = new Server(app);
 export const io = new ioServer(server, {
   cors: {
-    origin: corsOrigin,
+    origin,
   },
 });
 

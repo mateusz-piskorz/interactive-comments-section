@@ -1,0 +1,45 @@
+.LikesButton {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  display: flex;
+
+  background-color: var(--veryLightGray);
+  padding: 8px 13px 8px 13px;
+  border-radius: 10px;
+  gap: 20px;
+
+  &_count {
+    color: var(--moderateBlue);
+    font-size: 0.9rem;
+    display: block;
+  }
+
+  &_button {
+    background-color: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    min-height: 11px;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .LikesButton {
+    height: 91px;
+    flex-direction: column;
+    padding: 15px 10px 15px 10px;
+    gap: 15px;
+    left: 25px;
+    top: 25px;
+
+    &_count {
+      font-size: 0.9rem;
+    }
+  }
+}

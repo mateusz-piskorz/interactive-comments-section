@@ -1,26 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
-import {
-  AddComment,
-  GetComments,
-  EditComment,
-  AddLike,
-  RemoveComment,
-} from "../features/commentsSystem/services/comments";
-import { GetUserDetails } from "../features/commentsSystem/services/user";
-import { Register, Login } from "../features/login/services/login";
+import { useCallback, useState, useEffect } from "react";
 
-type FunctionType =
-  | AddComment
-  | GetComments
-  | Register
-  | Login
-  | GetUserDetails
-  | EditComment
-  | AddLike
-  | RemoveComment;
+type AnyFunc = (...args: any) => any;
 
-export function useAsync(fn: FunctionType, dependencies = []) {
-  const { execute, ...state } = useAsyncInternal(fn, dependencies, true);
+export function useAsync<T extends AnyFunc>(fn: T, dependencies: any[] = []) {
+  const { execute, ...state } = useAsyncInternal<T>(fn, dependencies, true);
   useEffect(() => {
     // @ts-ignore
     execute();
@@ -29,36 +12,42 @@ export function useAsync(fn: FunctionType, dependencies = []) {
   return state;
 }
 
-export function useAsyncFn(fn: FunctionType, dependencies = []) {
-  return useAsyncInternal(fn, dependencies, false);
+export function useAsyncFn<T extends AnyFunc>(
+  fn: T,
+  dependencies: any[] = [],
+  initialLoading?: boolean
+) {
+  return useAsyncInternal<T>(fn, dependencies, initialLoading);
 }
 
-function useAsyncInternal(
-  fn: FunctionType,
+function useAsyncInternal<T extends AnyFunc>(
+  fn: T,
   dependencies: any[],
   initialLoading = false
 ) {
   const [loading, setLoading] = useState(initialLoading);
   const [error, setError] = useState<any>();
-  const [value, setValue] = useState<any>();
+  const [resData, setResData] = useState<Awaited<ReturnType<T>>>();
 
-  const execute = useCallback((...params: Parameters<FunctionType>) => {
-    setLoading(true);
-    //@ts-ignore
-    return fn(...params)
-      .then((data: any) => {
-        setValue(data);
-        setError(undefined);
-        return data;
-      })
-      .catch((error: any) => {
-        setError(error);
-        setValue(undefined);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, dependencies);
+  const execute: (...params: Parameters<T>) => ReturnType<T> = useCallback(
+    (...params: Parameters<T>) => {
+      setLoading(true);
+      return fn(...params)
+        .then((data: Awaited<ReturnType<T>>) => {
+          setResData(data);
+          setError(undefined);
+          return data;
+        })
+        .catch((error: any) => {
+          setError(error);
+          setResData(undefined);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    dependencies
+  );
 
-  return { loading, error, value, execute, setLoading, setError, setValue };
+  return { loading, error, resData, execute, setLoading, setError, setResData };
 }

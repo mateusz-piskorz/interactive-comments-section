@@ -1,9 +1,9 @@
 import axios, { AxiosRequestConfig } from "axios";
 
+const serverUrl = process.env.REACT_APP_BACKEND_SERVER_URL;
+
 const api = axios.create({
-  baseURL:
-    `${process.env.REACT_APP_BACKEND_SERVER_URL}/systemcomments` ||
-    "http://localhost:3001",
+  baseURL: serverUrl ? `${serverUrl}/systemcomments` : "http://localhost:3001",
 });
 
 export function makeRequest(

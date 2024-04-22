@@ -1,0 +1,81 @@
+.Post {
+  filter: blur(5px);
+  animation: blurAnimation 1s forwards;
+  position: relative;
+  border-radius: 7px;
+  background-color: white;
+  padding: 15px 15px 70px 15px;
+  overflow: hidden;
+  color: var(--grayishBlue);
+
+  &_circleLabel {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    z-index: -1;
+    transform: translate(50%, -50%);
+  }
+
+  &_profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  &_name {
+    color: black;
+    font-size: 0.9rem;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &_yourName {
+    color: white;
+    font-size: 0.8rem;
+    background-color: var(--moderateBlue);
+    padding: 3px 5px 3px 5px;
+  }
+
+  &_timeAgo {
+    font-size: 0.9rem;
+  }
+
+  &_description {
+    font-size: 0.9rem;
+    line-height: 1.3rem;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .Post {
+    padding: 25px 25px 25px 80px;
+    min-height: 150px;
+
+    &_container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    &_description {
+      line-height: 1.4rem;
+    }
+
+    &_circleLabel {
+      top: unset;
+      transform: translate(50%, 50%);
+      bottom: -10px;
+    }
+  }
+}
+
+@keyframes blurAnimation {
+  to {
+    filter: blur(0px);
+  }
+}

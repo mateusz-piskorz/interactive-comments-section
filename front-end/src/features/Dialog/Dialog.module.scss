@@ -1,0 +1,41 @@
+.Dialog {
+  background-color: white;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 20%;
+  padding: 20px;
+  border-radius: 5px;
+  width: 95%;
+  max-width: 400px;
+
+  &_title {
+    font-size: 1.2rem;
+  }
+
+  &_button {
+    padding: 10px;
+    background-color: transparent;
+    border: 1px solid black;
+    cursor: pointer;
+    &:hover {
+      background-color: black;
+      color: white;
+    }
+
+    &:nth-child(4) {
+      margin-right: 10px;
+    }
+
+    &__danger {
+      border: 1px solid var(--softRed);
+      &:hover {
+        background-color: var(--softRed);
+      }
+    }
+  }
+
+  &_description {
+    margin: 20px 0;
+  }
+}

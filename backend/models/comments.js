@@ -28,16 +28,23 @@ const commentSchema = new mongoose.Schema(
     color: {
       type: String,
     },
-    authorAvatar: {
+    avatar: {
       type: String,
     },
-    authorName: {
+    name: {
       type: String,
     },
     likes: {
-      type: Object,
-      required: true,
-      default: {},
+      type: Array,
+      default: [],
+    },
+    dislikes: {
+      type: Array,
+      default: [],
+    },
+    likesCount: {
+      type: Number,
+      default: 0,
     },
   },
   { minimize: false }
@@ -47,8 +54,8 @@ commentSchema.pre("save", { document: true }, async function (next) {
   try {
     const author = await User.findById(this.author._id);
     this.color = author.color;
-    this.authorAvatar = author.avatar;
-    this.authorName = author.name;
+    this.avatar = author.avatar;
+    this.name = author.name;
   } catch (err) {
     next(err);
   }
