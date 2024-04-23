@@ -17,65 +17,40 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
   children,
 }) => {
   const { user } = useUser();
-
   const {
     resData: comments,
     error,
     loading,
-    setError,
     setResData: setComments,
   } = useAsync(() => getComments({ userId: user._id }));
 
   useEffect(() => {
-    const onNewCommentAdded = (props: any) => {
-      getComment({ userId: user._id, commentId: props.commentId })
-        .then((newComment: any) => {
-          setComments((prev: any) => [...prev, newComment]);
-          setError(undefined);
-          return newComment;
-        })
-        .catch((error: any) => {
-          setError(error);
-          setComments(undefined);
-        });
+    const onCommentAdded = ({ comment }: { comment: Comment }) => {
+      setComments((prev: Comment[]) => [...prev, comment]);
     };
 
-    const onCommentEdited = (props: any) => {
-      getComment({ userId: user._id, commentId: props.commentId })
-        .then((newComment: any) => {
-          setComments((prev: any) =>
-            prev.map((comment: any) => {
-              if (comment._id === newComment._id) {
-                return newComment;
-              } else {
-                return comment;
-              }
-            })
-          );
-          setError(undefined);
-          return newComment;
-        })
-        .catch((error: any) => {
-          setError(error);
-          setComments(undefined);
-        });
+    const onCommentEdited = ({ comment }: { comment: Comment }) => {
+      setComments((prev: Comment[]) =>
+        prev.map((prevComment) =>
+          prevComment._id === comment._id ? comment : prevComment
+        )
+      );
     };
 
-    const onCommentRemoved = (props: any) => {
+    const onCommentRemoved = (props: { commentId: string }) => {
       setComments((prev: Comment[]) =>
         prev.filter((comment) => comment._id !== props.commentId)
       );
     };
 
+    socket.on("comment-added", onCommentAdded);
     socket.on("comment-edited", onCommentEdited);
-
-    socket.on("new-comment-added", onNewCommentAdded);
     socket.on("comment-removed", onCommentRemoved);
 
     return () => {
-      socket.off("new-comment-added", onNewCommentAdded);
-      socket.off("comment-removed", onCommentRemoved);
+      socket.off("comment-added", onCommentAdded);
       socket.off("comment-edited", onCommentEdited);
+      socket.off("comment-removed", onCommentRemoved);
     };
   }, []);
 

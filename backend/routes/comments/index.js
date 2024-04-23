@@ -31,7 +31,7 @@ router.post("/add", limitTime("post"), async (req, res) => {
 
   try {
     const newComment = await comment.save();
-    io.emit("new-comment-added", { commentId: newComment._id });
+    io.emit("comment-added", { comment: newComment });
     res.send(newComment);
   } catch (err) {
     console.log(err);
@@ -55,7 +55,7 @@ router.post("/like", limitTime("like"), async (req, res) => {
 
     comment.likesCount = +comment.likes.length - +comment.dislikes.length;
     const updatedComment = await comment.save();
-    io.emit("comment-edited", { commentId: updatedComment._id });
+    io.emit("comment-edited", { comment: updatedComment });
     res.status(200).send({ message: "like added successfully" });
   } catch (error) {
     console.log(error);
@@ -76,7 +76,7 @@ router.post("/dislike", limitTime("like"), async (req, res) => {
     }
     comment.likesCount = +comment.likes.length - +comment.dislikes.length;
     const updatedComment = await comment.save();
-    io.emit("comment-edited", { commentId: updatedComment._id });
+    io.emit("comment-edited", { comment: updatedComment });
     res.status(200).send({ message: "dislike added successfully" });
   } catch (error) {
     res.status(500).send({ message: "error adding dislike", error });
@@ -110,7 +110,7 @@ router.put("/:id", async (req, res) => {
     const comment = await Comment.findById(req.params.id);
     comment.content = req.body.content;
     const updatedComment = await comment.save();
-    io.emit("comment-edited", { commentId: updatedComment._id });
+    io.emit("comment-edited", { comment: updatedComment });
     res.send(updatedComment);
   } catch (err) {
     console.log(err);

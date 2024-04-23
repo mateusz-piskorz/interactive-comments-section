@@ -49,9 +49,9 @@ server.listen(PORT, () => {
 io.on("connection", (socket) => {
   console.log(`user ${socket.id} connected`);
 
-  socket.on("on-writing", (props) => {
-    socket.broadcast.emit("on-writing", { ...props, id: socket.id });
-  });
+  // socket.on("on-writing", (props) => {
+  //   socket.broadcast.emit("on-writing", { ...props, id: socket.id });
+  // });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");

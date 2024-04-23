@@ -5,7 +5,6 @@ export const router = express.Router();
 
 // get a user
 router.post("/", async function (req, res) {
-  console.log(req.body.userId);
   try {
     const user = await User.findById(req.body.userId);
     if (user) {
