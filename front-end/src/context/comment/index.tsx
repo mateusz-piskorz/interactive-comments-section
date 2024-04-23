@@ -1,11 +1,11 @@
-import React, { useMemo, FC, useContext, useState, useEffect } from "react";
-import { useAsync } from "../hooks/useAsync";
-import { getComments, getComment } from "../services/comments";
-import { CommentsProviderProps, ContextType, Comment } from "./types";
+import React, { useMemo, FC, useContext, useEffect, ReactNode } from "react";
+import { useAsync } from "../../hooks/useAsync";
+import { getComments, getComment } from "../../services/comments";
+import { ContextType } from "./types";
 import { defaultState } from "./constants";
-import { socket } from "../socket";
-
-export type { Comment };
+import { socket } from "../../socket";
+import { useUser } from "../user";
+import { Comment } from "../../types";
 
 const Context = React.createContext<ContextType>(defaultState);
 
@@ -13,22 +13,22 @@ export const useComment = () => {
   return useContext(Context);
 };
 
-export const CommentsProvider: FC<CommentsProviderProps> = ({
+export const CommentsProvider: FC<{ children?: ReactNode }> = ({
   children,
-  userDetails,
 }) => {
-  const [canIAddComment, setCanIAddComment] = useState(true);
+  const { user } = useUser();
+
   const {
     resData: comments,
     error,
     loading,
     setError,
     setResData: setComments,
-  } = useAsync(() => getComments({ userId: userDetails._id }));
+  } = useAsync(() => getComments({ userId: user._id }));
 
   useEffect(() => {
     const onNewCommentAdded = (props: any) => {
-      getComment({ userId: userDetails._id, commentId: props.commentId })
+      getComment({ userId: user._id, commentId: props.commentId })
         .then((newComment: any) => {
           setComments((prev: any) => [...prev, newComment]);
           setError(undefined);
@@ -41,7 +41,7 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
     };
 
     const onCommentEdited = (props: any) => {
-      getComment({ userId: userDetails._id, commentId: props.commentId })
+      getComment({ userId: user._id, commentId: props.commentId })
         .then((newComment: any) => {
           setComments((prev: any) =>
             prev.map((comment: any) => {
@@ -101,12 +101,9 @@ export const CommentsProvider: FC<CommentsProviderProps> = ({
   return (
     <Context.Provider
       value={{
-        setCanIAddComment,
-        canIAddComment,
         comments: comments,
         rootComments: commentsByParentId["root"],
         getReplies,
-        userDetails,
       }}
     >
       {error && <h1>{error.code}</h1>}

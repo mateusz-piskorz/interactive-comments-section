@@ -1,7 +1,8 @@
 import { FC } from "react";
 import { Comment } from "../Comment";
-import { Comment as CommentType, useComment } from "../../context";
+import { useUser } from "../../context/user";
 import c from "./CommentList.module.scss";
+import { Comment as CommentType } from "../../types";
 
 type CommentListProps = {
   comments: CommentType[];
@@ -17,13 +18,14 @@ export const CommentList: FC<CommentListProps> = ({
   const className = `${c.CommentList}${` ${
     nestedClass ? c.CommentList___nested : ""
   }`}`;
-  const { userDetails } = useComment();
+  const { user } = useUser();
+
   return (
     <div className={className}>
       {comments?.map(({ dislikes, likes, ...rest }) => (
         <Comment
           nestingLevel={nestingLevel}
-          userId={userDetails._id}
+          userId={user._id}
           key={rest._id}
           {...rest}
         />

@@ -1,4 +1,4 @@
-import { Comment } from "./types";
+import { Comment } from "../../types";
 
 const exampleDate = new Date();
 
@@ -16,10 +16,6 @@ const defaultComment: Comment = {
 };
 
 export const defaultState = {
-  writingArr: undefined,
-  setCanIAddComment: () => {},
-  canIAddComment: true,
-  userDetails: { avatar: "avatar1", color: "", name: "", _id: "" } as const,
   comments: [defaultComment],
   rootComments: [defaultComment],
   getReplies: () => [{ ...defaultComment, parentId: "" }],

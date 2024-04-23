@@ -35,16 +35,3 @@
     height: 40px;
   }
 }
-
-.RadioInputList {
-  &_wrapper {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-
-  &_paragraph {
-    color: var(--grayishBlue);
-    margin-bottom: 10px;
-  }
-}

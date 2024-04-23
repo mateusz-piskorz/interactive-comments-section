@@ -3,7 +3,7 @@ import iconMinus from "../../assets/icon-minus.svg";
 import iconPlus from "../../assets/icon-plus.svg";
 import { useAsyncFn } from "../../../../hooks/useAsync";
 import { addLike } from "../../../../services/comments";
-import { useComment } from "../../../../context";
+import { useUser } from "../../../../context/user";
 import c from "./LikesButton.module.scss";
 import { Dialog } from "../../../Dialog";
 
@@ -13,11 +13,11 @@ type LikesBtnProps = {
 };
 
 export const LikesButton: FC<LikesBtnProps> = ({ commentId, likesCount }) => {
-  const { userDetails } = useComment();
+  const { user } = useUser();
   const { execute, error, setError } = useAsyncFn(addLike);
 
   const onBtnClick = (likeType: "like" | "dislike") => {
-    execute({ commentId, likeType, userId: userDetails._id });
+    execute({ commentId, likeType, userId: user._id });
   };
 
   return (

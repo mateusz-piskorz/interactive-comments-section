@@ -1,16 +1,14 @@
 import { FC, useEffect, useId, useState } from "react";
-import { RadioInputList } from "../../features/RadioInputList";
-import c from "./Login.module.scss";
-import { Overlay, zIndex } from "../../features/Overlay";
-import { registerService } from "../../services/user";
+import { RadioInputList } from "./components/RadioInputList";
+import c from "./RegisterForm.module.scss";
+import { Overlay, zIndex } from "../Overlay";
+import { register } from "../../services/user";
 import { useAsyncFn } from "../../hooks/useAsync";
-import { useNavigate } from "react-router-dom";
+import { useUser } from "../../context/user";
 
-export const localStorageKey = "interactive-comments-section:userId";
-
-export const Login: FC = () => {
-  const navigate = useNavigate();
-  const { execute, resData } = useAsyncFn(registerService);
+export const RegisterForm: FC = () => {
+  const { setUser } = useUser();
+  const { execute, resData } = useAsyncFn(register);
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("avatar1");
   const [color, setColor] = useState("orange");
@@ -23,8 +21,7 @@ export const Login: FC = () => {
   useEffect(
     function onSuccess() {
       if (resData) {
-        localStorage.setItem(localStorageKey, JSON.stringify(resData._id));
-        navigate("/");
+        setUser(resData);
       }
     },
     [resData]

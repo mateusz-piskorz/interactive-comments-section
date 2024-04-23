@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import c from "./Form.module.scss";
 import { addComment, editComment } from "../../services/comments";
 import { useAsyncFn } from "../../hooks/useAsync";
-import { useComment } from "../../context";
+import { useUser } from "../../context/user";
 import { Dialog } from "../Dialog";
 
 type FormProps = {
@@ -20,7 +20,7 @@ export const Form: FC<FormProps> = ({
   operation,
   initialContent,
 }) => {
-  const { userDetails } = useComment();
+  const { user } = useUser();
   const { execute: add, error, setError, resData } = useAsyncFn(addComment);
   const { execute: edit, resData: resDataEdit } = useAsyncFn(editComment);
   const [content, setContent] = useState(initialContent ? initialContent : "");
@@ -29,7 +29,7 @@ export const Form: FC<FormProps> = ({
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (operation === "add") {
-      add({ content, userId: userDetails._id, parentId });
+      add({ content, userId: user._id, parentId });
     } else if (parentId) {
       edit({ commentId: parentId, content });
     }
