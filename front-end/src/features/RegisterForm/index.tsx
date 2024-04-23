@@ -4,7 +4,7 @@ import c from "./RegisterForm.module.scss";
 import { Overlay, zIndex } from "../Overlay";
 import { register } from "../../services/user";
 import { useAsyncFn } from "../../hooks/useAsync";
-import { useUser } from "../../context/user";
+import { localStorageIdKey, useUser } from "../../context/user";
 
 export const RegisterForm: FC = () => {
   const { setUser } = useUser();
@@ -21,6 +21,7 @@ export const RegisterForm: FC = () => {
   useEffect(
     function onSuccess() {
       if (resData) {
+        localStorage.setItem(localStorageIdKey, JSON.stringify(resData._id));
         setUser(resData);
       }
     },

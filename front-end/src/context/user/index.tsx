@@ -3,7 +3,7 @@ import { RegisterForm } from "../../features/RegisterForm";
 import { UserDetails, getUserDetails } from "../../services/user";
 import { Dialog } from "../../features/Dialog";
 
-const localStorageKey = "interactive-comments-section:userId";
+export const localStorageIdKey = "interactive-comments-section:userId";
 
 const defaultState = {
   user: {
@@ -28,14 +28,14 @@ export const useUser = () => {
 
 export const UserProvider: FC<{ children?: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserDetails>(defaultState.user);
-  const [error, setError] = useState<{ message: string } | false>(false);
+  const [error, setError] = useState<string | false>(false);
 
   useEffect(() => {
-    const userId = localStorage.getItem(localStorageKey);
+    const userId = localStorage.getItem(localStorageIdKey);
     if (userId && userId !== "") {
-      getUserDetails({ userId })
+      getUserDetails({ userId: JSON.parse(userId) })
         .then((data) => setUser(data))
-        .catch((err) => setError(err));
+        .catch((err) => setError(err.message));
     }
   }, []);
 
@@ -44,7 +44,7 @@ export const UserProvider: FC<{ children?: ReactNode }> = ({ children }) => {
       {error ? (
         <Dialog
           type="info"
-          description={error.message}
+          description={error}
           onCancel={() => setError(false)}
         />
       ) : user._id !== "" ? (

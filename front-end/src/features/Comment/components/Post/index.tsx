@@ -14,6 +14,8 @@ export type PostProps = {
   createdAt: Date;
   content: string;
   color: string;
+  dislikes: string[];
+  likes: string[];
   likesCount: number;
   _id: string;
   userId: string;
@@ -39,11 +41,13 @@ export const Post: FC<PostProps & ExtraProps> = ({
   _id,
   userId,
   nestingLevel,
+  likes,
+  dislikes,
   onReply,
   onEdit,
 }) => {
   const [showDialog, setShowDialog] = useState(false);
-  console.log(nestingLevel);
+
   return (
     <div className={c.Post}>
       <div
@@ -59,7 +63,12 @@ export const Post: FC<PostProps & ExtraProps> = ({
         </p>
       </div>
       <p className={c.Post_description}>{content}</p>
-      <LikesButton commentId={_id} likesCount={likesCount} />
+      <LikesButton
+        likes={likes}
+        dislikes={dislikes}
+        commentId={_id}
+        likesCount={likesCount}
+      />
       {(nestingLevel < 3 || yourComment) && (
         <ActionButtons
           isYourComment={yourComment}

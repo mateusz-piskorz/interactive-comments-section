@@ -5,11 +5,16 @@ export const router = express.Router();
 
 // get a user
 router.post("/", async function (req, res) {
+  console.log(req.body.userId);
   try {
     const user = await User.findById(req.body.userId);
-    res.send(user);
+    if (user) {
+      res.send(user);
+    } else {
+      res.status(400).send({ message: "user not found" });
+    }
   } catch (err) {
-    res.send(err);
+    res.status(400).send(err);
   }
 });
 
@@ -29,18 +34,13 @@ router.post("/add", async (req, res) => {
   }
 });
 
-// login
-router.post("/login", async (req, res) => {
+// remove all
+router.get("/removeAll", async (req, res) => {
   try {
-    const user = await User.findById(req.body.userId);
-    if (user === null) {
-      res.status(404);
-      res.send("user not found");
-    } else {
-      res.send(user);
-    }
+    await User.deleteMany({});
+    res.send("success");
   } catch (err) {
-    res.status(404);
-    res.send("user not found");
+    res.send(500);
+    res.send({ message: "error removing all" });
   }
 });

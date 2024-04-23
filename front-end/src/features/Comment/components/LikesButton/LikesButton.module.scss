@@ -23,6 +23,11 @@
     justify-content: center;
     cursor: pointer;
     min-height: 11px;
+
+    &___disabled {
+      opacity: 0.5;
+    }
+
     &:hover {
       opacity: 0.8;
     }
