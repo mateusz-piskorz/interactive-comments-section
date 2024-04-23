@@ -46,6 +46,21 @@ export const Form: FC<FormProps> = ({
 
   return (
     <>
+      <form className={className} onSubmit={submitHandler}>
+        <textarea
+          required
+          autoFocus
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          maxLength={500}
+          className={c.Form_textarea}
+          placeholder="Add a comment..."
+        />
+        <button type="submit" className={c.Form_button}>
+          Send
+        </button>
+      </form>
+
       {error && (
         <Dialog
           elapsedTime={error.elapsedTime}
@@ -53,24 +68,8 @@ export const Form: FC<FormProps> = ({
           onCancel={() => {
             setError(false);
           }}
-          type="info"
         />
       )}
-
-      <form className={className} onSubmit={submitHandler}>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-          autoFocus
-          maxLength={500}
-          className={c.Form_textarea}
-          placeholder="Add a comment..."
-        ></textarea>
-        <button type="submit" className={c.Form_button}>
-          Send
-        </button>
-      </form>
     </>
   );
 };

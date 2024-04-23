@@ -6,19 +6,19 @@ import { Comment as CommentType } from "../../types";
 
 type CommentListProps = {
   comments: CommentType[];
-  nestedClass?: boolean;
   nestingLevel: number;
+  nestedClass?: boolean;
 };
 
 export const CommentList: FC<CommentListProps> = ({
   comments,
-  nestedClass,
   nestingLevel,
+  nestedClass,
 }) => {
+  const { user } = useUser();
   const className = `${c.CommentList}${` ${
     nestedClass ? c.CommentList___nested : ""
   }`}`;
-  const { user } = useUser();
 
   return (
     <div className={className}>

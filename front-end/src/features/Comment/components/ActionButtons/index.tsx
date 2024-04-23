@@ -11,25 +11,28 @@ type ActionButtonsProps = {
   onDelete?: () => void;
 };
 
-export const ActionButtons: FC<ActionButtonsProps> = (props) => {
+export const ActionButtons: FC<ActionButtonsProps> = ({
+  isYourComment,
+  onDelete,
+  onEdit,
+  onReply,
+}) => {
+  const dangerBtn = `${c.ActionButtons_button} ${c.ActionButtons_button__danger}`;
   return (
     <div className={c.ActionButtons}>
-      {props.isYourComment ? (
+      {isYourComment ? (
         <>
-          <button
-            className={`${c.ActionButtons_button} ${c.ActionButtons_button__danger}`}
-            onClick={props.onDelete}
-          >
+          <button className={dangerBtn} onClick={onDelete}>
             <img src={iconDelete} alt="delete icon" />
             Delete
           </button>
-          <button className={c.ActionButtons_button} onClick={props.onEdit}>
+          <button className={c.ActionButtons_button} onClick={onEdit}>
             <img src={iconEdit} alt="edit icon" />
             Edit
           </button>
         </>
       ) : (
-        <button className={c.ActionButtons_button} onClick={props.onReply}>
+        <button className={c.ActionButtons_button} onClick={onReply}>
           <img src={iconReply} alt="reply icon" />
           Reply
         </button>

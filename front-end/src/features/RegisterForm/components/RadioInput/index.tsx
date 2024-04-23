@@ -1,6 +1,7 @@
 import { FC, useId } from "react";
 import c from "./RadioInput.module.scss";
 import { ProfileAvatar } from "../../../ProfileAvatar";
+
 type RadioInputProps = {
   isSelected: boolean;
   name: "avatar" | "color";
@@ -18,6 +19,7 @@ export const RadioInput: FC<RadioInputProps> = ({
   const className = `${c.RadioInput}${` ${
     isSelected ? c.RadioInput___selected : ""
   }`}`;
+
   return (
     <div className={className}>
       <input

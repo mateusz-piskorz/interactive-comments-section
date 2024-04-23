@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { ProfileAvatar, availableAvatars } from "../../../ProfileAvatar";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
@@ -6,6 +6,8 @@ import c from "./Post.module.scss";
 import { ActionButtons } from "../ActionButtons";
 import { LikesButton } from "../LikesButton";
 import { Dialog } from "../../../Dialog";
+import { useAsyncFn } from "../../../../hooks/useAsync";
+import { removeComment } from "../../../../services/comments";
 
 export type PostProps = {
   avatar: (typeof availableAvatars)[number];
@@ -37,16 +39,32 @@ export const Post: FC<PostProps & ExtraProps> = ({
   createdAt,
   content,
   color,
-  likesCount,
   _id,
   userId,
   nestingLevel,
-  likes,
-  dislikes,
   onReply,
   onEdit,
+  ...likes
 }) => {
   const [showDialog, setShowDialog] = useState(false);
+  const { execute, error, resData, setError } = useAsyncFn(removeComment);
+
+  useEffect(() => {
+    if (resData) {
+      setShowDialog(false);
+    }
+  }, [resData]);
+
+  const dialogProps = {
+    onConfirm: error ? () => execute({ commentId: _id, userId }) : undefined,
+    onCancel: () => {
+      setShowDialog(false);
+      setError(false);
+    },
+    description: error
+      ? error.message
+      : "Are you sure you want to delete this comment? This will remove the comment and can't be undone.",
+  };
 
   return (
     <div className={c.Post}>
@@ -63,12 +81,7 @@ export const Post: FC<PostProps & ExtraProps> = ({
         </p>
       </div>
       <p className={c.Post_description}>{content}</p>
-      <LikesButton
-        likes={likes}
-        dislikes={dislikes}
-        commentId={_id}
-        likesCount={likesCount}
-      />
+      <LikesButton {...likes} commentId={_id} />
       {(nestingLevel < 3 || yourComment) && (
         <ActionButtons
           isYourComment={yourComment}
@@ -77,15 +90,7 @@ export const Post: FC<PostProps & ExtraProps> = ({
           onEdit={onEdit}
         />
       )}
-
-      {showDialog && (
-        <Dialog
-          type="remove"
-          commentId={_id}
-          onCancel={() => setShowDialog(false)}
-          userId={userId}
-        />
-      )}
+      {showDialog && <Dialog {...dialogProps} />}
     </div>
   );
 };

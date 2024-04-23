@@ -2,56 +2,62 @@ import React, { FC, useContext, ReactNode, useEffect, useState } from "react";
 import { RegisterForm } from "../../features/RegisterForm";
 import { UserDetails, getUserDetails } from "../../services/user";
 import { Dialog } from "../../features/Dialog";
+import { useAsyncFn } from "../../hooks/useAsync";
 
 export const localStorageIdKey = "interactive-comments-section:userId";
 
-const defaultState = {
-  user: {
-    _id: "",
-    avatar: "avatar1",
-    color: "",
-    name: "user",
-  } as const,
-  setUser: () => {},
-};
-
 type ContextType = {
   user: UserDetails;
-  setUser: React.Dispatch<React.SetStateAction<UserDetails>>;
 };
 
-const Context = React.createContext<ContextType>(defaultState);
+const Context = React.createContext<ContextType | null>(null);
 
 export const useUser = () => {
-  return useContext(Context);
+  const context = useContext(Context);
+  if (context === null) {
+    throw new Error("useUser context is undefined");
+  } else {
+    return context;
+  }
 };
 
 export const UserProvider: FC<{ children?: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserDetails>(defaultState.user);
-  const [error, setError] = useState<string | false>(false);
+  const {
+    execute,
+    error,
+    setError,
+    resData: user,
+    setResData: setUser,
+    loading,
+    setLoading,
+  } = useAsyncFn(getUserDetails);
 
   useEffect(() => {
     const userId = localStorage.getItem(localStorageIdKey);
     if (userId && userId !== "") {
-      getUserDetails({ userId: JSON.parse(userId) })
-        .then((data) => setUser(data))
-        .catch((err) => setError(err.message));
+      console.log(userId);
+      execute({ userId: JSON.parse(userId) });
     }
   }, []);
 
-  return (
-    <Context.Provider value={{ user, setUser }}>
-      {error ? (
-        <Dialog
-          type="info"
-          description={error}
-          onCancel={() => setError(false)}
-        />
-      ) : user._id !== "" ? (
-        children
-      ) : (
-        <RegisterForm />
-      )}
-    </Context.Provider>
-  );
+  const registerHandler = (data: UserDetails) => {
+    setUser(data);
+    setLoading(false);
+  };
+
+  if (loading) {
+    return <h1>Loading...</h1>;
+  }
+
+  if (error) {
+    return (
+      <Dialog description={error.message} onCancel={() => setError(false)} />
+    );
+  }
+
+  if (user) {
+    return <Context.Provider value={{ user }}>{children}</Context.Provider>;
+  }
+
+  return <RegisterForm onSubmit={registerHandler} />;
 };

@@ -23,12 +23,28 @@ export const LikesButton: FC<LikesBtnProps> = ({
   const { user } = useUser();
   const { execute, error, setError } = useAsyncFn(addLike);
 
-  const onBtnClick = (likeType: "like" | "dislike") => {
+  const clickHandler = (likeType: "like" | "dislike") => {
     execute({ commentId, likeType, userId: user._id });
   };
 
   return (
     <>
+      <div className={c.LikesButton}>
+        <button
+          className={btnClassName(likes, user._id)}
+          onClick={() => clickHandler("like")}
+        >
+          <img src={iconPlus} alt="plus icon" />
+        </button>
+        <strong className={c.LikesButton_count}>{likesCount}</strong>
+        <button
+          className={btnClassName(dislikes, user._id)}
+          onClick={() => clickHandler("dislike")}
+        >
+          <img src={iconMinus} alt="minus icon" />
+        </button>
+      </div>
+
       {error && (
         <Dialog
           elapsedTime={error.elapsedTime}
@@ -36,25 +52,8 @@ export const LikesButton: FC<LikesBtnProps> = ({
           onCancel={() => {
             setError(false);
           }}
-          type="info"
         />
       )}
-
-      <div className={c.LikesButton}>
-        <button
-          className={btnClassName(likes, user._id)}
-          onClick={() => onBtnClick("like")}
-        >
-          <img src={iconPlus} alt="plus icon" />
-        </button>
-        <strong className={c.LikesButton_count}>{likesCount}</strong>
-        <button
-          className={btnClassName(dislikes, user._id)}
-          onClick={() => onBtnClick("dislike")}
-        >
-          <img src={iconMinus} alt="minus icon" />
-        </button>
-      </div>
     </>
   );
 };

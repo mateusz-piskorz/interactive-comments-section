@@ -130,17 +130,17 @@ router.delete("/:id", async (req, res) => {
       if (!childComment) {
         await Comment.deleteOne({ _id: comment._id });
         io.emit("comment-removed", { commentId: comment._id });
-        res.send("success");
+        res.send({ message: "success" });
       } else {
         res.status(400);
-        res.send("you cannot delete a comment that has replies");
+        res.send({ message: "you cannot delete a comment that has replies" });
       }
     } else {
       res.status(401);
-      res.send("unauthorized");
+      res.send({ message: "unauthorized" });
     }
   } catch (err) {
     console.log(err);
-    res.send("error");
+    res.send({ message: "error removing a comment" });
   }
 });

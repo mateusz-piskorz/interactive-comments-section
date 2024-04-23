@@ -2,12 +2,15 @@ import { FC, useEffect, useId, useState } from "react";
 import { RadioInputList } from "./components/RadioInputList";
 import c from "./RegisterForm.module.scss";
 import { Overlay, zIndex } from "../Overlay";
-import { register } from "../../services/user";
+import { UserDetails, register } from "../../services/user";
 import { useAsyncFn } from "../../hooks/useAsync";
-import { localStorageIdKey, useUser } from "../../context/user";
+import { localStorageIdKey } from "../../context/user";
 
-export const RegisterForm: FC = () => {
-  const { setUser } = useUser();
+type RegisterFormProps = {
+  onSubmit: (data: UserDetails) => void;
+};
+
+export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {
   const { execute, resData } = useAsyncFn(register);
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("avatar1");
@@ -22,7 +25,7 @@ export const RegisterForm: FC = () => {
     function onSuccess() {
       if (resData) {
         localStorage.setItem(localStorageIdKey, JSON.stringify(resData._id));
-        setUser(resData);
+        onSubmit(resData);
       }
     },
     [resData]
@@ -36,14 +39,14 @@ export const RegisterForm: FC = () => {
         className={c.Form}
       >
         <div>
-          <label className={c.Form_nameLabel} htmlFor={id}>
+          <label className={c.Form_label} htmlFor={id}>
             Name
           </label>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className={c.Form_nameInput}
+            className={c.Form_input}
             type="text"
             name="name"
             id={id}
