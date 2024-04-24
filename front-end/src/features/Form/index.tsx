@@ -38,6 +38,7 @@ export const Form: FC<FormProps> = ({
   useEffect(
     function onSuccess() {
       if (resData || resDataEdit) {
+        setContent("");
         onSubmit && onSubmit();
       }
     },
