@@ -11,5 +11,5 @@ export type Comment = {
   name: string;
   yourComment: boolean;
   _id: string;
-  parentId?: string;
+  parentId: string;
 };

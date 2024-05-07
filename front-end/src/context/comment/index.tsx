@@ -1,6 +1,6 @@
-import React, { useMemo, FC, useContext, useEffect, ReactNode } from "react";
+import React, { FC, useContext, useEffect, ReactNode } from "react";
 import { useAsync } from "../../hooks/useAsync";
-import { getComments, getComment } from "../../services/comments";
+import { getComments } from "../../services/comments";
 import { ContextType } from "./types";
 import { socket } from "../../socket";
 import { useUser } from "../user";
@@ -8,12 +8,17 @@ import { Comment } from "../../types";
 
 const Context = React.createContext<ContextType | null>(null);
 
-export const useComment = () => {
+export const useComment = (commentId: string = "root") => {
   const context = useContext(Context);
   if (context === null) {
     throw new Error("useUser context is undefined");
   } else {
-    return context;
+    const comment = context.comments.find(({ _id }) => _id === commentId);
+    const childComments = context.comments.filter(
+      ({ parentId }) => parentId === commentId
+    );
+
+    return { comment, childComments };
   }
 };
 
@@ -59,42 +64,17 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
     };
   }, []);
 
-  const commentsByParentId = useMemo(() => {
-    if (comments == null) return [];
-    const group = {} as any;
-    comments.forEach((comment) => {
-      if (comment?.parentId) {
-        group[comment.parentId] ||= [];
-        group[comment.parentId].push(comment);
-      } else {
-        group["root"] ||= [];
-        group["root"].push(comment);
-      }
-    });
-    return group;
-  }, [comments]);
+  if (error) return <h1>{error.message}</h1>;
 
-  const getReplies = (parentId: string) => {
-    return commentsByParentId[parentId];
-  };
-
-  if (error) {
-    return <h1>{error.message}</h1>;
-  }
-
-  if (loading) {
-    return <h1>Loading...</h1>;
-  }
+  if (loading) return <h1>Loading...</h1>;
 
   return (
     <Context.Provider
       value={{
         comments: comments!,
-        rootComments: getReplies("root"),
-        getReplies,
       }}
     >
-      {comments && children}
+      {children}
     </Context.Provider>
   );
 };

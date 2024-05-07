@@ -7,8 +7,8 @@ import { useComment } from "../../context/comment";
 export const Comment: FC<PostProps> = (props) => {
   let { nestingLevel } = props;
   nestingLevel += 1;
-  const { getReplies } = useComment();
-  const childComments = getReplies(props._id);
+  const { childComments, comment } = useComment(props.commentId);
+
   const [operation, setOperation] = useState<"add" | "edit" | "close">("close");
 
   const onEdit = () => {
@@ -28,8 +28,8 @@ export const Comment: FC<PostProps> = (props) => {
       <Post {...props} onReply={onReply} onEdit={onEdit} />
       {operation !== "close" && (
         <Form
-          parentId={props._id}
-          initialContent={operation === "edit" ? props.content : ""}
+          parentId={props.commentId}
+          initialContent={operation === "edit" ? comment?.content : ""}
           onSubmit={onSubmit}
           operation={operation}
         />

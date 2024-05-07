@@ -8,7 +8,7 @@ import { Dialog } from "../Dialog";
 type FormProps = {
   operation: "edit" | "add";
   positionAbsolute?: boolean;
-  parentId?: string;
+  parentId: string;
   onSubmit?: () => void;
   initialContent?: string;
 };
@@ -20,7 +20,9 @@ export const Form: FC<FormProps> = ({
   operation,
   initialContent,
 }) => {
-  const { user } = useUser();
+  const {
+    user: { _id: userId },
+  } = useUser();
   const { execute: add, error, setError, resData } = useAsyncFn(addComment);
   const { execute: edit, resData: resDataEdit } = useAsyncFn(editComment);
   const [content, setContent] = useState(initialContent ? initialContent : "");
@@ -29,7 +31,7 @@ export const Form: FC<FormProps> = ({
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (operation === "add") {
-      add({ content, userId: user._id, parentId });
+      add({ content, userId, parentId });
     } else if (parentId) {
       edit({ commentId: parentId, content });
     }

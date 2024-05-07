@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { ProfileAvatar, availableAvatars } from "../../../ProfileAvatar";
+import { ProfileAvatar } from "../../../ProfileAvatar";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import c from "./Post.module.scss";
@@ -8,19 +8,11 @@ import { LikesButton } from "../LikesButton";
 import { Dialog } from "../../../Dialog";
 import { useAsyncFn } from "../../../../hooks/useAsync";
 import { removeComment } from "../../../../services/comments";
+import { useUser } from "../../../../context/user";
+import { useComment } from "../../../../context/comment";
 
 export type PostProps = {
-  avatar: (typeof availableAvatars)[number];
-  name: string;
-  yourComment: boolean;
-  createdAt: Date;
-  content: string;
-  color: string;
-  dislikes: string[];
-  likes: string[];
-  likesCount: number;
-  _id: string;
-  userId: string;
+  commentId: string;
   nestingLevel: number;
 };
 
@@ -33,19 +25,16 @@ TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
 export const Post: FC<PostProps & ExtraProps> = ({
-  avatar,
-  name,
-  yourComment,
-  createdAt,
-  content,
-  color,
-  _id,
-  userId,
+  commentId,
   nestingLevel,
   onReply,
   onEdit,
-  ...likes
 }) => {
+  const {
+    user: { _id: userId },
+  } = useUser();
+  const { comment } = useComment(commentId);
+  const { avatar, color, content, createdAt, name, yourComment } = comment!;
   const [showDialog, setShowDialog] = useState(false);
   const { execute, error, resData, setError } = useAsyncFn(removeComment);
 
@@ -56,7 +45,7 @@ export const Post: FC<PostProps & ExtraProps> = ({
   }, [resData]);
 
   const dialogProps = {
-    onConfirm: error ? () => execute({ commentId: _id, userId }) : undefined,
+    onConfirm: error ? () => execute({ commentId, userId }) : undefined,
     onCancel: () => {
       setShowDialog(false);
       setError(false);
@@ -81,7 +70,7 @@ export const Post: FC<PostProps & ExtraProps> = ({
         </p>
       </div>
       <p className={c.Post_description}>{content}</p>
-      <LikesButton {...likes} commentId={_id} />
+      <LikesButton commentId={commentId} />
       {(nestingLevel < 3 || yourComment) && (
         <ActionButtons
           isYourComment={yourComment}

@@ -4,23 +4,19 @@ import iconPlus from "../../assets/icon-plus.svg";
 import { useAsyncFn } from "../../../../hooks/useAsync";
 import { addLike } from "../../../../services/comments";
 import { useUser } from "../../../../context/user";
+import { useComment } from "../../../../context/comment";
 import { Dialog } from "../../../Dialog";
 import c from "./LikesButton.module.scss";
 
 type LikesBtnProps = {
   commentId: string;
-  likesCount: number;
-  dislikes: string[];
-  likes: string[];
 };
 
-export const LikesButton: FC<LikesBtnProps> = ({
-  commentId,
-  likesCount,
-  likes,
-  dislikes,
-}) => {
+export const LikesButton: FC<LikesBtnProps> = ({ commentId }) => {
   const { user } = useUser();
+  const { comment } = useComment(commentId);
+  const { likes, likesCount, dislikes } = comment!;
+
   const { execute, error, setError } = useAsyncFn(addLike);
 
   const clickHandler = (likeType: "like" | "dislike") => {

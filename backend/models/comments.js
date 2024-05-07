@@ -13,6 +13,7 @@ const commentSchema = new mongoose.Schema(
       default: Date.now,
     },
     parentId: {
+      required: true,
       type: String,
     },
     author: {

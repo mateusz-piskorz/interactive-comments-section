@@ -5,11 +5,12 @@ import { Form } from "./features/Form";
 import { useComment } from "./context/comment";
 
 const App: FC = () => {
-  const { rootComments } = useComment();
+  const { childComments } = useComment();
   return (
     <>
-      <CommentList comments={rootComments} nestingLevel={0}></CommentList>
-      <Form operation="add" positionAbsolute />
+      <CommentList comments={childComments} nestingLevel={0}></CommentList>
+
+      <Form operation="add" positionAbsolute parentId="root" />
     </>
   );
 };
