@@ -36,6 +36,7 @@ router.post("/add", limitTime("post"), async (req, res) => {
       });
     } else {
       const newComment = await comment.save();
+      newComment.yourComment = true;
       io.emit("comment-added", { comment: newComment });
       res.send(newComment);
     }
