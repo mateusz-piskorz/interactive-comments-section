@@ -1,3 +1,5 @@
+import { Comment } from "../src/types";
+
 export const user = {
   avatar: "avatar1",
   color: "purple",
@@ -7,7 +9,7 @@ export const user = {
 
 const createdAt = new Date();
 
-export const comment1 = {
+export const comment1: Comment = {
   avatar: "avatar1",
   color: "purple",
   content: "comment content",
@@ -21,7 +23,7 @@ export const comment1 = {
   parentId: "root",
 };
 
-export const comment2 = {
+export const comment2: Comment = {
   avatar: "avatar2",
   color: "red",
   content: "comment content2",
