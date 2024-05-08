@@ -2,12 +2,21 @@ import { screen, render, waitFor } from "@testing-library/react";
 import { CommentList } from "./index";
 import { comments } from "../../../tests/constants";
 
+const CommentProps = jest.fn();
 jest.mock("../Comment", () => ({
-  Comment: jest.fn(({ commentId }) => <h1>{commentId}</h1>),
+  Comment: jest.fn((props) => {
+    CommentProps(props);
+    return <div data-testId="Comment"></div>;
+  }),
 }));
 
 it("displays Comment List", () => {
   render(<CommentList comments={comments} nestingLevel={0} />);
-  expect(screen.getByText(comments[0]._id)).toBeInTheDocument();
-  expect(screen.getByText(comments[1]._id)).toBeInTheDocument();
+  expect(screen.getAllByTestId("Comment")).toHaveLength(comments.length);
+  for (let comment of comments) {
+    expect(CommentProps).toHaveBeenCalledWith({
+      commentId: comment._id,
+      nestingLevel: 0,
+    });
+  }
 });
