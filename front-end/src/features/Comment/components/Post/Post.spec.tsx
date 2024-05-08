@@ -2,7 +2,11 @@ import { screen, render, waitFor } from "@testing-library/react";
 import { Post } from "./index";
 import { comment1 } from "../../../../../tests/constants";
 import { useComment } from "../../../../context/comment";
+import { useUser } from "../../../../context/user";
 
+const {
+  user: { avatar },
+} = useUser();
 const defaultProps = {
   nestingLevel: 0,
   commentId: comment1._id,
@@ -10,21 +14,31 @@ const defaultProps = {
   onReply: jest.fn(),
 };
 
+const ProfileAvatarProps = jest.fn();
 jest.mock("../../../ProfileAvatar", () => ({
-  ProfileAvatar: jest.fn(({ imgName }) => <h1>{imgName}</h1>),
+  ProfileAvatar: jest.fn((props) => {
+    ProfileAvatarProps(props);
+  }),
 }));
 
+const LikesButtonProps = jest.fn();
 jest.mock("../LikesButton", () => ({
-  LikesButton: jest.fn(() => <h1>LikesButton</h1>),
+  LikesButton: jest.fn((props) => {
+    LikesButtonProps(props);
+  }),
 }));
 
+const ActionButtonsProps = jest.fn();
 jest.mock("../ActionButtons", () => ({
-  ActionButtons: jest.fn(() => <h1>ActionButtons</h1>),
+  ActionButtons: jest.fn((props) => {
+    ActionButtonsProps(props);
+    return <div data-testId="ActionButtons"></div>;
+  }),
 }));
 
 it("displays ProfileAvatar", () => {
   render(<Post {...defaultProps} />);
-  expect(screen.getByText(comment1.avatar)).toBeInTheDocument();
+  expect(ProfileAvatarProps).toHaveBeenCalledWith({ imgName: avatar });
 });
 
 it("displays comment name", () => {
@@ -63,15 +77,23 @@ it("displays comment content", () => {
 
 it("displays LikesButton", () => {
   render(<Post {...defaultProps} />);
-  expect(screen.getByText("LikesButton")).toBeInTheDocument();
+  expect(LikesButtonProps).toHaveBeenCalledWith({
+    commentId: defaultProps.commentId,
+  });
 });
 
 it("displays ActionButtons", () => {
   render(<Post {...defaultProps} />);
-  expect(screen.getByText("ActionButtons")).toBeInTheDocument();
+  expect(ActionButtonsProps).toHaveBeenCalledWith(
+    expect.objectContaining({
+      isYourComment: false,
+      onEdit: defaultProps.onEdit,
+      onReply: defaultProps.onReply,
+    })
+  );
 });
 
 it("doesn't display ActionButtons if nesting level > 2", () => {
   render(<Post {...defaultProps} nestingLevel={3} />);
-  expect(screen.queryByText("ActionButtons")).toBeNull();
+  expect(screen.queryByTestId("ActionButtons")).toBeNull();
 });

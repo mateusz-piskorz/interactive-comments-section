@@ -10,7 +10,6 @@ const DialogProps = jest.fn();
 jest.mock("../Dialog", () => ({
   Dialog: jest.fn((props) => {
     DialogProps(props);
-    return <div data-testId="Dialog"></div>;
   }),
 }));
 
@@ -84,7 +83,6 @@ it("displays dialog on error", async () => {
   });
   screen.getByText("Send").click();
   await waitFor(async () => {
-    expect(screen.getByTestId("Dialog")).toBeInTheDocument();
     expect(DialogProps).toHaveBeenCalledWith(
       expect.objectContaining({ description: message, elapsedTime })
     );

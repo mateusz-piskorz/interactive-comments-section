@@ -3,8 +3,13 @@ import { LikesButton } from "./index";
 import { addLike } from "../../../../services/comments";
 import { user, comment1 } from "../../../../../tests/constants";
 
+const mockedAddLike = addLike as jest.Mock<any>;
+
+const DialogProps = jest.fn();
 jest.mock("../../../Dialog", () => ({
-  Dialog: jest.fn(() => <h1>Dialog</h1>),
+  Dialog: jest.fn((props) => {
+    DialogProps(props);
+  }),
 }));
 
 jest.mock("../../../../services/comments");
@@ -35,10 +40,17 @@ it("calls clickHandler dislike after clicking dislike button", () => {
 });
 
 it("displays dialog on error", async () => {
-  (addLike as jest.Mock<any>).mockRejectedValue({});
+  const message = "messageTest";
+  const elapsedTime = 120;
+  mockedAddLike.mockRejectedValue({ message, elapsedTime });
   render(<LikesButton commentId={comment1._id} />);
   screen.getByAltText("minus icon").closest("button")?.click();
   await waitFor(async () => {
-    expect(screen.getByText("Dialog")).toBeInTheDocument();
+    expect(DialogProps).toHaveBeenCalledWith(
+      expect.objectContaining({
+        description: message,
+        elapsedTime,
+      })
+    );
   });
 });
