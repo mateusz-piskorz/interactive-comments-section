@@ -8,7 +8,6 @@ export const Comment: FC<PostProps> = (props) => {
   let { nestingLevel } = props;
   nestingLevel += 1;
   const { childComments, comment } = useComment(props.commentId);
-
   const [operation, setOperation] = useState<"add" | "edit" | "close">("close");
 
   const onEdit = () => {

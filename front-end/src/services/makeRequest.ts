@@ -12,5 +12,5 @@ export function makeRequest(
 ) {
   return api(url, options)
     .then((res) => res.data)
-    .catch((error) => Promise.reject(error.response.data ?? "Error"));
+    .catch((error) => Promise.reject(error?.response?.data ?? error));
 }

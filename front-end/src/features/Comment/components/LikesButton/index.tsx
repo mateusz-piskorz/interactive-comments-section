@@ -16,9 +16,7 @@ export const LikesButton: FC<LikesBtnProps> = ({ commentId }) => {
   const { user } = useUser();
   const { comment } = useComment(commentId);
   const { likes, likesCount, dislikes } = comment!;
-
   const { execute, error, setError } = useAsyncFn(addLike);
-
   const clickHandler = (likeType: "like" | "dislike") => {
     execute({ commentId, likeType, userId: user._id });
   };

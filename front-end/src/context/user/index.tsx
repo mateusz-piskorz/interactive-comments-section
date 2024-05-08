@@ -35,7 +35,6 @@ export const UserProvider: FC<{ children?: ReactNode }> = ({ children }) => {
   useEffect(() => {
     const userId = localStorage.getItem(localStorageIdKey);
     if (userId && userId !== "") {
-      console.log(userId);
       execute({ userId: JSON.parse(userId) });
     }
   }, []);

@@ -1,7 +1,7 @@
 import { screen, render, waitFor } from "@testing-library/react";
 import { LikesButton } from "./index";
 import { addLike } from "../../../../services/comments";
-import { user, comment } from "../../../../../tests/constants";
+import { user, comment1 } from "../../../../../tests/constants";
 
 jest.mock("../../../Dialog", () => ({
   Dialog: jest.fn(() => <h1>Dialog</h1>),
@@ -9,36 +9,36 @@ jest.mock("../../../Dialog", () => ({
 
 jest.mock("../../../../services/comments");
 
-// it("displays likes Count", () => {
-//   render(<LikesButton commentId={comment._id} />);
-//   expect(screen.getByText(comment.likesCount)).toBeInTheDocument();
-// });
+it("displays likes Count", () => {
+  render(<LikesButton commentId={comment1._id} />);
+  expect(screen.getByText(comment1.likesCount)).toBeInTheDocument();
+});
 
-// it("calls clickHandler like after clicking like button", () => {
-//   render(<LikesButton commentId={comment._id} />);
-//   screen.getByAltText("plus icon").closest("button")?.click();
-//   expect(addLike).toHaveBeenCalledWith({
-//     commentId: comment._id,
-//     likeType: "like",
-//     userId: user._id,
-//   });
-// });
+it("calls clickHandler like after clicking like button", () => {
+  render(<LikesButton commentId={comment1._id} />);
+  screen.getByAltText("plus icon").closest("button")?.click();
+  expect(addLike).toHaveBeenCalledWith({
+    commentId: comment1._id,
+    likeType: "like",
+    userId: user._id,
+  });
+});
 
-// it("calls clickHandler dislike after clicking dislike button", () => {
-//   render(<LikesButton commentId={comment._id} />);
-//   screen.getByAltText("minus icon").closest("button")?.click();
-//   expect(addLike).toHaveBeenCalledWith({
-//     commentId: comment._id,
-//     likeType: "dislike",
-//     userId: user._id,
-//   });
-// });
+it("calls clickHandler dislike after clicking dislike button", () => {
+  render(<LikesButton commentId={comment1._id} />);
+  screen.getByAltText("minus icon").closest("button")?.click();
+  expect(addLike).toHaveBeenCalledWith({
+    commentId: comment1._id,
+    likeType: "dislike",
+    userId: user._id,
+  });
+});
 
-// it("displays dialog on error", async () => {
-//   (addLike as jest.Mock<any>).mockRejectedValue({});
-//   render(<LikesButton commentId={comment._id} />);
-//   screen.getByAltText("minus icon").closest("button")?.click();
-//   await waitFor(async () => {
-//     expect(screen.getByText("Dialog")).toBeInTheDocument();
-//   });
-// });
+it("displays dialog on error", async () => {
+  (addLike as jest.Mock<any>).mockRejectedValue({});
+  render(<LikesButton commentId={comment1._id} />);
+  screen.getByAltText("minus icon").closest("button")?.click();
+  await waitFor(async () => {
+    expect(screen.getByText("Dialog")).toBeInTheDocument();
+  });
+});

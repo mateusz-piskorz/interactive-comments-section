@@ -7,7 +7,7 @@ export const user = {
 
 const createdAt = new Date();
 
-export const comment = {
+export const comment1 = {
   avatar: "avatar1",
   color: "purple",
   content: "comment content",
@@ -18,6 +18,7 @@ export const comment = {
   name: "test name",
   yourComment: false,
   _id: "commentIdTest",
+  parentId: "root",
 };
 
 export const comment2 = {
@@ -31,14 +32,7 @@ export const comment2 = {
   name: "test name2",
   yourComment: false,
   _id: "commentIdTest2",
-  parentId: comment._id,
+  parentId: comment1._id,
 };
 
-export const comments = [comment, comment2];
-export const rootComments = [comment];
-export const getReplies = () => {
-  comment2;
-};
-export const getCommentById = (commentId: string) => {
-  return comments.find(({ _id }) => _id === commentId);
-};
+export const comments = [comment1, comment2];

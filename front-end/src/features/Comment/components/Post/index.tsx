@@ -45,7 +45,7 @@ export const Post: FC<PostProps & ExtraProps> = ({
   }, [resData]);
 
   const dialogProps = {
-    onConfirm: error ? () => execute({ commentId, userId }) : undefined,
+    onConfirm: !error ? () => execute({ commentId, userId }) : undefined,
     onCancel: () => {
       setShowDialog(false);
       setError(false);
