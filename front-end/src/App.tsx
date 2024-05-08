@@ -9,7 +9,6 @@ const App: FC = () => {
   return (
     <>
       <CommentList comments={childComments} nestingLevel={0}></CommentList>
-
       <Form operation="add" positionAbsolute parentId="root" />
     </>
   );
