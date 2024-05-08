@@ -4,8 +4,15 @@ import { addComment, editComment } from "../../services/comments";
 import { useUser } from "../../context/user";
 
 const { user } = useUser();
+const mockedAddComment = addComment as jest.Mock<any>;
 
-jest.mock("../Dialog", () => ({ Dialog: jest.fn(() => <h1>Dialog</h1>) }));
+const DialogProps = jest.fn();
+jest.mock("../Dialog", () => ({
+  Dialog: jest.fn((props) => {
+    DialogProps(props);
+    return <div data-testId="Dialog"></div>;
+  }),
+}));
 
 jest.mock("../../services/comments");
 
@@ -64,13 +71,22 @@ it("calls editComment on form submit", async () => {
 });
 
 it("displays dialog on error", async () => {
-  (addComment as jest.Mock<any>).mockRejectedValue({});
+  const message = "test error";
+  const elapsedTime = 120;
+  mockedAddComment.mockRejectedValue({
+    message,
+    elapsedTime,
+  });
+
   render(<Form {...defaultProps} />);
   await fireEvent.change(screen.getByRole("textbox"), {
     target: { value: content },
   });
   screen.getByText("Send").click();
   await waitFor(async () => {
-    expect(screen.getByText("Dialog")).toBeInTheDocument();
+    expect(screen.getByTestId("Dialog")).toBeInTheDocument();
+    expect(DialogProps).toHaveBeenCalledWith(
+      expect.objectContaining({ description: message, elapsedTime })
+    );
   });
 });
