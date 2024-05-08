@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 import { User } from "./users.js";
+import Filter from "bad-words";
+import words from "../bad-polish-words.js";
+
+const filter = new Filter();
+filter.addWords(...words);
 
 const commentSchema = new mongoose.Schema(
   {
@@ -57,6 +62,7 @@ commentSchema.pre("save", { document: true }, async function (next) {
     this.color = author.color;
     this.avatar = author.avatar;
     this.name = author.name;
+    this.content = filter.clean(this.content);
   } catch (err) {
     next(err);
   }
