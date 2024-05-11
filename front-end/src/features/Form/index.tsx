@@ -50,13 +50,12 @@ export const Form: FC<FormProps> = ({
   return (
     <>
       <form className={className} onSubmit={submitHandler}>
-        <textarea
+        <input
           required
           autoFocus
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          maxLength={500}
-          className={c.Form_textarea}
+          className={c.Form_input}
           placeholder="Add a comment..."
         />
         <button type="submit" className={c.Form_button}>
