@@ -3,7 +3,9 @@ import c from "./Form.module.scss";
 import { addComment, editComment } from "../../services/comments";
 import { useAsyncFn } from "../../hooks/useAsync";
 import { useUser } from "../../context/user";
+import { useComment } from "../../context/comment";
 import { Dialog } from "../Dialog";
+import { socket } from "../../socket";
 
 type FormProps = {
   operation: "edit" | "add";
@@ -23,6 +25,7 @@ export const Form: FC<FormProps> = ({
   const {
     user: { _id: userId },
   } = useUser();
+  const { addComment: addCommentToContext } = useComment();
   const { execute: add, error, setError, resData } = useAsyncFn(addComment);
   const { execute: edit, resData: resDataEdit } = useAsyncFn(editComment);
   const [content, setContent] = useState(initialContent ? initialContent : "");
@@ -40,6 +43,10 @@ export const Form: FC<FormProps> = ({
   useEffect(
     function onSuccess() {
       if (resData || resDataEdit) {
+        if (operation === "add") {
+          addCommentToContext({ ...resData, yourComment: true });
+          socket.emit("comment-added", resData);
+        }
         setContent("");
         onSubmit && onSubmit();
       }

@@ -17,8 +17,8 @@ export const useComment = (commentId: string = "root") => {
     const childComments = context.comments.filter(
       ({ parentId }) => parentId === commentId
     );
-
-    return { comment, childComments };
+    const { addComment } = context;
+    return { comment, childComments, addComment };
   }
 };
 
@@ -34,12 +34,16 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
     setResData: setComments,
   } = useAsync(() => getComments({ userId: user._id }));
 
+  const addComment = (comment: Comment) => {
+    setComments((prev) => [...prev!, comment]);
+  };
+
   useEffect(() => {
-    const onCommentAdded = ({ comment }: { comment: Comment }) => {
-      setComments((prev) => [...prev!, comment]);
+    const onCommentAdded = (comment: Comment) => {
+      addComment(comment);
     };
 
-    const onCommentEdited = ({ comment }: { comment: Comment }) => {
+    const onCommentEdited = (comment: Comment) => {
       setComments((prev) =>
         prev!.map((prevComment) =>
           prevComment._id === comment._id ? comment : prevComment
@@ -72,6 +76,7 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
     <Context.Provider
       value={{
         comments: comments!,
+        addComment,
       }}
     >
       {children}

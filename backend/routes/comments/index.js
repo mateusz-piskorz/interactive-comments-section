@@ -36,8 +36,6 @@ router.post("/add", limitTime("post"), async (req, res) => {
       });
     } else {
       const newComment = await comment.save();
-      newComment.yourComment = true;
-      io.emit("comment-added", { comment: newComment });
       res.send(newComment);
     }
   } catch (err) {
@@ -117,7 +115,7 @@ router.put("/:id", async (req, res) => {
     const comment = await Comment.findById(req.params.id);
     comment.content = req.body.content;
     const updatedComment = await comment.save();
-    io.emit("comment-edited", { comment: updatedComment });
+    io.emit("comment-edited", updatedComment);
     res.send(updatedComment);
   } catch (err) {
     console.log(err);
