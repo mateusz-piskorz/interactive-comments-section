@@ -60,7 +60,7 @@ router.post("/like", limitTime("like"), async (req, res) => {
 
     comment.likesCount = +comment.likes.length - +comment.dislikes.length;
     const updatedComment = await comment.save();
-    io.emit("comment-edited", { comment: updatedComment });
+    io.emit("comment-edited", updatedComment);
     res.status(200).send({ message: "like added successfully" });
   } catch (error) {
     console.log(error);
@@ -81,7 +81,7 @@ router.post("/dislike", limitTime("like"), async (req, res) => {
     }
     comment.likesCount = +comment.likes.length - +comment.dislikes.length;
     const updatedComment = await comment.save();
-    io.emit("comment-edited", { comment: updatedComment });
+    io.emit("comment-edited", updatedComment);
     res.status(200).send({ message: "dislike added successfully" });
   } catch (error) {
     res.status(500).send({ message: "error adding dislike", error });
