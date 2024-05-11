@@ -6,6 +6,9 @@ jest.mock("../src/context/user", () => ({
     user,
   })),
 }));
+jest.mock("../src/socket", () => ({
+  socket: { emit: jest.fn() },
+}));
 
 jest.mock("../src/context/comment", () => ({
   useComment: jest.fn((commentId: string) => {
@@ -13,6 +16,6 @@ jest.mock("../src/context/comment", () => ({
     const childComments = comments.filter(
       ({ parentId }) => parentId === commentId
     );
-    return { comment, childComments };
+    return { comment, childComments, addComment: jest.fn() };
   }),
 }));

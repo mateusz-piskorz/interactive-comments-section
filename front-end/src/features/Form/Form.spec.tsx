@@ -29,7 +29,7 @@ it("displays initialContent for textbox", async () => {
   const initialContent = "initialContent";
   render(<Form {...defaultProps} initialContent={initialContent} />);
   await screen.getByText("Send").click();
-  expect(screen.getByRole("textbox")).toHaveTextContent(initialContent);
+  expect(screen.getByRole("textbox")).toHaveValue(initialContent);
 });
 
 it("calls onSubmit on form submit", async () => {
