@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import c from "./Form.module.scss";
 import { addComment, editComment } from "../../services/comments";
 import { useAsyncFn } from "../../hooks/useAsync";
@@ -28,17 +28,39 @@ export const Form: FC<FormProps> = ({
   const { addComment: addCommentToContext } = useComment();
   const { execute: add, error, setError, resData } = useAsyncFn(addComment);
   const { execute: edit, resData: resDataEdit } = useAsyncFn(editComment);
-  const [content, setContent] = useState(initialContent ? initialContent : "");
+  const input = useRef<HTMLSpanElement>(null);
   const className = `${c.Form}${` ${positionAbsolute ? c.Form___fixed : ""}`}`;
 
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const submitHandler = (event?: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
+    const content = input.current!.innerText;
+    if (content === "") return;
     if (operation === "add") {
       add({ content, userId, parentId });
     } else if (parentId) {
       edit({ commentId: parentId, content });
     }
   };
+
+  useEffect(() => {
+    if (!input.current) return;
+
+    if (initialContent) {
+      input.current!.innerText = initialContent;
+    }
+
+    const keyDownHandler = (event: KeyboardEvent) => {
+      if (event.code === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        submitHandler();
+      }
+    };
+
+    input.current.addEventListener("keydown", keyDownHandler);
+    return () => {
+      input.current!.removeEventListener("keydown", keyDownHandler);
+    };
+  }, []);
 
   useEffect(
     function onSuccess() {
@@ -47,7 +69,7 @@ export const Form: FC<FormProps> = ({
           addCommentToContext({ ...resData, yourComment: true });
           socket.emit("comment-added", resData);
         }
-        setContent("");
+        input.current!.innerText = "";
         onSubmit && onSubmit();
       }
     },
@@ -57,14 +79,21 @@ export const Form: FC<FormProps> = ({
   return (
     <>
       <form className={className} onSubmit={submitHandler}>
-        <input
+        <span
+          autoFocus
+          ref={input}
+          className={c.Form_input}
+          role="textbox"
+          contentEditable
+        />
+        {/* <input
           required
           autoFocus
           value={content}
           onChange={(e) => setContent(e.target.value)}
           className={c.Form_input}
           placeholder="Add a comment..."
-        />
+        /> */}
         <button type="submit" className={c.Form_button}>
           Send
         </button>
