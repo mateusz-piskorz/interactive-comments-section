@@ -1,12 +1,12 @@
 .Form {
-  background-color: white;
+  backdrop-filter: blur(8px);
   padding: 20px;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   max-width: 1500px;
-  gap: 10px;
+  gap: 20px;
   width: calc(100% - 20px);
   margin-left: 20px;
 
@@ -25,15 +25,12 @@
     overflow: auto;
     -webkit-font-smoothing: antialiased;
     white-space: pre-wrap;
-    border: none;
     width: 80%;
     max-height: 124px;
     min-height: 40px;
     background-color: rgba(134, 142, 153, 0.1);
     border-radius: 20px;
-    padding-left: 20px;
-    padding-top: 10px;
-    resize: none;
+    padding: 10px 20px;
 
     &[contenteditable]:empty::before {
       content: "Add a comment...";
@@ -42,9 +39,11 @@
   }
 
   &_button {
-    padding: 10px 15px;
-    border-radius: 50px;
-    border: 1px solid rgba(134, 142, 153, 0.1);
+    background-color: transparent;
+    border: none;
     cursor: pointer;
+    display: grid;
+    place-items: center;
+    height: 40px;
   }
 }

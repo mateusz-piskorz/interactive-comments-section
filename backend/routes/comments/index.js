@@ -30,9 +30,9 @@ router.post("/add", limitTime("post"), async (req, res) => {
   });
 
   try {
-    if (comment.content.length > 500) {
+    if (comment.content.length > 2000) {
       res.status(400).send({
-        message: "max number of characters is 500",
+        message: "max number of characters is 2000",
       });
     } else {
       const newComment = await comment.save();

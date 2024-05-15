@@ -6,6 +6,7 @@ import { useUser } from "../../context/user";
 import { useComment } from "../../context/comment";
 import { Dialog } from "../Dialog";
 import { socket } from "../../socket";
+import arrowRight from "../../assets/arrow-right.svg";
 
 type FormProps = {
   operation: "edit" | "add";
@@ -86,16 +87,8 @@ export const Form: FC<FormProps> = ({
           role="textbox"
           contentEditable
         />
-        {/* <input
-          required
-          autoFocus
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className={c.Form_input}
-          placeholder="Add a comment..."
-        /> */}
         <button type="submit" className={c.Form_button}>
-          Send
+          <img src={arrowRight} alt="arrow right icon" />
         </button>
       </form>
 

@@ -48,6 +48,10 @@
   &_description {
     font-size: 0.9rem;
     line-height: 1.3rem;
+    -webkit-font-smoothing: antialiased;
+    white-space: pre-wrap;
+    max-height: 250px;
+    overflow-y: auto;
   }
 }
 
