@@ -2,8 +2,18 @@ import { useCallback, useState, useEffect } from "react";
 
 type AnyFunc = (...args: any) => any;
 
-export function useAsync<T extends AnyFunc>(fn: T, dependencies: any[] = []) {
-  const { execute, ...state } = useAsyncInternal<T>(fn, dependencies, true);
+export function useAsync<T extends AnyFunc>(
+  fn: T,
+  options?: {
+    dependencies: any[];
+    onSuccess?: (data: Awaited<ReturnType<T>>) => void;
+  }
+) {
+  const { execute, ...state } = useAsyncInternal<T>(fn, {
+    ...options,
+    initialLoading: true,
+  });
+
   useEffect(() => {
     // @ts-ignore
     execute();
@@ -14,18 +24,24 @@ export function useAsync<T extends AnyFunc>(fn: T, dependencies: any[] = []) {
 
 export function useAsyncFn<T extends AnyFunc>(
   fn: T,
-  dependencies: any[] = [],
-  initialLoading?: boolean
+  options?: {
+    dependencies?: any[];
+    initialLoading?: boolean;
+    onSuccess?: (data: Awaited<ReturnType<T>>) => void;
+  }
 ) {
-  return useAsyncInternal<T>(fn, dependencies, initialLoading);
+  return useAsyncInternal<T>(fn, options);
 }
 
 function useAsyncInternal<T extends AnyFunc>(
   fn: T,
-  dependencies: any[],
-  initialLoading = false
+  options?: {
+    dependencies?: any[];
+    initialLoading?: boolean;
+    onSuccess?: (data: Awaited<ReturnType<T>>) => void;
+  }
 ) {
-  const [loading, setLoading] = useState(initialLoading);
+  const [loading, setLoading] = useState(options?.initialLoading || false);
   const [error, setError] = useState<any>();
   const [resData, setResData] = useState<Awaited<ReturnType<T>>>();
 
@@ -36,6 +52,7 @@ function useAsyncInternal<T extends AnyFunc>(
         .then((data: Awaited<ReturnType<T>>) => {
           setResData(data);
           setError(undefined);
+          options?.onSuccess && options.onSuccess(data);
           return data;
         })
         .catch((error: any) => {
@@ -46,7 +63,7 @@ function useAsyncInternal<T extends AnyFunc>(
           setLoading(false);
         });
     },
-    dependencies
+    options?.dependencies || []
   );
 
   return { loading, error, resData, execute, setLoading, setError, setResData };

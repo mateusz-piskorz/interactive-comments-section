@@ -26,9 +26,25 @@ export const Form: FC<FormProps> = ({
   const {
     user: { _id: userId },
   } = useUser();
-  const { addComment: addCommentToContext } = useComment();
-  const { execute: add, error, setError, resData } = useAsyncFn(addComment);
-  const { execute: edit, resData: resDataEdit } = useAsyncFn(editComment);
+  const { addComment: addCommentToContext, editComment: editCommentInContext } =
+    useComment();
+  const { execute, error, setError, loading } = useAsyncFn(
+    operation === "add" ? addComment : editComment,
+    {
+      onSuccess: (comment) => {
+        if (operation === "add") {
+          addCommentToContext({ ...comment, yourComment: true });
+          socket.emit("comment-added", comment);
+          input.current!.innerText = "";
+        } else {
+          editCommentInContext(comment.id, { ...comment, yourComment: true });
+          socket.emit("comment-edited", comment);
+        }
+        onSubmit && onSubmit();
+      },
+    }
+  );
+
   const input = useRef<HTMLSpanElement>(null);
   const className = `${c.Form}${` ${positionAbsolute ? c.Form___fixed : ""}`}`;
 
@@ -37,17 +53,18 @@ export const Form: FC<FormProps> = ({
     const content = input.current!.innerText;
     if (content === "") return;
     if (operation === "add") {
-      add({ content, userId, parentId });
-    } else if (parentId) {
-      edit({ commentId: parentId, content });
+      execute({ content, userId, parentId });
+    } else {
+      execute({ commentId: parentId, content });
     }
   };
 
   useEffect(() => {
     if (!input.current) return;
 
+    const inputRef = input.current;
     if (initialContent) {
-      input.current!.innerText = initialContent;
+      inputRef.innerText = initialContent;
     }
 
     const keyDownHandler = (event: KeyboardEvent) => {
@@ -57,25 +74,12 @@ export const Form: FC<FormProps> = ({
       }
     };
 
-    input.current.addEventListener("keydown", keyDownHandler);
+    inputRef.addEventListener("keydown", keyDownHandler);
+
     return () => {
-      input.current!.removeEventListener("keydown", keyDownHandler);
+      inputRef!.removeEventListener("keydown", keyDownHandler);
     };
   }, []);
-
-  useEffect(
-    function onSuccess() {
-      if (resData || resDataEdit) {
-        if (operation === "add") {
-          addCommentToContext({ ...resData, yourComment: true });
-          socket.emit("comment-added", resData);
-        }
-        input.current!.innerText = "";
-        onSubmit && onSubmit();
-      }
-    },
-    [resData, resDataEdit]
-  );
 
   return (
     <>
@@ -87,7 +91,7 @@ export const Form: FC<FormProps> = ({
           role="textbox"
           contentEditable
         />
-        <button type="submit" className={c.Form_button}>
+        <button type="submit" className={c.Form_button} disabled={loading}>
           <img src={arrowRight} alt="arrow right icon" />
         </button>
       </form>

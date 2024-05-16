@@ -1,11 +1,10 @@
 .Form {
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   padding: 20px;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  max-width: 1500px;
   gap: 20px;
   width: calc(100% - 20px);
   margin-left: 20px;
@@ -26,6 +25,7 @@
     -webkit-font-smoothing: antialiased;
     white-space: pre-wrap;
     width: 80%;
+    max-width: 1000px;
     max-height: 124px;
     min-height: 40px;
     background-color: rgba(134, 142, 153, 0.1);
@@ -45,5 +45,15 @@
     display: grid;
     place-items: center;
     height: 40px;
+    &:disabled {
+      cursor: default;
+      opacity: 0.5;
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .Form {
+    gap: 30px;
   }
 }

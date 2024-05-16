@@ -17,8 +17,8 @@ export const useComment = (commentId: string = "root") => {
     const childComments = context.comments.filter(
       ({ parentId }) => parentId === commentId
     );
-    const { addComment } = context;
-    return { comment, childComments, addComment };
+    const { addComment, editComment } = context;
+    return { comment, childComments, addComment, editComment };
   }
 };
 
@@ -36,6 +36,12 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
 
   const addComment = (comment: Comment) => {
     setComments((prev) => [...prev!, comment]);
+  };
+
+  const editComment = (commentId: string, comment: Comment) => {
+    setComments((prev) =>
+      prev?.map((c) => (c._id === commentId ? comment : c))
+    );
   };
 
   useEffect(() => {
@@ -77,6 +83,7 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
       value={{
         comments: comments!,
         addComment,
+        editComment,
       }}
     >
       {children}
