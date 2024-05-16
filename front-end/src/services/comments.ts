@@ -73,7 +73,7 @@ type AddLike = ({
   commentId: string;
   userId: string;
   likeType: "like" | "dislike";
-}) => Promise<any>;
+}) => Promise<Comment>;
 
 type EditComment = ({
   content,

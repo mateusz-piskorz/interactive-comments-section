@@ -52,7 +52,9 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
     const onCommentEdited = (comment: Comment) => {
       setComments((prev) =>
         prev!.map((prevComment) =>
-          prevComment._id === comment._id ? comment : prevComment
+          prevComment._id === comment._id
+            ? { ...comment, yourComment: prevComment.yourComment }
+            : prevComment
         )
       );
     };

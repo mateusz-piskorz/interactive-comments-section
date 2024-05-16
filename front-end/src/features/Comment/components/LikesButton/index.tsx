@@ -7,32 +7,34 @@ import { useUser } from "../../../../context/user";
 import { useComment } from "../../../../context/comment";
 import { Dialog } from "../../../Dialog";
 import c from "./LikesButton.module.scss";
+import { socket } from "../../../../socket";
 
 type LikesBtnProps = {
   commentId: string;
 };
 
 export const LikesButton: FC<LikesBtnProps> = ({ commentId }) => {
-  const { user } = useUser();
+  const { userId } = useUser();
   const { comment } = useComment(commentId);
   const { likes, likesCount, dislikes } = comment!;
   const { execute, error, setError } = useAsyncFn(addLike);
+
   const clickHandler = (likeType: "like" | "dislike") => {
-    execute({ commentId, likeType, userId: user._id });
+    execute({ commentId, likeType, userId });
   };
 
   return (
     <>
       <div className={c.LikesButton}>
         <button
-          className={btnClassName(likes, user._id)}
+          className={btnClassName(likes, userId)}
           onClick={() => clickHandler("like")}
         >
           <img src={iconPlus} alt="plus icon" />
         </button>
         <strong className={c.LikesButton_count}>{likesCount}</strong>
         <button
-          className={btnClassName(dislikes, user._id)}
+          className={btnClassName(dislikes, userId)}
           onClick={() => clickHandler("dislike")}
         >
           <img src={iconMinus} alt="minus icon" />
