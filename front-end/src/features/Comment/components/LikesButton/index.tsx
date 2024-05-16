@@ -7,7 +7,6 @@ import { useUser } from "../../../../context/user";
 import { useComment } from "../../../../context/comment";
 import { Dialog } from "../../../Dialog";
 import c from "./LikesButton.module.scss";
-import { socket } from "../../../../socket";
 
 type LikesBtnProps = {
   commentId: string;

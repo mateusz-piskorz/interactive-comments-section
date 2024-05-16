@@ -117,6 +117,7 @@ router.put("/:id", async (req, res) => {
     const comment = await Comment.findById(req.params.id);
     comment.content = req.body.content;
     const updatedComment = await comment.save();
+    io.emit("comment-edited", updatedComment);
     res.send(updatedComment);
   } catch (err) {
     console.log(err);
