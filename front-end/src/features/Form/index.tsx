@@ -1,72 +1,93 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef } from "react";
 import c from "./Form.module.scss";
-import { addComment, editComment } from "../../services/comments";
+import { addCommentService, editCommentService } from "../../services/comments";
 import { useAsyncFn } from "../../hooks/useAsync";
 import { useUser } from "../../context/user";
 import { useComment } from "../../context/comment";
 import { Dialog } from "../Dialog";
 import { socket } from "../../socket";
+import arrowRight from "../../assets/arrow-right.svg";
 
 type FormProps = {
-  operation: "edit" | "add";
-  positionAbsolute?: boolean;
   parentId: string;
+  operation: "edit" | "add";
+  fixedPosition?: boolean;
   onSubmit?: () => void;
   initialContent?: string;
 };
 
 export const Form: FC<FormProps> = ({
-  positionAbsolute,
   parentId,
-  onSubmit,
   operation,
+  fixedPosition,
+  onSubmit,
   initialContent,
 }) => {
-  const {
-    user: { _id: userId },
-  } = useUser();
-  const { addComment: addCommentToContext } = useComment();
-  const { execute: add, error, setError, resData } = useAsyncFn(addComment);
-  const { execute: edit, resData: resDataEdit } = useAsyncFn(editComment);
-  const [content, setContent] = useState(initialContent ? initialContent : "");
-  const className = `${c.Form}${` ${positionAbsolute ? c.Form___fixed : ""}`}`;
+  const input = useRef<HTMLSpanElement>(null);
+  const FormClassName = `${c.Form}${` ${fixedPosition ? c.Form___fixed : ""}`}`;
+  const { userId } = useUser();
+  const { addComment, editComment } = useComment();
+  const { execute, error, setError, loading } = useAsyncFn(
+    operation === "add" ? addCommentService : editCommentService,
+    {
+      onSuccess: (comment) => {
+        if (operation === "add") {
+          addComment({ ...comment, yourComment: true });
+          socket.emit("comment-added", comment);
+          input.current!.innerText = "";
+        } else {
+          editComment(comment._id, { ...comment, yourComment: true });
+          socket.emit("comment-edited", comment);
+        }
+        onSubmit && onSubmit();
+      },
+    }
+  );
 
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const submitHandler = (event?: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
+    const content = input.current!.innerText?.replace(
+      /(\r\n|\n|\r){2,}/gm,
+      "\n\n"
+    );
+    if (!content || content === "") return;
     if (operation === "add") {
-      add({ content, userId, parentId });
-    } else if (parentId) {
-      edit({ commentId: parentId, content });
+      execute({ content, userId, parentId });
+    } else {
+      execute({ commentId: parentId, content });
     }
   };
 
-  useEffect(
-    function onSuccess() {
-      if (resData || resDataEdit) {
-        if (operation === "add") {
-          addCommentToContext({ ...resData, yourComment: true });
-          socket.emit("comment-added", resData);
-        }
-        setContent("");
-        onSubmit && onSubmit();
+  useEffect(() => {
+    if (!input.current) return;
+    const inputRef = input.current;
+    inputRef.textContent = initialContent || "";
+
+    const keyDownHandler = (event: KeyboardEvent) => {
+      if (event.code === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        submitHandler();
       }
-    },
-    [resData, resDataEdit]
-  );
+    };
+
+    inputRef.addEventListener("keydown", keyDownHandler);
+    return () => {
+      inputRef.removeEventListener("keydown", keyDownHandler);
+    };
+  }, []);
 
   return (
     <>
-      <form className={className} onSubmit={submitHandler}>
-        <input
-          required
+      <form className={FormClassName} onSubmit={submitHandler}>
+        <span
           autoFocus
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+          ref={input}
           className={c.Form_input}
-          placeholder="Add a comment..."
+          role="textbox"
+          contentEditable
         />
-        <button type="submit" className={c.Form_button}>
-          Send
+        <button type="submit" className={c.Form_button} disabled={loading}>
+          <img src={arrowRight} alt="send icon" />
         </button>
       </form>
 

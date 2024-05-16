@@ -51,6 +51,9 @@ io.on("connection", (socket) => {
   socket.on("comment-added", (comment) => {
     socket.broadcast.emit("comment-added", comment);
   });
+  socket.on("comment-edited", (comment) => {
+    socket.broadcast.emit("comment-edited", comment);
+  });
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });

@@ -15,14 +15,18 @@ export const getComment: GetComment = ({ commentId, userId }) => {
   });
 };
 
-export const addComment: AddComment = ({ content, parentId, userId }) => {
+export const addCommentService: AddComment = ({
+  content,
+  parentId,
+  userId,
+}) => {
   return makeRequest("/comments/add", {
     method: "post",
     data: { content, parentId, userId },
   });
 };
 
-export const editComment: EditComment = ({ content, commentId }) => {
+export const editCommentService: EditComment = ({ content, commentId }) => {
   return makeRequest(`/comments/${commentId}`, {
     method: "put",
     data: { content },
@@ -77,7 +81,7 @@ type EditComment = ({
 }: {
   content: string;
   commentId: string;
-}) => Promise<any>;
+}) => Promise<Comment>;
 
 type AddComment = ({
   content,
@@ -87,4 +91,4 @@ type AddComment = ({
   content: string;
   userId: string;
   parentId?: string | undefined;
-}) => Promise<any>;
+}) => Promise<Comment>;
