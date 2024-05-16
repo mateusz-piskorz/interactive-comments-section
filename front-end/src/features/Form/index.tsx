@@ -1,6 +1,6 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef } from "react";
 import c from "./Form.module.scss";
-import { addComment, editComment } from "../../services/comments";
+import { addCommentService, editCommentService } from "../../services/comments";
 import { useAsyncFn } from "../../hooks/useAsync";
 import { useUser } from "../../context/user";
 import { useComment } from "../../context/comment";
@@ -9,35 +9,34 @@ import { socket } from "../../socket";
 import arrowRight from "../../assets/arrow-right.svg";
 
 type FormProps = {
-  operation: "edit" | "add";
-  positionAbsolute?: boolean;
   parentId: string;
+  operation: "edit" | "add";
+  fixedPosition?: boolean;
   onSubmit?: () => void;
   initialContent?: string;
 };
 
 export const Form: FC<FormProps> = ({
-  positionAbsolute,
   parentId,
-  onSubmit,
   operation,
+  fixedPosition,
+  onSubmit,
   initialContent,
 }) => {
-  const {
-    user: { _id: userId },
-  } = useUser();
-  const { addComment: addCommentToContext, editComment: editCommentInContext } =
-    useComment();
+  const input = useRef<HTMLSpanElement>(null);
+  const FormClassName = `${c.Form}${` ${fixedPosition ? c.Form___fixed : ""}`}`;
+  const { userId } = useUser();
+  const { addComment, editComment } = useComment();
   const { execute, error, setError, loading } = useAsyncFn(
-    operation === "add" ? addComment : editComment,
+    operation === "add" ? addCommentService : editCommentService,
     {
       onSuccess: (comment) => {
         if (operation === "add") {
-          addCommentToContext({ ...comment, yourComment: true });
+          addComment({ ...comment, yourComment: true });
           socket.emit("comment-added", comment);
           input.current!.innerText = "";
         } else {
-          editCommentInContext(comment.id, { ...comment, yourComment: true });
+          editComment(comment._id, { ...comment, yourComment: true });
           socket.emit("comment-edited", comment);
         }
         onSubmit && onSubmit();
@@ -45,12 +44,12 @@ export const Form: FC<FormProps> = ({
     }
   );
 
-  const input = useRef<HTMLSpanElement>(null);
-  const className = `${c.Form}${` ${positionAbsolute ? c.Form___fixed : ""}`}`;
-
   const submitHandler = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
-    const content = input.current!.innerText;
+    const content = input.current!.innerText?.replace(
+      /(\r\n|\n|\r){2,}/gm,
+      "\n\n"
+    );
     if (content === "") return;
     if (operation === "add") {
       execute({ content, userId, parentId });
@@ -61,11 +60,8 @@ export const Form: FC<FormProps> = ({
 
   useEffect(() => {
     if (!input.current) return;
-
     const inputRef = input.current;
-    if (initialContent) {
-      inputRef.innerText = initialContent;
-    }
+    inputRef.textContent = initialContent || "";
 
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.code === "Enter" && !event.shiftKey) {
@@ -75,15 +71,14 @@ export const Form: FC<FormProps> = ({
     };
 
     inputRef.addEventListener("keydown", keyDownHandler);
-
     return () => {
-      inputRef!.removeEventListener("keydown", keyDownHandler);
+      inputRef.removeEventListener("keydown", keyDownHandler);
     };
   }, []);
 
   return (
     <>
-      <form className={className} onSubmit={submitHandler}>
+      <form className={FormClassName} onSubmit={submitHandler}>
         <span
           autoFocus
           ref={input}
@@ -92,7 +87,7 @@ export const Form: FC<FormProps> = ({
           contentEditable
         />
         <button type="submit" className={c.Form_button} disabled={loading}>
-          <img src={arrowRight} alt="arrow right icon" />
+          <img src={arrowRight} alt="send icon" />
         </button>
       </form>
 

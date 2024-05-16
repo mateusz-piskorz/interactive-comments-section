@@ -17,7 +17,7 @@ export const useUser = () => {
   if (context === null) {
     throw new Error("useUser context is undefined");
   } else {
-    return context;
+    return { ...context, userId: context.user._id };
   }
 };
 

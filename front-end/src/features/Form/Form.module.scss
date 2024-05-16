@@ -1,35 +1,32 @@
 .Form {
-  backdrop-filter: blur(10px);
+  background-color: white;
+  border-radius: 10px;
   padding: 20px;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: flex-end;
-  justify-content: center;
-  gap: 20px;
-  width: calc(100% - 20px);
-  margin-left: 20px;
+  justify-content: space-between;
+  gap: 10px;
 
   &___fixed {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    justify-content: center;
+    backdrop-filter: blur(20px);
+    background-color: transparent;
     width: 100%;
-    margin-left: 0;
     position: fixed;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
   }
 
   &_input {
     overflow: auto;
     -webkit-font-smoothing: antialiased;
     white-space: pre-wrap;
-    width: 80%;
+    width: 90%;
     max-width: 1000px;
-    max-height: 124px;
     min-height: 40px;
+    max-height: 124px;
     background-color: rgba(134, 142, 153, 0.1);
-    border-radius: 20px;
+    border-radius: 17px;
     padding: 10px 20px;
 
     &[contenteditable]:empty::before {
@@ -42,9 +39,9 @@
     background-color: transparent;
     border: none;
     cursor: pointer;
-    display: grid;
-    place-items: center;
     height: 40px;
+    display: flex;
+    align-items: center;
     &:disabled {
       cursor: default;
       opacity: 0.5;
@@ -54,6 +51,7 @@
 
 @media screen and (min-width: 768px) {
   .Form {
+    justify-content: center;
     gap: 30px;
   }
 }
