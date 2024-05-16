@@ -41,6 +41,17 @@ it("calls onSubmit on form submit", async () => {
   expect(onSubmit).toHaveBeenCalled();
 });
 
+it("submits form on enter", async () => {
+  const onSubmit = jest.fn();
+  render(<Form {...defaultProps} onSubmit={onSubmit} />);
+  const input = screen.getByRole("textbox");
+  await fireEvent.change(input, {
+    target: { innerText: content },
+  });
+  await fireEvent.keyDown(input, { code: "Enter" });
+  expect(onSubmit).toHaveBeenCalled();
+});
+
 it("calls addComment on form submit", async () => {
   render(<Form {...defaultProps} />);
   await fireEvent.change(screen.getByRole("textbox"), {
@@ -57,9 +68,9 @@ it("calls addComment on form submit", async () => {
 it("calls editComment on form submit", async () => {
   render(<Form {...defaultProps} operation="edit" />);
   await fireEvent.change(screen.getByRole("textbox"), {
-    target: { value: content },
+    target: { innerText: content },
   });
-  await screen.getByText("Send").click();
+  await screen.getByRole("button", { name: "send icon" }).click();
   expect(editCommentService).toHaveBeenCalledWith({
     content,
     commentId: rootId,
@@ -76,9 +87,9 @@ it("displays dialog on error", async () => {
 
   render(<Form {...defaultProps} />);
   await fireEvent.change(screen.getByRole("textbox"), {
-    target: { value: content },
+    target: { innerText: content },
   });
-  screen.getByText("Send").click();
+  await screen.getByRole("button", { name: "send icon" }).click();
   await waitFor(async () => {
     expect(DialogProps).toHaveBeenCalledWith(
       expect.objectContaining({ description: message, elapsedTime })

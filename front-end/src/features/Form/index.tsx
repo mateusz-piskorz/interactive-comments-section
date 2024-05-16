@@ -50,7 +50,7 @@ export const Form: FC<FormProps> = ({
       /(\r\n|\n|\r){2,}/gm,
       "\n\n"
     );
-    if (content === "") return;
+    if (!content || content === "") return;
     if (operation === "add") {
       execute({ content, userId, parentId });
     } else {

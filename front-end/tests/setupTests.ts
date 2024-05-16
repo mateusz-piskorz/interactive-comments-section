@@ -4,6 +4,7 @@ import { user, comments } from "./constants";
 jest.mock("../src/context/user", () => ({
   useUser: jest.fn(() => ({
     user,
+    userId: user._id,
   })),
 }));
 jest.mock("../src/socket", () => ({
