@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { SignInUserDto } from './dto/signIn-user.dto';
 import { PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
@@ -50,19 +49,4 @@ export class UsersService {
       select: selectUserFields,
     });
   }
-
-  async findOne(id: number, request: Request) {
-    const username = request['user'].username;
-    const userId = request['user'].sub;
-    return username;
-    return `This action returns a #${id} user`;
-  }
-
-  // async update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
-
-  // async remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
 }
