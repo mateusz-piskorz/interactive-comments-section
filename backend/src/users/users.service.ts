@@ -53,6 +53,8 @@ export class UsersService {
 
   async findOne(id: number, request: Request) {
     const username = request['user'].username;
+    const userId = request['user'].sub;
+    return username;
     return `This action returns a #${id} user`;
   }
 
