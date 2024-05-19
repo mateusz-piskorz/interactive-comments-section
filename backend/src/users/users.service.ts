@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SignInUserDto } from './dto/signIn-user.dto';
@@ -30,11 +34,18 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
+    const user = await users.findUnique({
+      where: { username: createUserDto.username },
+    });
+    if (user) {
+      throw new ConflictException('username already taken');
+    }
+
     return users.create({ data: createUserDto });
   }
 
   async findAll() {
-    return `This action returns all users`;
+    return users.findMany();
   }
 
   async findOne(id: number) {
