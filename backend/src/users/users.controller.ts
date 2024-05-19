@@ -20,24 +20,24 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('signIn') //users/signIn
+  @Post('signIn') //POST /users/signIn
   signIn(@Body(ValidationPipe) signInUserDto: SignInUserDto) {
     return this.usersService.signIn(signInUserDto);
   }
 
-  @Post() //users
+  @Post() //POST /users
   create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @UseGuards(AuthGuard)
-  @Get() //users
+  @Get() ///GET /users
   findAll() {
     return this.usersService.findAll();
   }
 
   @UseGuards(AuthGuard)
-  @Get(':id') //users/:id
+  @Get(':id') //GET /users/:id
   findOne(@Param('id') id: string, @Req() request: Request) {
     return this.usersService.findOne(+id, request);
   }
