@@ -55,19 +55,26 @@ export class CommentsService {
     if (!comment) throw new NotFoundException();
     if (comment.authorId !== authorId) throw new UnauthorizedException();
 
-    const likesArr = [...comment.likes];
-    let index = likesArr.indexOf(authorId);
-    if (index === -1) {
+    let likesArr = [...comment.likes];
+    let dislikesArr = [...comment.dislikes];
+
+    if (![...likesArr, ...dislikesArr].includes(authorId)) {
+      //user has not liked this comment yet, so we adding a like
       likesArr.push(authorId);
+    } else if (likesArr.includes(authorId)) {
+      //user has liked this comment, so we removing a like
+      likesArr = likesArr.filter((id) => id !== authorId);
     } else {
-      likesArr.splice(index, 1);
+      //user has disliked this comment, so we removing dislike and adding a like
+      dislikesArr = dislikesArr.filter((id) => id !== authorId);
+      likesArr.push(authorId);
     }
 
-    const likesCount = likesArr.length - comment.dislikes.length;
+    const likesCount = likesArr.length - dislikesArr.length;
 
     return await comments.update({
       where: { id },
-      data: { likes: likesArr, likesCount },
+      data: { likes: likesArr, dislikes: dislikesArr, likesCount },
       select: selectCommentFields,
     });
   }
@@ -77,19 +84,26 @@ export class CommentsService {
     if (!comment) throw new NotFoundException();
     if (comment.authorId !== authorId) throw new UnauthorizedException();
 
-    const dislikesArr = [...comment.dislikes];
-    let index = dislikesArr.indexOf(authorId);
-    if (index === -1) {
+    let likesArr = [...comment.likes];
+    let dislikesArr = [...comment.dislikes];
+
+    if (![...likesArr, ...dislikesArr].includes(authorId)) {
+      //user has not liked this comment yet, so we adding a like
       dislikesArr.push(authorId);
+    } else if (dislikesArr.includes(authorId)) {
+      //user has liked this comment, so we removing a like
+      dislikesArr = dislikesArr.filter((id) => id !== authorId);
     } else {
-      dislikesArr.splice(index, 1);
+      //user has liked this comment, so we removing like and adding a dislike
+      likesArr = likesArr.filter((id) => id !== authorId);
+      dislikesArr.push(authorId);
     }
 
-    const likesCount = dislikesArr.length - comment.dislikes.length;
+    const likesCount = likesArr.length - dislikesArr.length;
 
     return await comments.update({
       where: { id },
-      data: { dislikes: dislikesArr, likesCount },
+      data: { likes: likesArr, dislikes: dislikesArr, likesCount },
       select: selectCommentFields,
     });
   }
