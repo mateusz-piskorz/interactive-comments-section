@@ -40,7 +40,16 @@ export class CommentsService {
     });
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} comment`;
+  async remove(id: string, authorId: string) {
+    console.log(id);
+    const comment = await comments.findUnique({ where: { id } });
+    if (comment.authorId !== authorId) {
+      throw new UnauthorizedException();
+    }
+
+    return await comments.delete({
+      where: { id },
+      select: selectCommentFields,
+    });
   }
 }

@@ -29,6 +29,7 @@ export class CommentsController {
     return this.commentsService.create(createCommentDto, authorId);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   findAll() {
     return this.commentsService.findAll();
@@ -50,8 +51,10 @@ export class CommentsController {
     return this.commentsService.update(id, updateCommentDto, authorId);
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentsService.remove(+id);
+  remove(@Param('id') id: string, @Req() request: Request) {
+    const authorId: string = request['user'].sub;
+    return this.commentsService.remove(id, authorId);
   }
 }
