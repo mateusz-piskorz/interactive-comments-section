@@ -33,10 +33,8 @@ export class CommentsService {
 
   async update(id: string, { content }: UpdateCommentDto, authorId: string) {
     const comment = await comments.findUnique({ where: { id } });
-
-    if (comment.authorId !== authorId) {
-      throw new UnauthorizedException();
-    }
+    if (!comment) throw new NotFoundException();
+    if (comment.authorId !== authorId) throw new UnauthorizedException();
 
     return await comments.update({
       where: { id },
