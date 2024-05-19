@@ -1,4 +1,4 @@
-import { Injectable, Req } from '@nestjs/common';
+import { Injectable, Req, UnauthorizedException } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { PrismaClient } from '@prisma/client';
@@ -28,9 +28,18 @@ export class CommentsService {
   //   return `This action returns a #${id} comment`;
   // }
 
-  async update(id: number, updateCommentDto: UpdateCommentDto) {
-    // await const updatedComments = comments
-    return `This action updates a #${id} comment`;
+  async update(id: string, { content }: UpdateCommentDto, authorId: string) {
+    const comment = await comments.findUnique({ where: { id } });
+    if (comment.authorId !== authorId) {
+      throw new UnauthorizedException();
+    }
+
+    const updatedComments = await comments.update({
+      where: { id },
+      data: { content },
+      select: selectCommentFields,
+    });
+    return updatedComments;
   }
 
   async remove(id: number) {
