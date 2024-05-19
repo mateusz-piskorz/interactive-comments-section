@@ -30,10 +30,10 @@ export class UsersController {
   }
 
   // @UseGuards(AuthGuard)
-  // @Get() //users
-  // findAll() {
-  //   return this.usersService.findAll();
-  // }
+  @Get() //users
+  findAll() {
+    return this.usersService.findAll();
+  }
 
   @UseGuards(AuthGuard)
   @Get(':id') //users/2
