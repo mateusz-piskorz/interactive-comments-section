@@ -25,7 +25,8 @@ export class CommentsController {
     @Body(ValidationPipe) createCommentDto: CreateCommentDto,
     @Req() request: Request,
   ) {
-    return this.commentsService.create(createCommentDto, request);
+    const authorId: string = request['user'].sub;
+    return this.commentsService.create(createCommentDto, authorId);
   }
 
   @Get()

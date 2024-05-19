@@ -9,13 +9,12 @@ const { comments } = new PrismaClient();
 
 @Injectable()
 export class CommentsService {
-  async create(createCommentDto: CreateCommentDto, @Req() request: Request) {
+  async create(createCommentDto: CreateCommentDto, authorId: string) {
     const { content, parentId } = createCommentDto;
-    const authorId = request['user'].sub;
-    const newComment = await comments.create({
+    return await comments.create({
       data: { content, authorId, parentId },
+      select: selectCommentFields,
     });
-    return newComment;
   }
 
   async findAll() {
