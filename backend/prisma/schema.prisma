@@ -7,13 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Comments {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  content    String
+  parentId   String   @default("root")
+  likes      String[] @default([])
+  dislikes   String[] @default([])
+  likesCount Int      @default(0)
+  createdAt  DateTime @default(now())
+  authorId   String   @db.ObjectId
+  author     Users    @relation(fields: [authorId], references: [id])
+}
+
 model Users {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  password  String   @unique @default(uuid())
-  username  String   @unique
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  password  String     @unique @default(uuid())
+  username  String     @unique
   color     Color
   avatar    Avatar
-  createdAt DateTime @default(now())
+  createdAt DateTime   @default(now())
+  Comments  Comments[]
 }
 
 enum Color {
