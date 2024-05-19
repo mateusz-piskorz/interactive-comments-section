@@ -8,6 +8,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { SignInUserDto } from './dto/signIn-user.dto';
 import { PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { selectUserFields } from './constants';
 
 const { users } = new PrismaClient();
 
@@ -45,7 +46,9 @@ export class UsersService {
   }
 
   async findAll() {
-    return users.findMany();
+    return users.findMany({
+      select: selectUserFields,
+    });
   }
 
   async findOne(id: number, request: Request) {
