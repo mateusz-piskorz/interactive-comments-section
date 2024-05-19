@@ -46,7 +46,7 @@ export class UsersService {
   }
 
   async findAll() {
-    return users.findMany({
+    return await users.findMany({
       select: selectUserFields,
     });
   }
