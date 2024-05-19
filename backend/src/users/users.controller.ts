@@ -30,7 +30,7 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard)
-  @Get() ///GET /users
+  @Get() //GET /users
   findAll() {
     return this.usersService.findAll();
   }

@@ -20,7 +20,7 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @UseGuards(AuthGuard)
-  @Post()
+  @Post() //POST /comments
   create(
     @Body(ValidationPipe) createCommentDto: CreateCommentDto,
     @Req() request: Request,
@@ -30,13 +30,13 @@ export class CommentsController {
   }
 
   @UseGuards(AuthGuard)
-  @Get()
+  @Get() //GET /comments
   findAll() {
     return this.commentsService.findAll();
   }
 
   @UseGuards(AuthGuard)
-  @Patch(':id')
+  @Patch(':id') //PATH /comments/:id
   update(
     @Param('id') id: string,
     @Body() updateCommentDto: UpdateCommentDto,
@@ -47,7 +47,7 @@ export class CommentsController {
   }
 
   @UseGuards(AuthGuard)
-  @Delete(':id')
+  @Delete(':id') //DELETE /comments/:id
   remove(@Param('id') id: string, @Req() request: Request) {
     const authorId: string = request['user'].sub;
     return this.commentsService.remove(id, authorId);
