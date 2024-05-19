@@ -1,4 +1,8 @@
-import { Injectable, Req, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { PrismaClient } from '@prisma/client';
@@ -29,6 +33,7 @@ export class CommentsService {
 
   async update(id: string, { content }: UpdateCommentDto, authorId: string) {
     const comment = await comments.findUnique({ where: { id } });
+
     if (comment.authorId !== authorId) {
       throw new UnauthorizedException();
     }
@@ -41,11 +46,9 @@ export class CommentsService {
   }
 
   async remove(id: string, authorId: string) {
-    console.log(id);
     const comment = await comments.findUnique({ where: { id } });
-    if (comment.authorId !== authorId) {
-      throw new UnauthorizedException();
-    }
+    if (!comment) throw new NotFoundException();
+    if (comment.authorId !== authorId) throw new UnauthorizedException();
 
     return await comments.delete({
       where: { id },
