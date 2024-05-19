@@ -36,6 +36,13 @@ export class CommentsController {
   }
 
   @UseGuards(AuthGuard)
+  @Patch('/like/:id') //PATH /comments/like/:id
+  like(@Param('id') id: string, @Req() request: Request) {
+    const authorId: string = request['user'].sub;
+    return this.commentsService.like(id, authorId);
+  }
+
+  @UseGuards(AuthGuard)
   @Patch(':id') //PATH /comments/:id
   update(
     @Param('id') id: string,

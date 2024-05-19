@@ -49,4 +49,26 @@ export class CommentsService {
       select: selectCommentFields,
     });
   }
+
+  async like(id: string, authorId: string) {
+    const comment = await comments.findUnique({ where: { id } });
+    if (!comment) throw new NotFoundException();
+    if (comment.authorId !== authorId) throw new UnauthorizedException();
+
+    const likesArr = [...comment.likes];
+    let index = likesArr.indexOf(authorId);
+    if (index === -1) {
+      likesArr.push(authorId);
+    } else {
+      likesArr.splice(index, 1);
+    }
+
+    const likesCount = likesArr.length - comment.dislikes.length;
+
+    return await comments.update({
+      where: { id },
+      data: { likes: likesArr, likesCount },
+      select: selectCommentFields,
+    });
+  }
 }
