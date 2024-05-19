@@ -48,7 +48,8 @@ export class UsersService {
     return users.findMany();
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, request: Request) {
+    const username = request['user'].username;
     return `This action returns a #${id} user`;
   }
 

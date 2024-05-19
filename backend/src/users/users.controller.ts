@@ -8,6 +8,7 @@ import {
   Delete,
   ValidationPipe,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { AuthGuard } from './auth.guard';
 import { UsersService } from './users.service';
@@ -37,8 +38,8 @@ export class UsersController {
 
   @UseGuards(AuthGuard)
   @Get(':id') //users/2
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOne(@Param('id') id: string, @Req() request: Request) {
+    return this.usersService.findOne(+id, request);
   }
 
   // @UseGuards(AuthGuard)
