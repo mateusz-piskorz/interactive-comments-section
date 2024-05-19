@@ -27,10 +27,6 @@ export class CommentsService {
     });
   }
 
-  // async findOne(id: number) {
-  //   return `This action returns a #${id} comment`;
-  // }
-
   async update(id: string, { content }: UpdateCommentDto, authorId: string) {
     const comment = await comments.findUnique({ where: { id } });
     if (!comment) throw new NotFoundException();
