@@ -12,11 +12,17 @@ import {
 import { AuthGuard } from './auth.guard';
 import { UsersService } from './users.service';
 
+import { SignInUserDto } from './dto/signin-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Post('signIn') //users/signIn
+  signIn(@Body(ValidationPipe) signInUserDto: SignInUserDto) {
+    return this.usersService.signIn(signInUserDto);
+  }
 
   @Post() //users
   create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
