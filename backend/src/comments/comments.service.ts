@@ -33,12 +33,11 @@ export class CommentsService {
       throw new UnauthorizedException();
     }
 
-    const updatedComments = await comments.update({
+    return await comments.update({
       where: { id },
       data: { content },
       select: selectCommentFields,
     });
-    return updatedComments;
   }
 
   async remove(id: number) {
