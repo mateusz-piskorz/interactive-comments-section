@@ -19,17 +19,17 @@ export class CommentsService {
   }
 
   async findAll() {
-    const myComments = await comments.findMany({
+    return await comments.findMany({
       select: selectCommentFields,
     });
-    return myComments;
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} comment`;
-  }
+  // async findOne(id: number) {
+  //   return `This action returns a #${id} comment`;
+  // }
 
   async update(id: number, updateCommentDto: UpdateCommentDto) {
+    // await const updatedComments = comments
     return `This action updates a #${id} comment`;
   }
 
