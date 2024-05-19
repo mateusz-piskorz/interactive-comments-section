@@ -2,7 +2,8 @@ import { Injectable, Req } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { PrismaClient } from '@prisma/client';
-import { selectUserFields } from '../users/constants';
+
+import { selectCommentFields } from './constants';
 
 const { comments } = new PrismaClient();
 
@@ -18,7 +19,10 @@ export class CommentsService {
   }
 
   async findAll() {
-    return 'this action returns all comments';
+    const myComments = await comments.findMany({
+      select: selectCommentFields,
+    });
+    return myComments;
   }
 
   async findOne(id: number) {
