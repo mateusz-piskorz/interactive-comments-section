@@ -57,24 +57,25 @@ export class CommentsService {
 
     let likesArr = [...comment.likes];
     let dislikesArr = [...comment.dislikes];
+    const hasLiked = likesArr.includes(authorId);
+    const hasDisliked = dislikesArr.includes(authorId);
 
-    if (![...likesArr, ...dislikesArr].includes(authorId)) {
-      //user has not liked this comment yet, so we adding a like
+    if (!hasLiked && !hasDisliked) {
       likesArr.push(authorId);
-    } else if (likesArr.includes(authorId)) {
-      //user has liked this comment, so we removing a like
+    } else if (hasLiked) {
       likesArr = likesArr.filter((id) => id !== authorId);
     } else {
-      //user has disliked this comment, so we removing dislike and adding a like
       dislikesArr = dislikesArr.filter((id) => id !== authorId);
       likesArr.push(authorId);
     }
 
-    const likesCount = likesArr.length - dislikesArr.length;
-
     return await comments.update({
       where: { id },
-      data: { likes: likesArr, dislikes: dislikesArr, likesCount },
+      data: {
+        likes: likesArr,
+        dislikes: dislikesArr,
+        likesCount: likesArr.length - dislikesArr.length,
+      },
       select: selectCommentFields,
     });
   }
@@ -86,24 +87,25 @@ export class CommentsService {
 
     let likesArr = [...comment.likes];
     let dislikesArr = [...comment.dislikes];
+    const hasLiked = likesArr.includes(authorId);
+    const hasDisliked = dislikesArr.includes(authorId);
 
-    if (![...likesArr, ...dislikesArr].includes(authorId)) {
-      //user has not liked this comment yet, so we adding a like
+    if (!hasLiked && !hasDisliked) {
       dislikesArr.push(authorId);
-    } else if (dislikesArr.includes(authorId)) {
-      //user has liked this comment, so we removing a like
+    } else if (hasDisliked) {
       dislikesArr = dislikesArr.filter((id) => id !== authorId);
     } else {
-      //user has liked this comment, so we removing like and adding a dislike
       likesArr = likesArr.filter((id) => id !== authorId);
       dislikesArr.push(authorId);
     }
 
-    const likesCount = likesArr.length - dislikesArr.length;
-
     return await comments.update({
       where: { id },
-      data: { likes: likesArr, dislikes: dislikesArr, likesCount },
+      data: {
+        likes: likesArr,
+        dislikes: dislikesArr,
+        likesCount: likesArr.length - dislikesArr.length,
+      },
       select: selectCommentFields,
     });
   }
