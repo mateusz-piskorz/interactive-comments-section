@@ -10,10 +10,10 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <UserProvider>
-      <CommentsProvider>
-        <App />
-      </CommentsProvider>
-    </UserProvider>
+    <App />
+    {/* <UserProvider> */}
+    {/* <CommentsProvider> */}
+    {/* </CommentsProvider> */}
+    {/* </UserProvider> */}
   </React.StrictMode>
 );

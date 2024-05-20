@@ -30,9 +30,7 @@ export const Post: FC<PostProps & ExtraProps> = ({
   onReply,
   onEdit,
 }) => {
-  const {
-    user: { _id: userId },
-  } = useUser();
+  const { userId } = useUser();
   const { comment } = useComment(commentId);
   const { avatar, color, content, createdAt, name, yourComment } = comment!;
   const [showDialog, setShowDialog] = useState(false);

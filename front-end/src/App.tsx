@@ -1,5 +1,6 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import "./App.css";
+
 import { CommentList } from "./features/CommentList";
 import { Form } from "./features/Form";
 import { useComment } from "./context/comment";
@@ -7,36 +8,50 @@ import { useAuth } from "./hooks/useAuth";
 import { RegisterForm } from "./features/RegisterForm";
 
 const App: FC = () => {
-  const { isLogged, loading, error, setIsLogged } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isRes, setIsRes] = useState(false);
 
-  const registerHandler = () => {
-    setIsLogged({ message: "success" });
-  };
+  console.log("rerendered");
 
-  if (loading) {
-    return <h1>Loading...</h1>;
-  }
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsRes(true);
+    }, 5000);
+  }, []);
+  // const { isLogged, loading, error, setIsLogged } = useAuth();
 
-  if (error) {
-    return <h1>Error</h1>;
-  }
+  // const registerHandler = () => {
+  //   setIsLogged({ message: "success" });
+  // };
 
-  if (!isLogged && !loading) {
-    return <RegisterForm onSubmit={registerHandler} />;
-  }
+  // if (loading) {
+  //   return <h1>Loading...</h1>;
+  // }
 
-  return <CommentSystem />;
+  // if (error) {
+  //   return <h1>Error</h1>;
+  // }
+
+  // if (!isLogged && !loading) {
+  //   return <RegisterForm onSubmit={registerHandler} />;
+  // }
+
+  return <h1>Hi</h1>;
+  // return <CommentSystem />;
 };
 
-const CommentSystem = () => {
-  const { childComments } = useComment();
-  return (
-    <>
-      <CommentList comments={childComments} nestingLevel={0}></CommentList>
-      <Form operation="add" parentId="root" fixedPosition />
-    </>
-  );
-};
+// const CommentSystem = () => {
+//   const { childComments } = useComment();
+//   return (
+//     <>
+//       <CommentList comments={childComments} nestingLevel={0}></CommentList>
+//       <Form operation="add" parentId="root" fixedPosition />
+//     </>
+//   );
+// };
 
 export default App;
 

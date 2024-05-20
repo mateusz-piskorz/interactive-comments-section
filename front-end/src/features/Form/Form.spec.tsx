@@ -61,7 +61,7 @@ it("calls addComment on form submit", async () => {
   expect(addCommentService).toHaveBeenCalledWith({
     content,
     parentId: rootId,
-    userId: user._id,
+    userId: user.id,
   });
 });
 

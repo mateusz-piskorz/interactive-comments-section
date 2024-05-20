@@ -32,7 +32,7 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
     error,
     loading,
     setResData: setComments,
-  } = useAsync(() => getComments({ userId: user._id }));
+  } = useAsync(() => getComments({ userId: user.id }));
 
   const addComment = (comment: Comment) => {
     setComments((prev) => [...prev!, comment]);
