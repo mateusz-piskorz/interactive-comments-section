@@ -2,10 +2,12 @@ import { availableAvatars } from "../features/ProfileAvatar";
 import { makeRequest } from "./makeRequest";
 
 export type UserDetails = {
-  avatar: (typeof availableAvatars)[number];
+  id: string;
+  password: string;
+  username: string;
   color: string;
-  name: string;
-  _id: string;
+  avatar: (typeof availableAvatars)[number];
+  createdAt: Date;
 };
 
 export const getUserDetails: GetUserDetails = ({ userId }) => {
@@ -18,9 +20,16 @@ export const getUserDetails: GetUserDetails = ({ userId }) => {
 type GetUserDetails = ({ userId }: { userId: string }) => Promise<UserDetails>;
 
 export const register: Register = ({ name, avatar, color }) => {
-  return makeRequest("/users/add", {
+  return makeRequest("/users", {
     method: "post",
     data: { name, avatar, color },
+  });
+};
+
+export const signIn: SignIn = ({ username, password }) => {
+  return makeRequest("/users/signIn", {
+    method: "post",
+    data: { username, password },
   });
 };
 
@@ -33,3 +42,11 @@ type Register = ({
   avatar: string;
   color: string;
 }) => Promise<UserDetails>;
+
+type SignIn = ({
+  username,
+  password,
+}: {
+  username: string;
+  password: string;
+}) => Promise<{ message: string }>;

@@ -8,6 +8,7 @@ import { SignInUserDto } from './dto/signIn-user.dto';
 import { PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { selectUserFields } from './constants';
+import { Response } from 'express';
 
 const { users } = new PrismaClient();
 
@@ -15,9 +16,7 @@ const { users } = new PrismaClient();
 export class UsersService {
   constructor(private jwtService: JwtService) {}
 
-  async signIn(
-    signInUserDto: SignInUserDto,
-  ): Promise<{ access_token: string }> {
+  async signIn(signInUserDto: SignInUserDto, response: Response) {
     const { username, password } = signInUserDto;
     const user = await users.findUnique({
       where: { username },
@@ -28,12 +27,13 @@ export class UsersService {
     }
 
     const payload = { sub: user.id, username };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+
+    const access_token = await this.jwtService.signAsync(payload);
+    response.setHeader('Authorization', `Bearer ${access_token}`);
+    return { message: 'success' };
   }
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto, response: Response) {
     const user = await users.findUnique({
       where: { username: createUserDto.username },
     });
@@ -41,7 +41,12 @@ export class UsersService {
       throw new ConflictException('username already taken');
     }
 
-    return users.create({ data: createUserDto });
+    const newUser = await users.create({ data: createUserDto });
+    const payload = { sub: newUser.id, userName: newUser.username };
+    const access_token = await this.jwtService.signAsync(payload);
+    response.setHeader('Authorization', `Bearer ${access_token}`);
+
+    return newUser;
   }
 
   async findAll() {

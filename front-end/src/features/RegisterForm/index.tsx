@@ -5,6 +5,7 @@ import { Overlay, zIndex } from "../Overlay";
 import { UserDetails, register } from "../../services/user";
 import { useAsyncFn } from "../../hooks/useAsync";
 import { localStorageIdKey } from "../../context/user";
+import { LS_PASSWORD, LS_USERNAME } from "../../constants";
 
 type RegisterFormProps = {
   onSubmit: (data: UserDetails) => void;
@@ -16,6 +17,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {
   const [avatar, setAvatar] = useState("avatar1");
   const [color, setColor] = useState("orange");
   const id = useId();
+
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     execute({ avatar, color, name });
@@ -24,7 +26,8 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {
   useEffect(
     function onSuccess() {
       if (resData) {
-        localStorage.setItem(localStorageIdKey, JSON.stringify(resData._id));
+        localStorage.setItem(LS_USERNAME, resData.username);
+        localStorage.setItem(LS_PASSWORD, resData.password);
         onSubmit(resData);
       }
     },
