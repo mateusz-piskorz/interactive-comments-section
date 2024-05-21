@@ -109,4 +109,8 @@ export class CommentsService {
       select: selectCommentFields,
     });
   }
+
+  async deleteAll() {
+    return await comments.deleteMany();
+  }
 }

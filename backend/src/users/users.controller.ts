@@ -6,6 +6,7 @@ import {
   ValidationPipe,
   UseGuards,
   Response,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from './auth.guard';
 import { UsersService } from './users.service';
@@ -23,6 +24,11 @@ export class UsersController {
     @Body(ValidationPipe) signInUserDto: SignInUserDto,
   ) {
     return this.usersService.signIn(signInUserDto, response);
+  }
+
+  @Delete('deleteAll') //Delete /users/removeAll
+  deleteAll() {
+    return this.usersService.deleteAll();
   }
 
   @Post() //POST /users

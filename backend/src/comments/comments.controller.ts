@@ -61,6 +61,11 @@ export class CommentsController {
     return this.commentsService.update(id, updateCommentDto, authorId);
   }
 
+  @Delete('deleteAll') //DELETE /comments/:id
+  deleteAll() {
+    return this.commentsService.deleteAll();
+  }
+
   @UseGuards(AuthGuard)
   @Delete(':id') //DELETE /comments/:id
   remove(@Param('id') id: string, @Req() request: Request) {

@@ -54,4 +54,8 @@ export class UsersService {
       select: selectUserFields,
     });
   }
+
+  async deleteAll() {
+    return await users.deleteMany();
+  }
 }

@@ -10,6 +10,7 @@ type AuthProps = {
 
 export const Auth: FC<AuthProps> = ({ onUserLogged }) => {
   const [showRegister, setShowRegister] = useState(false);
+  const [userLogged, setUserLogged] = useState(false);
   const { mutate, status } = useMutation({
     onSuccess: onUserLogged,
     mutationFn: signIn,

@@ -4,10 +4,12 @@ import { Auth } from "./features/Auth";
 
 const App: FC = () => {
   const [isUserLogged, setIsUserLogged] = useState(false);
-  return isUserLogged ? (
-    <h1>Welcome</h1>
-  ) : (
-    <Auth onUserLogged={() => setIsUserLogged(true)} />
+
+  return (
+    <>
+      <Auth onUserLogged={() => setIsUserLogged(true)} />
+      {isUserLogged && <h1>Hello World and Welcomm</h1>}
+    </>
   );
 };
 
