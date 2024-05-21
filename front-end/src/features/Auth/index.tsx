@@ -13,7 +13,7 @@ export const Auth: FC<AuthProps> = ({ onUserLogged }) => {
   const { mutate, status } = useMutation({
     onSuccess: onUserLogged,
     mutationFn: signIn,
-    mutationKey: ["repoData"],
+    mutationKey: ["signIn"],
   });
 
   useEffect(() => {

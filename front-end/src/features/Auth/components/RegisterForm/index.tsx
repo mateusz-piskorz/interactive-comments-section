@@ -1,37 +1,42 @@
-import { FC, useEffect, useId, useState } from "react";
+import { FC, useId, useState, FormEvent } from "react";
 import { RadioInputList } from "../RadioInputList";
 import c from "./RegisterForm.module.scss";
 import { Overlay, zIndex } from "../../../Overlay";
-import { UserDetails, register } from "../../../../services/user";
-import { useAsyncFn } from "../../../../hooks/useAsync";
+import { register } from "../../../../services/user";
 import { LS_PASSWORD, LS_USERNAME } from "../../../../constants";
+import { useMutation } from "@tanstack/react-query";
 
 type RegisterFormProps = {
-  onSubmit: (data: UserDetails) => void;
+  onSubmit: () => void;
 };
 
 export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {
-  const { execute, resData } = useAsyncFn(register);
+  const { mutate, status } = useMutation({
+    onSuccess: ({ username, password }) => {
+      localStorage.setItem(LS_USERNAME, username);
+      localStorage.setItem(LS_PASSWORD, password);
+      onSubmit();
+    },
+    mutationFn: register,
+    mutationKey: ["register"],
+  });
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("avatar1");
   const [color, setColor] = useState("orange");
   const id = useId();
 
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    execute({ avatar, color, name });
+    mutate({ avatar, color, name });
   };
 
-  useEffect(
-    function onSuccess() {
-      if (resData) {
-        localStorage.setItem(LS_USERNAME, resData.username);
-        localStorage.setItem(LS_PASSWORD, resData.password);
-        onSubmit(resData);
-      }
-    },
-    [resData]
-  );
+  if (status === "pending") {
+    return <h1>Loading...</h1>;
+  }
+
+  if (status === "error") {
+    return <h1>register failed, please try again</h1>;
+  }
 
   return (
     <>
