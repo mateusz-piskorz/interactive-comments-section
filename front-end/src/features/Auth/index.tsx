@@ -1,29 +1,37 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { signIn } from "../../services/user";
-import { useAsyncFn } from "../../hooks/useAsync";
 import { LS_PASSWORD, LS_USERNAME } from "../../constants";
+import { useMutation } from "@tanstack/react-query";
+import { RegisterForm } from "../RegisterForm";
 
-export const Auth: FC = () => {
-  const { execute, error, loading, resData, setLoading, setResData } =
-    useAsyncFn(signIn, {
-      initialLoading: true,
-    });
+type AuthProps = {
+  onUserLogged: () => void;
+};
+
+export const Auth: FC<AuthProps> = ({ onUserLogged }) => {
+  const [showRegister, setShowRegister] = useState(false);
+  const { mutate, status } = useMutation({
+    onSuccess: onUserLogged,
+    mutationFn: signIn,
+    mutationKey: ["repoData"],
+  });
 
   useEffect(() => {
     const username = localStorage.getItem(LS_USERNAME);
     const password = localStorage.getItem(LS_PASSWORD);
     if (username && password) {
-      execute({ username, password });
+      mutate({ username, password });
     } else {
-      setLoading(false);
+      setShowRegister(true);
     }
   }, []);
 
-  return <div>Auth</div>;
+  console.log(status);
+  return showRegister ? (
+    <RegisterForm onSubmit={onUserLogged} />
+  ) : status === "pending" ? (
+    <h1>Loading...</h1>
+  ) : (
+    <h1>Error</h1>
+  );
 };
-
-//use auth
-// if jwtToken in localStorage = return isUserLogged=true
-// else if userName and Password in localStorage = /users/signIn -> save JWT in localStorage
-//
-// return isUserLogged
