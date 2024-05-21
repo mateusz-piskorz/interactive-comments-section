@@ -2,11 +2,8 @@ import { screen, render, waitFor } from "@testing-library/react";
 import { Post } from "./index";
 import { comment1 } from "../../../../../tests/constants";
 import { useComment } from "../../../../context/comment";
-import { useUser } from "../../../../context/user";
 
-const {
-  user: { avatar },
-} = useUser();
+const avatar = "avatar1";
 const defaultProps = {
   nestingLevel: 0,
   commentId: comment1._id,

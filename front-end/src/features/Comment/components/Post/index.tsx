@@ -8,7 +8,6 @@ import { LikesButton } from "../LikesButton";
 import { Dialog } from "../../../Dialog";
 import { useAsyncFn } from "../../../../hooks/useAsync";
 import { removeComment } from "../../../../services/comments";
-import { useUser } from "../../../../context/user";
 import { useComment } from "../../../../context/comment";
 
 export type PostProps = {
@@ -30,7 +29,7 @@ export const Post: FC<PostProps & ExtraProps> = ({
   onReply,
   onEdit,
 }) => {
-  const { userId } = useUser();
+  const userId = "test";
   const { comment } = useComment(commentId);
   const { avatar, color, content, createdAt, name, yourComment } = comment!;
   const [showDialog, setShowDialog] = useState(false);

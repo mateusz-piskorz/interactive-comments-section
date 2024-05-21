@@ -1,9 +1,8 @@
 import { screen, render, waitFor, fireEvent } from "@testing-library/react";
 import { Form } from "./index";
 import { addCommentService, editCommentService } from "../../services/comments";
-import { useUser } from "../../context/user";
 
-const { user } = useUser();
+const user = { id: "test" };
 const mockedAddComment = addCommentService as jest.Mock<any>;
 
 const DialogProps = jest.fn();

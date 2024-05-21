@@ -3,7 +3,6 @@ import { useAsync } from "../../hooks/useAsync";
 import { getComments } from "../../services/comments";
 import { ContextType } from "./types";
 import { socket } from "../../socket";
-import { useUser } from "../user";
 import { Comment } from "../../types";
 
 const Context = React.createContext<ContextType | null>(null);
@@ -25,7 +24,7 @@ export const useComment = (commentId: string = "root") => {
 export const CommentsProvider: FC<{ children?: ReactNode }> = ({
   children,
 }) => {
-  const { user } = useUser();
+  const user = { id: "test" };
 
   const {
     resData: comments,

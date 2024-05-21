@@ -2,7 +2,7 @@ import { FC, useId, useState, FormEvent } from "react";
 import { RadioInputList } from "../RadioInputList";
 import c from "./RegisterForm.module.scss";
 import { Overlay, zIndex } from "../../../Overlay";
-import { register } from "../../../../services/user";
+import { register } from "../../services";
 import { LS_PASSWORD, LS_USERNAME } from "../../../../constants";
 import { useMutation } from "@tanstack/react-query";
 
@@ -20,14 +20,14 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {
     mutationFn: register,
     mutationKey: ["register"],
   });
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [avatar, setAvatar] = useState("avatar1");
   const [color, setColor] = useState("orange");
   const id = useId();
 
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate({ avatar, color, name });
+    mutate({ avatar, color, username });
   };
 
   if (status === "pending") {
@@ -50,8 +50,8 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {
             Name
           </label>
           <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
             className={c.Form_input}
             type="text"

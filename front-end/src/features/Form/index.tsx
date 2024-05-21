@@ -2,7 +2,6 @@ import { FC, useEffect, useRef } from "react";
 import c from "./Form.module.scss";
 import { addCommentService, editCommentService } from "../../services/comments";
 import { useAsyncFn } from "../../hooks/useAsync";
-import { useUser } from "../../context/user";
 import { useComment } from "../../context/comment";
 import { Dialog } from "../Dialog";
 import { socket } from "../../socket";
@@ -25,7 +24,7 @@ export const Form: FC<FormProps> = ({
 }) => {
   const input = useRef<HTMLSpanElement>(null);
   const FormClassName = `${c.Form}${` ${fixedPosition ? c.Form___fixed : ""}`}`;
-  const { userId } = useUser();
+  const userId = "";
   const { addComment } = useComment();
   const { execute, error, setError, loading } = useAsyncFn(
     operation === "add" ? addCommentService : editCommentService,

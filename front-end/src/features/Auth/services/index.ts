@@ -1,10 +1,10 @@
 import { availableAvatars } from "../../../features/ProfileAvatar";
 import { makeRequest } from "../../../services/makeRequest";
 
-export const register: Register = ({ name, avatar, color }) => {
+export const register: Register = ({ username, avatar, color }) => {
   return makeRequest("/users", {
     method: "post",
-    data: { name, avatar, color },
+    data: { username, avatar, color },
   });
 };
 
@@ -25,11 +25,11 @@ export type UserDetails = {
 };
 
 type Register = ({
-  name,
+  username,
   avatar,
   color,
 }: {
-  name: string;
+  username: string;
   avatar: string;
   color: string;
 }) => Promise<UserDetails>;
