@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { signIn } from "../../services/user";
+import { signIn } from "./services";
 import { LS_PASSWORD, LS_USERNAME } from "../../constants";
 import { useMutation } from "@tanstack/react-query";
 import { RegisterForm } from "./features/RegisterForm";

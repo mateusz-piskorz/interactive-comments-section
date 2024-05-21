@@ -1,6 +1,6 @@
 import { screen, render, fireEvent } from "@testing-library/react";
 import { RegisterForm } from "./index";
-import { register } from "../../services/user";
+import { register } from "../../services";
 const onSubmit = jest.fn();
 
 const RadioInputListProps = jest.fn();
