@@ -1,11 +1,10 @@
 import { FC, useEffect, useId, useState } from "react";
 import { RadioInputList } from "./components/RadioInputList";
 import c from "./RegisterForm.module.scss";
-import { Overlay, zIndex } from "../Overlay";
-import { UserDetails, register } from "../../services/user";
-import { useAsyncFn } from "../../hooks/useAsync";
-import { localStorageIdKey } from "../../context/user";
-import { LS_PASSWORD, LS_USERNAME } from "../../constants";
+import { Overlay, zIndex } from "../../../Overlay";
+import { UserDetails, register } from "../../../../services/user";
+import { useAsyncFn } from "../../../../hooks/useAsync";
+import { LS_PASSWORD, LS_USERNAME } from "../../../../constants";
 
 type RegisterFormProps = {
   onSubmit: (data: UserDetails) => void;
