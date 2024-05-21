@@ -1,5 +1,5 @@
 import { FC, useEffect, useId, useState } from "react";
-import { RadioInputList } from "./components/RadioInputList";
+import { RadioInputList } from "../RadioInputList";
 import c from "./RegisterForm.module.scss";
 import { Overlay, zIndex } from "../../../Overlay";
 import { UserDetails, register } from "../../../../services/user";

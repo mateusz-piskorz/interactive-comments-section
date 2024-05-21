@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { signIn } from "./services";
 import { LS_PASSWORD, LS_USERNAME } from "../../constants";
 import { useMutation } from "@tanstack/react-query";
-import { RegisterForm } from "./features/RegisterForm";
+import { RegisterForm } from "./components/RegisterForm";
 
 type AuthProps = {
   onUserLogged: () => void;
@@ -26,7 +26,6 @@ export const Auth: FC<AuthProps> = ({ onUserLogged }) => {
     }
   }, []);
 
-  console.log(status);
   return showRegister ? (
     <RegisterForm onSubmit={onUserLogged} />
   ) : status === "pending" ? (
