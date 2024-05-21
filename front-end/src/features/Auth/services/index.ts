@@ -1,24 +1,6 @@
 import { availableAvatars } from "../../../features/ProfileAvatar";
 import { makeRequest } from "../../../services/makeRequest";
 
-export type UserDetails = {
-  id: string;
-  password: string;
-  username: string;
-  color: string;
-  avatar: (typeof availableAvatars)[number];
-  createdAt: Date;
-};
-
-// export const getUserDetails: GetUserDetails = ({ userId }) => {
-//   return makeRequest("/users", {
-//     method: "post",
-//     data: { userId },
-//   });
-// };
-
-// type GetUserDetails = ({ userId }: { userId: string }) => Promise<UserDetails>;
-
 export const register: Register = ({ name, avatar, color }) => {
   return makeRequest("/users", {
     method: "post",
@@ -31,6 +13,15 @@ export const signIn: SignIn = ({ username, password }) => {
     method: "post",
     data: { username, password },
   });
+};
+
+export type UserDetails = {
+  id: string;
+  password: string;
+  username: string;
+  color: string;
+  avatar: (typeof availableAvatars)[number];
+  createdAt: Date;
 };
 
 type Register = ({
