@@ -7,7 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { SignInUserDto } from './dto/signIn-user.dto';
 import { PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-import { JwtExpiresIn, selectUserFields } from './constants';
+import { JwtExpiresIn, selectUserFields, jwtCookieName } from './constants';
 import { Response } from 'express';
 
 const { users } = new PrismaClient();
@@ -29,7 +29,13 @@ export class UsersService {
     const payload = { sub: user.id, username };
 
     const access_token = await this.jwtService.signAsync(payload);
-    response.setHeader('Authorization', `Bearer ${access_token}`);
+    // domain: frontendDomain
+    response.header('Set-Cookie', [
+      `${jwtCookieName}=${access_token}; HttpOnly; Secure; SameSite=None; Max-Age=60; Path=/;`,
+      'otherCookieAndParams...',
+    ]);
+    // response.cookie('jwt', `Bearer ${access_token}`, { httpOnly: true });
+    // response.setHeader('Authorization', );
 
     return { ...user, expires_in: JwtExpiresIn };
   }
@@ -45,7 +51,11 @@ export class UsersService {
     const newUser = await users.create({ data: createUserDto });
     const payload = { sub: newUser.id, userName: newUser.username };
     const access_token = await this.jwtService.signAsync(payload);
-    response.setHeader('Authorization', `Bearer ${access_token}`);
+    response.header('Set-Cookie', [
+      `${jwtCookieName}=${access_token}; HttpOnly; Secure; SameSite=None; Max-Age=${JwtExpiresIn}; Path=/;`,
+    ]);
+    // response.cookie('jwt', `Bearer ${access_token}`, { httpOnly: true });
+    // response.setHeader('Authorization', `Bearer ${access_token}`);
 
     return { ...newUser, expires_in: JwtExpiresIn };
   }

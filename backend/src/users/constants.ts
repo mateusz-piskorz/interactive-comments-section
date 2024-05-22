@@ -11,3 +11,5 @@ export const selectUserFields = {
 
 //15 min
 export const JwtExpiresIn = 900;
+
+export const jwtCookieName = 'ICS_Authorization';

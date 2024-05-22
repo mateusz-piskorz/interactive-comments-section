@@ -29,8 +29,10 @@ export const Auth: FC = () => {
       <Dialog
         description={error.message}
         onCancel={() => {
-          localStorage.removeItem(LS_USERNAME);
-          localStorage.removeItem(LS_PASSWORD);
+          if (error.message === "Unauthorized") {
+            localStorage.removeItem(LS_USERNAME);
+            localStorage.removeItem(LS_PASSWORD);
+          }
           reset();
         }}
       />

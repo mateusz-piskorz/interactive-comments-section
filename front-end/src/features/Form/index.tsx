@@ -25,13 +25,13 @@ export const Form: FC<FormProps> = ({
   const input = useRef<HTMLSpanElement>(null);
   const FormClassName = `${c.Form}${` ${fixedPosition ? c.Form___fixed : ""}`}`;
   const userId = "";
-  const { addComment } = useComment();
+  // const { addComment } = useComment();
   const { execute, error, setError, loading } = useAsyncFn(
     operation === "add" ? addCommentService : editCommentService,
     {
       onSuccess: (comment) => {
         if (operation === "add") {
-          addComment({ ...comment, yourComment: true });
+          // addComment({ ...comment, yourComment: true });
           socket.emit("comment-added", comment);
           input.current!.innerText = "";
         }

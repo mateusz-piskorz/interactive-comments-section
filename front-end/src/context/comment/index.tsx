@@ -4,6 +4,7 @@ import { getComments } from "../../services/comments";
 import { ContextType } from "./types";
 import { socket } from "../../socket";
 import { Comment } from "../../types";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const Context = React.createContext<ContextType | null>(null);
 
@@ -12,72 +13,75 @@ export const useComment = (commentId: string = "root") => {
   if (context === null) {
     throw new Error("useUser context is undefined");
   } else {
-    const comment = context.comments.find(({ _id }) => _id === commentId);
+    const comment = context.comments.find(({ id }) => id === commentId);
     const childComments = context.comments.filter(
       ({ parentId }) => parentId === commentId
     );
-    const { addComment } = context;
-    return { comment, childComments, addComment };
+
+    return { comment, childComments };
   }
 };
 
 export const CommentsProvider: FC<{ children?: ReactNode }> = ({
   children,
 }) => {
-  const user = { id: "test" };
+  const { status, data, error } = useQuery({
+    // onSuccess: setUser,
+    queryFn: getComments,
+    queryKey: ["comments"],
+  });
 
-  const {
-    resData: comments,
-    error,
-    loading,
-    setResData: setComments,
-  } = useAsync(() => getComments({ userId: user.id }));
+  // const {
+  //   resData: comments,
+  //   error,
+  //   loading,
+  //   setResData: setComments,
+  // } = useAsync(() => getComments());
 
-  const addComment = (comment: Comment) => {
-    setComments((prev) => [...prev!, comment]);
-  };
+  // const addComment = (comment: Comment) => {
+  //   setComments((prev) => [...prev!, comment]);
+  // };
 
-  useEffect(() => {
-    const onCommentAdded = (comment: Comment) => {
-      addComment(comment);
-    };
+  // useEffect(() => {
+  //   const onCommentAdded = (comment: Comment) => {
+  //     addComment(comment);
+  //   };
 
-    const onCommentEdited = (comment: Comment) => {
-      setComments((prev) =>
-        prev!.map((prevComment) =>
-          prevComment._id === comment._id
-            ? { ...comment, yourComment: prevComment.yourComment }
-            : prevComment
-        )
-      );
-    };
+  //   const onCommentEdited = (comment: Comment) => {
+  //     setComments((prev) =>
+  //       prev!.map((prevComment) =>
+  //         prevComment._id === comment._id
+  //           ? { ...comment, yourComment: prevComment.yourComment }
+  //           : prevComment
+  //       )
+  //     );
+  //   };
 
-    const onCommentRemoved = (props: { commentId: string }) => {
-      setComments((prev) =>
-        prev!.filter((comment) => comment._id !== props.commentId)
-      );
-    };
+  //   const onCommentRemoved = (props: { commentId: string }) => {
+  //     setComments((prev) =>
+  //       prev!.filter((comment) => comment._id !== props.commentId)
+  //     );
+  //   };
 
-    socket.on("comment-added", onCommentAdded);
-    socket.on("comment-edited", onCommentEdited);
-    socket.on("comment-removed", onCommentRemoved);
+  // socket.on("comment-added", onCommentAdded);
+  // socket.on("comment-edited", onCommentEdited);
+  // socket.on("comment-removed", onCommentRemoved);
 
-    return () => {
-      socket.off("comment-added", onCommentAdded);
-      socket.off("comment-edited", onCommentEdited);
-      socket.off("comment-removed", onCommentRemoved);
-    };
-  }, []);
+  // return () => {
+  //   socket.off("comment-added", onCommentAdded);
+  //   socket.off("comment-edited", onCommentEdited);
+  //   socket.off("comment-removed", onCommentRemoved);
+  // };
+  // }, []);
 
-  if (error) return <h1>{error.message}</h1>;
+  if (status === "error") return <h1>{error.message}</h1>;
 
-  if (loading) return <h1>Loading...</h1>;
+  if (status === "pending") return <h1>Loading...</h1>;
 
   return (
     <Context.Provider
       value={{
-        comments: comments!,
-        addComment,
+        comments: data,
       }}
     >
       {children}

@@ -6,6 +6,8 @@ axios.defaults.baseURL = serverUrl
   ? `${serverUrl}/systemcomments`
   : "http://localhost:3001";
 
+axios.defaults.withCredentials = true;
+
 export function makeRequest(
   url: string,
   options?: AxiosRequestConfig<any> | undefined

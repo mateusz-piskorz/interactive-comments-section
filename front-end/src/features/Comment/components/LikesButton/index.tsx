@@ -7,13 +7,15 @@ import { addLike } from "../../../../services/comments";
 import { useComment } from "../../../../context/comment";
 import { Dialog } from "../../../Dialog";
 import c from "./LikesButton.module.scss";
+import { useAuth } from "../../../Auth";
 
 type LikesBtnProps = {
   commentId: string;
 };
 
 export const LikesButton: FC<LikesBtnProps> = ({ commentId }) => {
-  const userId = "test";
+  const { user } = useAuth();
+  const { id: userId } = user!;
   const { comment } = useComment(commentId);
   const { likes, likesCount, dislikes } = comment!;
   const { execute, error, setError } = useAsyncFn(addLike);

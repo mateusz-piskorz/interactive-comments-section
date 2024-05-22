@@ -1,10 +1,9 @@
 import { makeRequest } from "./makeRequest";
 import { Comment } from "../types";
 
-export const getComments: GetComments = ({ userId }) => {
+export const getComments: GetComments = () => {
   return makeRequest("/comments", {
-    method: "post",
-    data: { userId },
+    method: "get",
   });
 };
 
@@ -55,7 +54,7 @@ type RemoveComment = ({
   commentId: string;
 }) => Promise<any>;
 
-type GetComments = ({ userId }: { userId: string }) => Promise<Comment[]>;
+type GetComments = () => Promise<Comment[]>;
 
 type GetComment = ({
   commentId,
