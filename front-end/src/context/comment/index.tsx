@@ -1,6 +1,7 @@
 import React, { FC, useContext, ReactNode, useEffect } from "react";
 import { getComments } from "../../services/comments";
 import { ContextType } from "./types";
+import { Comment } from "../../types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { socket } from "../../socket";
 
@@ -31,16 +32,6 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
   });
 
   useEffect(() => {
-    // const onCommentEdited = (comment: Comment) => {
-    //   setComments((prev) =>
-    //     prev!.map((prevComment) =>
-    //       prevComment._id === comment._id
-    //         ? { ...comment, yourComment: prevComment.yourComment }
-    //         : prevComment
-    //     )
-    //   );
-    // };
-
     // const onCommentRemoved = (props: { commentId: string }) => {
     //   setComments((prev) =>
     //     prev!.filter((comment) => comment._id !== props.commentId)
@@ -48,14 +39,20 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
     // };
 
     const onCommentAdded = (newComment: Comment) => {
-      queryClient.setQueryData(["comments"], (prev: []) => [
+      queryClient.setQueryData(["comments"], (prev: Comment[]) => [
         ...prev,
         newComment,
       ]);
     };
-    const onCommentEdited = () => {
-      console.log("onCommentEdited");
+
+    const onCommentEdited = (newComment: Comment) => {
+      queryClient.setQueryData(["comments"], (prev: Comment[]) =>
+        prev.map((comment) =>
+          comment.id === newComment.id ? newComment : comment
+        )
+      );
     };
+
     const onCommentRemoved = () => {
       console.log("onCommentRemoved");
     };

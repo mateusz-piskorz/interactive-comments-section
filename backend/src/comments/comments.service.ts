@@ -36,11 +36,13 @@ export class CommentsService {
     if (!comment) throw new NotFoundException();
     if (comment.authorId !== authorId) throw new UnauthorizedException();
 
-    return await comments.update({
+    const newComment = await comments.update({
       where: { id },
       data: { content },
       select: selectCommentFields,
     });
+    await this.socketGateway.server.emit('comment-edited', newComment);
+    return newComment;
   }
 
   async remove(id: string, authorId: string) {
@@ -72,7 +74,7 @@ export class CommentsService {
       likesArr.push(authorId);
     }
 
-    return await comments.update({
+    const newComment = await comments.update({
       where: { id },
       data: {
         likes: likesArr,
@@ -81,6 +83,9 @@ export class CommentsService {
       },
       select: selectCommentFields,
     });
+    await this.socketGateway.server.emit('comment-edited', newComment);
+
+    return newComment;
   }
 
   async dislike(id: string, authorId: string) {
@@ -101,7 +106,7 @@ export class CommentsService {
       dislikesArr.push(authorId);
     }
 
-    return await comments.update({
+    const newComment = await comments.update({
       where: { id },
       data: {
         likes: likesArr,
@@ -110,6 +115,9 @@ export class CommentsService {
       },
       select: selectCommentFields,
     });
+    await this.socketGateway.server.emit('comment-edited', newComment);
+
+    return newComment;
   }
 
   async deleteAll() {
