@@ -3,7 +3,7 @@ import { RadioInputList } from "../RadioInputList";
 import c from "./RegisterForm.module.scss";
 import { Overlay, zIndex } from "../../../Overlay";
 import { register } from "../../services";
-import { LS_PASSWORD, LS_USERNAME } from "../../../../constants";
+import { LS_PASSWORD, LS_USERNAME } from "../../constants";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "../../context";
 
