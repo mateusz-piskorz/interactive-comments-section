@@ -10,10 +10,10 @@ import { useAuth } from "../../context";
 export const RegisterForm: FC = () => {
   const { setUser } = useAuth();
   const { mutate, status } = useMutation({
-    onSuccess: (userDetails) => {
-      localStorage.setItem(LS_USERNAME, userDetails.username);
-      localStorage.setItem(LS_PASSWORD, userDetails.password);
-      setUser(userDetails);
+    onSuccess: (user) => {
+      localStorage.setItem(LS_USERNAME, user.username);
+      localStorage.setItem(LS_PASSWORD, user.password);
+      setUser(user);
     },
     mutationFn: register,
     mutationKey: ["register"],

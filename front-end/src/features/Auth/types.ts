@@ -7,4 +7,5 @@ export type UserDetails = {
   color: string;
   avatar: (typeof availableAvatars)[number];
   createdAt: Date;
+  expires_in: number;
 };

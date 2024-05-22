@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { DatabaseModule } from '../database/database.module';
-import { jwtConstants } from './constants';
+import { jwtConstants, JwtExpiresIn } from './constants';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
@@ -11,7 +11,7 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '2days' },
+      signOptions: { expiresIn: JwtExpiresIn },
     }),
   ],
   controllers: [UsersController],

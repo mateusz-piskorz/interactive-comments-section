@@ -7,7 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { SignInUserDto } from './dto/signIn-user.dto';
 import { PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-import { selectUserFields } from './constants';
+import { JwtExpiresIn, selectUserFields } from './constants';
 import { Response } from 'express';
 
 const { users } = new PrismaClient();
@@ -31,7 +31,7 @@ export class UsersService {
     const access_token = await this.jwtService.signAsync(payload);
     response.setHeader('Authorization', `Bearer ${access_token}`);
 
-    return user;
+    return { ...user, expires_in: JwtExpiresIn };
   }
 
   async create(createUserDto: CreateUserDto, response: Response) {
@@ -47,7 +47,7 @@ export class UsersService {
     const access_token = await this.jwtService.signAsync(payload);
     response.setHeader('Authorization', `Bearer ${access_token}`);
 
-    return newUser;
+    return { ...newUser, expires_in: JwtExpiresIn };
   }
 
   async findAll() {

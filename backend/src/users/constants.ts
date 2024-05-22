@@ -8,3 +8,6 @@ export const selectUserFields = {
   username: true,
   color: true,
 };
+
+//15 min
+export const JwtExpiresIn = 900;
