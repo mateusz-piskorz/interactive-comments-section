@@ -1,10 +1,7 @@
-import React, { FC, useContext, useEffect, ReactNode } from "react";
-import { useAsync } from "../../hooks/useAsync";
+import React, { FC, useContext, ReactNode, useEffect } from "react";
 import { getComments } from "../../services/comments";
 import { ContextType } from "./types";
-import { socket } from "../../socket";
-import { Comment } from "../../types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const Context = React.createContext<ContextType | null>(null);
 
@@ -26,7 +23,7 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
   children,
 }) => {
   const { status, data, error } = useQuery({
-    // onSuccess: setUser,
+    refetchOnWindowFocus: false,
     queryFn: getComments,
     queryKey: ["comments"],
   });
