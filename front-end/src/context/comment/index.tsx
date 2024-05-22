@@ -32,12 +32,6 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
   });
 
   useEffect(() => {
-    // const onCommentRemoved = (props: { commentId: string }) => {
-    //   setComments((prev) =>
-    //     prev!.filter((comment) => comment._id !== props.commentId)
-    //   );
-    // };
-
     const onCommentAdded = (newComment: Comment) => {
       queryClient.setQueryData(["comments"], (prev: Comment[]) => [
         ...prev,
@@ -53,8 +47,10 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
       );
     };
 
-    const onCommentRemoved = () => {
-      console.log("onCommentRemoved");
+    const onCommentRemoved = (commentId: string) => {
+      queryClient.setQueryData(["comments"], (prev: Comment[]) =>
+        prev.filter((comment) => comment.id !== commentId)
+      );
     };
 
     socket.on("comment-added", onCommentAdded);

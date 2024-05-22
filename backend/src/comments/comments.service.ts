@@ -50,10 +50,12 @@ export class CommentsService {
     if (!comment) throw new NotFoundException();
     if (comment.authorId !== authorId) throw new UnauthorizedException();
 
-    return await comments.delete({
+    const commentRemoved = await comments.delete({
       where: { id },
       select: selectCommentFields,
     });
+    await this.socketGateway.server.emit('comment-removed', id);
+    return commentRemoved;
   }
 
   async like(id: string, authorId: string) {
