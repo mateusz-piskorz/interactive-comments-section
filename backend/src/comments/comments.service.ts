@@ -53,7 +53,6 @@ export class CommentsService {
   async like(id: string, authorId: string) {
     const comment = await comments.findUnique({ where: { id } });
     if (!comment) throw new NotFoundException();
-    if (comment.authorId !== authorId) throw new UnauthorizedException();
 
     let likesArr = [...comment.likes];
     let dislikesArr = [...comment.dislikes];
@@ -83,7 +82,6 @@ export class CommentsService {
   async dislike(id: string, authorId: string) {
     const comment = await comments.findUnique({ where: { id } });
     if (!comment) throw new NotFoundException();
-    if (comment.authorId !== authorId) throw new UnauthorizedException();
 
     let likesArr = [...comment.likes];
     let dislikesArr = [...comment.dislikes];

@@ -44,9 +44,6 @@ export class AuthGuard implements CanActivate {
 
     const [tokenName, token] = refreshToken.split('=');
 
-    console.log('token');
-    console.log(token);
-
     return token;
   }
 }

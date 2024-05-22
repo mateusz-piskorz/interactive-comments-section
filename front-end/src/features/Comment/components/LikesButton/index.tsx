@@ -2,8 +2,7 @@ import { FC } from "react";
 import iconMinus from "../../assets/icon-minus.svg";
 import iconPlus from "../../assets/icon-plus.svg";
 import { useAsyncFn } from "../../../../hooks/useAsync";
-import { addLike } from "../../../../services/comments";
-
+import { addLike } from "../../services";
 import { useComment } from "../../../../context/comment";
 import { Dialog } from "../../../Dialog";
 import c from "./LikesButton.module.scss";
@@ -21,7 +20,7 @@ export const LikesButton: FC<LikesBtnProps> = ({ commentId }) => {
   const { execute, error, setError } = useAsyncFn(addLike);
 
   const clickHandler = (likeType: "like" | "dislike") => {
-    execute({ commentId, likeType, userId });
+    execute({ commentId, likeType });
   };
 
   return (

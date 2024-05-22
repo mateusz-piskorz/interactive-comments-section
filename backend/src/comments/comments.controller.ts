@@ -6,8 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  Req,
-  Res,
+  Request,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
@@ -24,7 +23,7 @@ export class CommentsController {
   @Post() //POST /comments
   create(
     @Body(ValidationPipe) createCommentDto: CreateCommentDto,
-    @Req() request: Request,
+    @Request() request: Request,
   ) {
     const authorId: string = request['user'].sub;
     return this.commentsService.create(createCommentDto, authorId);
@@ -37,25 +36,25 @@ export class CommentsController {
   }
 
   @UseGuards(AuthGuard)
-  @Patch('/like/:id') //PATH /comments/like/:id
-  like(@Param('id') id: string, @Req() request: Request) {
+  @Post('/like/:id') //POST /comments/like/:id
+  like(@Param('id') id: string, @Request() request: Request) {
     const authorId: string = request['user'].sub;
     return this.commentsService.like(id, authorId);
   }
 
   @UseGuards(AuthGuard)
-  @Patch('/dislike/:id') //PATH /comments/dislike/:id
-  dislike(@Param('id') id: string, @Req() request: Request) {
+  @Post('/dislike/:id') //POST /comments/dislike/:id
+  dislike(@Param('id') id: string, @Request() request: Request) {
     const authorId: string = request['user'].sub;
     return this.commentsService.dislike(id, authorId);
   }
 
   @UseGuards(AuthGuard)
-  @Patch(':id') //PATH /comments/:id
+  @Patch(':id') //PATCH /comments/:id
   update(
     @Param('id') id: string,
     @Body() updateCommentDto: UpdateCommentDto,
-    @Req() request: Request,
+    @Request() request: Request,
   ) {
     const authorId: string = request['user'].sub;
     return this.commentsService.update(id, updateCommentDto, authorId);
@@ -68,7 +67,7 @@ export class CommentsController {
 
   @UseGuards(AuthGuard)
   @Delete(':id') //DELETE /comments/:id
-  remove(@Param('id') id: string, @Req() request: Request) {
+  remove(@Param('id') id: string, @Request() request: Request) {
     const authorId: string = request['user'].sub;
     return this.commentsService.remove(id, authorId);
   }

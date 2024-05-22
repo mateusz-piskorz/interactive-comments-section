@@ -14,13 +14,6 @@ export const getComment: GetComment = ({ commentId, userId }) => {
   });
 };
 
-export const addLike: AddLike = ({ commentId, userId, likeType }) => {
-  return makeRequest(`/comments/${likeType}`, {
-    method: "post",
-    data: { commentId, userId },
-  });
-};
-
 export const removeComment: RemoveComment = ({ commentId, userId }) => {
   return makeRequest(`/comments/${commentId}`, {
     method: "delete",
@@ -44,14 +37,4 @@ type GetComment = ({
 }: {
   commentId: string;
   userId: string;
-}) => Promise<Comment>;
-
-type AddLike = ({
-  commentId,
-  userId,
-  likeType,
-}: {
-  commentId: string;
-  userId: string;
-  likeType: "like" | "dislike";
 }) => Promise<Comment>;
