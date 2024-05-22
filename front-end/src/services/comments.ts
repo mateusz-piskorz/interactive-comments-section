@@ -14,24 +14,6 @@ export const getComment: GetComment = ({ commentId, userId }) => {
   });
 };
 
-export const addCommentService: AddComment = ({
-  content,
-  parentId,
-  userId,
-}) => {
-  return makeRequest("/comments/add", {
-    method: "post",
-    data: { content, parentId, userId },
-  });
-};
-
-export const editCommentService: EditComment = ({ content, commentId }) => {
-  return makeRequest(`/comments/${commentId}`, {
-    method: "put",
-    data: { content },
-  });
-};
-
 export const addLike: AddLike = ({ commentId, userId, likeType }) => {
   return makeRequest(`/comments/${likeType}`, {
     method: "post",
@@ -72,22 +54,4 @@ type AddLike = ({
   commentId: string;
   userId: string;
   likeType: "like" | "dislike";
-}) => Promise<Comment>;
-
-type EditComment = ({
-  content,
-  commentId,
-}: {
-  content: string;
-  commentId: string;
-}) => Promise<Comment>;
-
-type AddComment = ({
-  content,
-  parentId,
-  userId,
-}: {
-  content: string;
-  userId: string;
-  parentId?: string | undefined;
 }) => Promise<Comment>;

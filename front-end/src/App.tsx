@@ -22,7 +22,7 @@ const CommentsSystem = () => {
   return (
     <>
       <CommentList comments={childComments} nestingLevel={0}></CommentList>
-      {/* <Form operation="add" parentId="root" fixedPosition /> */}
+      <Form operation="add" parentId="root" fixedPosition />
     </>
   );
 };

@@ -1,10 +1,8 @@
 import { FC, useEffect, useRef } from "react";
 import c from "./Form.module.scss";
-import { addCommentService, editCommentService } from "../../services/comments";
+import { addCommentService, editCommentService } from "./services";
 import { useAsyncFn } from "../../hooks/useAsync";
-import { useComment } from "../../context/comment";
 import { Dialog } from "../Dialog";
-import { socket } from "../../socket";
 import arrowRight from "../../assets/arrow-right.svg";
 
 type FormProps = {
@@ -24,15 +22,12 @@ export const Form: FC<FormProps> = ({
 }) => {
   const input = useRef<HTMLSpanElement>(null);
   const FormClassName = `${c.Form}${` ${fixedPosition ? c.Form___fixed : ""}`}`;
-  const userId = "";
-  // const { addComment } = useComment();
+
   const { execute, error, setError, loading } = useAsyncFn(
     operation === "add" ? addCommentService : editCommentService,
     {
       onSuccess: (comment) => {
         if (operation === "add") {
-          // addComment({ ...comment, yourComment: true });
-          socket.emit("comment-added", comment);
           input.current!.innerText = "";
         }
         onSubmit && onSubmit();
@@ -48,7 +43,7 @@ export const Form: FC<FormProps> = ({
     );
     if (!content || content === "") return;
     if (operation === "add") {
-      execute({ content, userId, parentId });
+      execute({ content, parentId });
     } else {
       execute({ commentId: parentId, content });
     }
