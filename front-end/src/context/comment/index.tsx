@@ -1,7 +1,7 @@
 import React, { FC, useContext, ReactNode, useEffect } from "react";
 import { getComments } from "../../services/comments";
 import { ContextType } from "./types";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { socket } from "../../socket";
 
 const Context = React.createContext<ContextType | null>(null);
@@ -23,21 +23,14 @@ export const useComment = (commentId: string = "root") => {
 export const CommentsProvider: FC<{ children?: ReactNode }> = ({
   children,
 }) => {
+  const queryClient = useQueryClient();
   const { status, data, error } = useQuery({
     refetchOnWindowFocus: false,
     queryFn: getComments,
     queryKey: ["comments"],
   });
 
-  // const addComment = (comment: Comment) => {
-  //   setComments((prev) => [...prev!, comment]);
-  // };
-
   useEffect(() => {
-    // const onCommentAdded = (comment: Comment) => {
-    //   addComment(comment);
-    // };
-
     // const onCommentEdited = (comment: Comment) => {
     //   setComments((prev) =>
     //     prev!.map((prevComment) =>
@@ -54,8 +47,11 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
     //   );
     // };
 
-    const onCommentAdded = () => {
-      console.log("onCommentAdded");
+    const onCommentAdded = (newComment: Comment) => {
+      queryClient.setQueryData(["comments"], (prev: []) => [
+        ...prev,
+        newComment,
+      ]);
     };
     const onCommentEdited = () => {
       console.log("onCommentEdited");

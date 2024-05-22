@@ -6,19 +6,23 @@ import {
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { PrismaClient } from '@prisma/client';
-
 import { selectCommentFields } from './constants';
+import { SocketGateway } from 'src/socket/socket.gateway';
 
 const { comments } = new PrismaClient();
 
 @Injectable()
 export class CommentsService {
+  constructor(private readonly socketGateway: SocketGateway) {}
+
   async create(createCommentDto: CreateCommentDto, authorId: string) {
     const { content, parentId } = createCommentDto;
-    return await comments.create({
+    const newComment = await comments.create({
       data: { content, authorId, parentId },
       select: selectCommentFields,
     });
+    await this.socketGateway.server.emit('comment-added', newComment);
+    return newComment;
   }
 
   async findAll() {
