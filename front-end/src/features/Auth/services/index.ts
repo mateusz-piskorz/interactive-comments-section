@@ -1,5 +1,6 @@
 import { availableAvatars } from "../../../features/ProfileAvatar";
 import { makeRequest } from "../../../services/makeRequest";
+import { UserDetails } from "../types";
 
 export const register: Register = ({ username, avatar, color }) => {
   return makeRequest("/users", {
@@ -13,15 +14,6 @@ export const signIn: SignIn = ({ username, password }) => {
     method: "post",
     data: { username, password },
   });
-};
-
-export type UserDetails = {
-  id: string;
-  password: string;
-  username: string;
-  color: string;
-  avatar: (typeof availableAvatars)[number];
-  createdAt: Date;
 };
 
 type Register = ({
@@ -40,4 +32,4 @@ type SignIn = ({
 }: {
   username: string;
   password: string;
-}) => Promise<{ message: string }>;
+}) => Promise<UserDetails>;

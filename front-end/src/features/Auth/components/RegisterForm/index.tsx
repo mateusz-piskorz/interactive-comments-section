@@ -5,17 +5,15 @@ import { Overlay, zIndex } from "../../../Overlay";
 import { register } from "../../services";
 import { LS_PASSWORD, LS_USERNAME } from "../../../../constants";
 import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "../../context";
 
-type RegisterFormProps = {
-  onSubmit: () => void;
-};
-
-export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {
+export const RegisterForm: FC = () => {
+  const { setUser } = useAuth();
   const { mutate, status } = useMutation({
-    onSuccess: ({ username, password }) => {
-      localStorage.setItem(LS_USERNAME, username);
-      localStorage.setItem(LS_PASSWORD, password);
-      onSubmit();
+    onSuccess: (userDetails) => {
+      localStorage.setItem(LS_USERNAME, userDetails.username);
+      localStorage.setItem(LS_PASSWORD, userDetails.password);
+      setUser(userDetails);
     },
     mutationFn: register,
     mutationKey: ["register"],

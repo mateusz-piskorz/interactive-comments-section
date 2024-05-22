@@ -1,14 +1,14 @@
 import { FC, useState } from "react";
 import "./App.css";
-import { Auth } from "./features/Auth";
+import { Auth, useAuth } from "./features/Auth";
 
 const App: FC = () => {
-  const [isUserLogged, setIsUserLogged] = useState(false);
+  const { user } = useAuth();
 
   return (
     <>
-      <Auth onUserLogged={() => setIsUserLogged(true)} />
-      {isUserLogged && <h1>Hello World and Welcomm</h1>}
+      <Auth />
+      {user && <h1>Hello World and Welcome {user.username}</h1>}
     </>
   );
 };

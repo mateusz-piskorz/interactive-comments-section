@@ -30,7 +30,8 @@ export class UsersService {
 
     const access_token = await this.jwtService.signAsync(payload);
     response.setHeader('Authorization', `Bearer ${access_token}`);
-    return { message: 'success' };
+
+    return user;
   }
 
   async create(createUserDto: CreateUserDto, response: Response) {
