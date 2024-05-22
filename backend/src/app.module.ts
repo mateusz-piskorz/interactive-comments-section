@@ -5,9 +5,10 @@ import { DatabaseService } from './database/database.service';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
 import { CommentsModule } from './comments/comments.module';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
-  imports: [DatabaseModule, UsersModule, CommentsModule],
+  imports: [DatabaseModule, UsersModule, CommentsModule, SocketModule],
   controllers: [AppController],
   providers: [AppService, DatabaseService],
 })

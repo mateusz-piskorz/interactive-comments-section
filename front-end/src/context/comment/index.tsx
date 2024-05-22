@@ -2,6 +2,7 @@ import React, { FC, useContext, ReactNode, useEffect } from "react";
 import { getComments } from "../../services/comments";
 import { ContextType } from "./types";
 import { useQuery } from "@tanstack/react-query";
+import { socket } from "../../socket";
 
 const Context = React.createContext<ContextType | null>(null);
 
@@ -28,48 +29,51 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
     queryKey: ["comments"],
   });
 
-  // const {
-  //   resData: comments,
-  //   error,
-  //   loading,
-  //   setResData: setComments,
-  // } = useAsync(() => getComments());
-
   // const addComment = (comment: Comment) => {
   //   setComments((prev) => [...prev!, comment]);
   // };
 
-  // useEffect(() => {
-  //   const onCommentAdded = (comment: Comment) => {
-  //     addComment(comment);
-  //   };
+  useEffect(() => {
+    // const onCommentAdded = (comment: Comment) => {
+    //   addComment(comment);
+    // };
 
-  //   const onCommentEdited = (comment: Comment) => {
-  //     setComments((prev) =>
-  //       prev!.map((prevComment) =>
-  //         prevComment._id === comment._id
-  //           ? { ...comment, yourComment: prevComment.yourComment }
-  //           : prevComment
-  //       )
-  //     );
-  //   };
+    // const onCommentEdited = (comment: Comment) => {
+    //   setComments((prev) =>
+    //     prev!.map((prevComment) =>
+    //       prevComment._id === comment._id
+    //         ? { ...comment, yourComment: prevComment.yourComment }
+    //         : prevComment
+    //     )
+    //   );
+    // };
 
-  //   const onCommentRemoved = (props: { commentId: string }) => {
-  //     setComments((prev) =>
-  //       prev!.filter((comment) => comment._id !== props.commentId)
-  //     );
-  //   };
+    // const onCommentRemoved = (props: { commentId: string }) => {
+    //   setComments((prev) =>
+    //     prev!.filter((comment) => comment._id !== props.commentId)
+    //   );
+    // };
 
-  // socket.on("comment-added", onCommentAdded);
-  // socket.on("comment-edited", onCommentEdited);
-  // socket.on("comment-removed", onCommentRemoved);
+    const onCommentAdded = () => {
+      console.log("onCommentAdded");
+    };
+    const onCommentEdited = () => {
+      console.log("onCommentEdited");
+    };
+    const onCommentRemoved = () => {
+      console.log("onCommentRemoved");
+    };
 
-  // return () => {
-  //   socket.off("comment-added", onCommentAdded);
-  //   socket.off("comment-edited", onCommentEdited);
-  //   socket.off("comment-removed", onCommentRemoved);
-  // };
-  // }, []);
+    socket.on("comment-added", onCommentAdded);
+    socket.on("comment-edited", onCommentEdited);
+    socket.on("comment-removed", onCommentRemoved);
+
+    return () => {
+      socket.off("comment-added", onCommentAdded);
+      socket.off("comment-edited", onCommentEdited);
+      socket.off("comment-removed", onCommentRemoved);
+    };
+  }, []);
 
   if (status === "error") return <h1>{error.message}</h1>;
 
