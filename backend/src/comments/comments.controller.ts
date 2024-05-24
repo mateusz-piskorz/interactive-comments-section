@@ -11,7 +11,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
-
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { AuthGuard } from 'src/users/auth.guard';
@@ -26,7 +25,7 @@ export class CommentsController {
     @Body(ValidationPipe) createCommentDto: CreateCommentDto,
     @Request() request: Request,
   ) {
-    const authorId: string = request['user'].sub;
+    const authorId: string = request['user'].id;
     return this.commentsService.create(createCommentDto, authorId);
   }
 
@@ -39,14 +38,14 @@ export class CommentsController {
   @UseGuards(AuthGuard)
   @Post('/like/:id') //POST /comments/like/:id
   like(@Param('id') id: string, @Request() request: Request) {
-    const authorId: string = request['user'].sub;
+    const authorId: string = request['user'].id;
     return this.commentsService.like(id, authorId);
   }
 
   @UseGuards(AuthGuard)
   @Post('/dislike/:id') //POST /comments/dislike/:id
   dislike(@Param('id') id: string, @Request() request: Request) {
-    const authorId: string = request['user'].sub;
+    const authorId: string = request['user'].id;
     return this.commentsService.dislike(id, authorId);
   }
 
@@ -57,7 +56,7 @@ export class CommentsController {
     @Body() updateCommentDto: UpdateCommentDto,
     @Request() request: Request,
   ) {
-    const authorId: string = request['user'].sub;
+    const authorId: string = request['user'].id;
     return this.commentsService.update(id, updateCommentDto, authorId);
   }
 
@@ -69,7 +68,7 @@ export class CommentsController {
   @UseGuards(AuthGuard)
   @Delete(':id') //DELETE /comments/:id
   remove(@Param('id') id: string, @Request() request: Request) {
-    const authorId: string = request['user'].sub;
+    const authorId: string = request['user'].id;
     return this.commentsService.remove(id, authorId);
   }
 }

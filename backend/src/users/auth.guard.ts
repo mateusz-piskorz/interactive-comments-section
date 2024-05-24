@@ -7,6 +7,9 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants, jwtCookieName } from './constants';
 import { Request } from 'express';
+import { PrismaClient } from '@prisma/client';
+
+const { users } = new PrismaClient();
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -23,8 +26,14 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
       });
+      const userId = payload.sub;
+      const user = await users.findUnique({ where: { id: userId } });
 
-      request['user'] = payload;
+      if (!user) {
+        throw new UnauthorizedException();
+      }
+
+      request['user'] = user;
     } catch {
       throw new UnauthorizedException();
     }
