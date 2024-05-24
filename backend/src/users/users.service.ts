@@ -29,13 +29,11 @@ export class UsersService {
     const payload = { sub: user.id, username };
 
     const access_token = await this.jwtService.signAsync(payload);
-    // domain: frontendDomain
+
     response.header('Set-Cookie', [
-      `${jwtCookieName}=${access_token}; HttpOnly; Secure; SameSite=None; Max-Age=60; Path=/;`,
+      `${jwtCookieName}=${access_token}; HttpOnly; Secure; SameSite=None; Max-Age=${JwtExpiresIn}; Path=/;`,
       'otherCookieAndParams...',
     ]);
-    // response.cookie('jwt', `Bearer ${access_token}`, { httpOnly: true });
-    // response.setHeader('Authorization', );
 
     return { ...user, expires_in: JwtExpiresIn };
   }
@@ -54,8 +52,6 @@ export class UsersService {
     response.header('Set-Cookie', [
       `${jwtCookieName}=${access_token}; HttpOnly; Secure; SameSite=None; Max-Age=${JwtExpiresIn}; Path=/;`,
     ]);
-    // response.cookie('jwt', `Bearer ${access_token}`, { httpOnly: true });
-    // response.setHeader('Authorization', `Bearer ${access_token}`);
 
     return { ...newUser, expires_in: JwtExpiresIn };
   }
