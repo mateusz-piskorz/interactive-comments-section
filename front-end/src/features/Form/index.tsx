@@ -84,7 +84,7 @@ export const Form: FC<FormProps> = ({
 
       {error && (
         <Dialog
-          elapsedTime={error.elapsedTime}
+          remainingTime={error.remainingTime}
           description={error.message}
           onCancel={() => {
             setError(false);

@@ -7,14 +7,14 @@ import Countdown from "react-countdown";
 type DialogProps = {
   onCancel: () => void;
   description?: string;
-  elapsedTime?: number;
+  remainingTime?: number;
   onConfirm?: () => void;
 };
 
 export const Dialog: FC<DialogProps> = ({
   onCancel,
   description,
-  elapsedTime,
+  remainingTime,
   onConfirm,
 }) => {
   return createPortal(
@@ -22,7 +22,11 @@ export const Dialog: FC<DialogProps> = ({
       <div style={{ zIndex: zIndex + 1 }} className={c.Dialog}>
         <h2 className={c.Dialog_title}>Info</h2>
         <p className={c.Dialog_description}>{description}</p>
-        {elapsedTime && <p>{countDown(elapsedTime)}</p>}
+        {remainingTime && (
+          <p>
+            <Countdown date={Date.now() + remainingTime} />
+          </p>
+        )}
         <button onClick={onCancel} className={c.Dialog_button}>
           CANCEL
         </button>
@@ -40,7 +44,3 @@ export const Dialog: FC<DialogProps> = ({
     document.body
   );
 };
-
-const countDown = (elapsedTime: number) => (
-  <Countdown date={Date.now() + (60000 - elapsedTime)} />
-);

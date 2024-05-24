@@ -43,7 +43,7 @@ export const LikesButton: FC<LikesBtnProps> = ({ commentId }) => {
 
       {error && (
         <Dialog
-          elapsedTime={error.elapsedTime}
+          remainingTime={error.remainingTime}
           description={error.message}
           onCancel={() => {
             setError(false);
