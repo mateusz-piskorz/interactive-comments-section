@@ -43,7 +43,7 @@ export class CommentsController {
     return this.commentsService.like(id, authorId);
   }
 
-  @UseGuards(AuthGuard, ThrottlerGuard('dislike-comment'))
+  @UseGuards(AuthGuard, ThrottlerGuard('like-comment'))
   @Post('/dislike/:id') //POST /comments/dislike/:id
   dislike(@Param('id') id: string, @Request() request: Request) {
     const authorId: string = request['user'].id;
