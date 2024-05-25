@@ -2,9 +2,9 @@ import "@testing-library/jest-dom";
 import { user, comments } from "./constants";
 
 jest.mock("../src/features/Auth/context", () => ({
-  useUser: jest.fn(() => ({
+  useAuth: jest.fn(() => ({
     user,
-    userId: user._id,
+    setUser: jest.fn(),
   })),
 }));
 jest.mock("../src/socket", () => ({

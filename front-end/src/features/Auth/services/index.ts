@@ -1,4 +1,3 @@
-import { availableAvatars } from "../../../features/ProfileAvatar";
 import { makeRequest } from "../../../services/makeRequest";
 import { UserDetails } from "../types";
 
