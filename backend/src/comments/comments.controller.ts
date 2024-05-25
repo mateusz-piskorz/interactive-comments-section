@@ -61,10 +61,10 @@ export class CommentsController {
     return this.commentsService.update(id, updateCommentDto, authorId);
   }
 
-  @Get('deleteAll') //DELETE /comments
-  deleteAll() {
-    return this.commentsService.deleteAll();
-  }
+  // @Get('deleteAll') //DELETE /comments
+  // deleteAll() {
+  //   return this.commentsService.deleteAll();
+  // }
 
   @UseGuards(AuthGuard)
   @Delete(':id') //DELETE /comments/:id

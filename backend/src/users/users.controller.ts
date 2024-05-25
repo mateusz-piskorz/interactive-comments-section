@@ -26,10 +26,10 @@ export class UsersController {
     return this.usersService.signIn(signInUserDto, response);
   }
 
-  @Get('deleteAll') //Delete /users/removeAll
-  deleteAll() {
-    return this.usersService.deleteAll();
-  }
+  // @Get('deleteAll') //Delete /users/removeAll
+  // deleteAll() {
+  //   return this.usersService.deleteAll();
+  // }
 
   @Post() //POST /users
   create(
