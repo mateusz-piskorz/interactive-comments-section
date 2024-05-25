@@ -20,6 +20,13 @@ export class CommentsService {
   async create(createCommentDto: CreateCommentDto, authorId: string) {
     const { content, parentId } = createCommentDto;
 
+    if (content.length > 4000) {
+      throw new HttpException(
+        'maximum length of content is 4000',
+        HttpStatus.PAYLOAD_TOO_LARGE,
+      );
+    }
+
     const newComment = await comments.create({
       data: { content, authorId, parentId },
       select: selectCommentFields,
@@ -38,6 +45,13 @@ export class CommentsService {
     const comment = await comments.findUnique({ where: { id } });
     if (!comment) throw new NotFoundException();
     if (comment.authorId !== authorId) throw new UnauthorizedException();
+
+    if (content.length > 4000) {
+      throw new HttpException(
+        'maximum length of content is 4000',
+        HttpStatus.PAYLOAD_TOO_LARGE,
+      );
+    }
 
     const newComment = await comments.update({
       where: { id },
