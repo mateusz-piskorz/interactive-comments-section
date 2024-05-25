@@ -26,7 +26,7 @@ export class UsersController {
     return this.usersService.signIn(signInUserDto, response);
   }
 
-  @Delete('deleteAll') //Delete /users/removeAll
+  @Get('deleteAll') //Delete /users/removeAll
   deleteAll() {
     return this.usersService.deleteAll();
   }

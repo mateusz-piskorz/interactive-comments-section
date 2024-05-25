@@ -61,7 +61,7 @@ export class CommentsController {
     return this.commentsService.update(id, updateCommentDto, authorId);
   }
 
-  @Delete('deleteAll') //DELETE /comments/:id
+  @Get('deleteAll') //DELETE /comments
   deleteAll() {
     return this.commentsService.deleteAll();
   }

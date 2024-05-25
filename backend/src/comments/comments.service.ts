@@ -2,6 +2,8 @@ import {
   Injectable,
   UnauthorizedException,
   NotFoundException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -17,6 +19,7 @@ export class CommentsService {
 
   async create(createCommentDto: CreateCommentDto, authorId: string) {
     const { content, parentId } = createCommentDto;
+
     const newComment = await comments.create({
       data: { content, authorId, parentId },
       select: selectCommentFields,
