@@ -1,15 +1,13 @@
-import { screen, render, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import { Post } from "./index";
-import { comment1 } from "../../../../../tests/constants";
+import { comment1, user } from "../../../../../tests/constants";
+import { render } from "../../../../../tests/render";
 import { useComment } from "../../../../context/comment";
-import { useUser } from "../../../../context/user";
 
-const {
-  user: { avatar },
-} = useUser();
+const avatar = "avatar1";
 const defaultProps = {
   nestingLevel: 0,
-  commentId: comment1._id,
+  commentId: comment1.id,
   onEdit: jest.fn(),
   onReply: jest.fn(),
 };
@@ -41,9 +39,9 @@ it("displays ProfileAvatar", () => {
   expect(ProfileAvatarProps).toHaveBeenCalledWith({ imgName: avatar });
 });
 
-it("displays comment name", () => {
+it("displays comment author name", () => {
   render(<Post {...defaultProps} />);
-  expect(screen.getByText(comment1.name)).toBeInTheDocument();
+  expect(screen.getByText(comment1.author.username)).toBeInTheDocument();
 });
 
 it("doesn't display you text if it's not your comment", () => {
@@ -53,7 +51,7 @@ it("doesn't display you text if it's not your comment", () => {
 
 it("displays you text if it's your comment", () => {
   (useComment as jest.Mock<any>).mockReturnValue({
-    comment: { ...comment1, yourComment: true },
+    comment: { ...comment1, author: { ...comment1.author, id: user.id } },
   });
   render(<Post {...defaultProps} />);
   expect(screen.getByText("you")).toBeInTheDocument();

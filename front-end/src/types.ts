@@ -1,15 +1,17 @@
 import { availableAvatars } from "./features/ProfileAvatar";
 
 export type Comment = {
-  avatar: (typeof availableAvatars)[number];
-  color: string;
+  author: {
+    avatar: (typeof availableAvatars)[number];
+    id: string;
+    username: string;
+    color: string;
+  };
   content: string;
-  createdAt: Date;
-  dislikes: string[];
   likes: string[];
+  dislikes: string[];
   likesCount: number;
-  name: string;
-  yourComment: boolean;
-  _id: string;
+  createdAt: Date;
   parentId: string;
+  id: string;
 };

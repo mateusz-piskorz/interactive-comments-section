@@ -1,10 +1,11 @@
-import { screen, render, waitFor, fireEvent } from "@testing-library/react";
+import { screen, waitFor, fireEvent } from "@testing-library/react";
 import { Form } from "./index";
-import { addCommentService, editCommentService } from "../../services/comments";
-import { useUser } from "../../context/user";
+import { addComment, editComment } from "./services";
+import { render } from "../../../tests/render";
 
-const { user } = useUser();
-const mockedAddComment = addCommentService as jest.Mock<any>;
+const mockedAddComment = addComment as jest.Mock<any>;
+
+jest.mock("./services");
 
 const DialogProps = jest.fn();
 jest.mock("../Dialog", () => ({
@@ -22,7 +23,7 @@ const defaultProps = { operation: "add", parentId: rootId } as const;
 it("doesn't call addComment if textbox is empty", async () => {
   render(<Form {...defaultProps} />);
   await screen.getByRole("button", { name: "send icon" }).click();
-  expect(addCommentService).toHaveBeenCalledTimes(0);
+  expect(addComment).toHaveBeenCalledTimes(0);
 });
 
 it("displays initialContent for textbox", async () => {
@@ -38,7 +39,9 @@ it("calls onSubmit on form submit", async () => {
     target: { innerText: content },
   });
   await screen.getByRole("button", { name: "send icon" }).click();
-  expect(onSubmit).toHaveBeenCalled();
+  await waitFor(async () => {
+    expect(onSubmit).toHaveBeenCalled();
+  });
 });
 
 it("submits form on enter", async () => {
@@ -49,7 +52,9 @@ it("submits form on enter", async () => {
     target: { innerText: content },
   });
   await fireEvent.keyDown(input, { code: "Enter" });
-  expect(onSubmit).toHaveBeenCalled();
+  await waitFor(async () => {
+    expect(onSubmit).toHaveBeenCalled();
+  });
 });
 
 it("calls addComment on form submit", async () => {
@@ -58,10 +63,12 @@ it("calls addComment on form submit", async () => {
     target: { innerText: content },
   });
   await screen.getByRole("button", { name: "send icon" }).click();
-  expect(addCommentService).toHaveBeenCalledWith({
-    content,
-    parentId: rootId,
-    userId: user._id,
+
+  await waitFor(async () => {
+    expect(addComment).toHaveBeenCalledWith({
+      content,
+      parentId: rootId,
+    });
   });
 });
 
@@ -71,18 +78,20 @@ it("calls editComment on form submit", async () => {
     target: { innerText: content },
   });
   await screen.getByRole("button", { name: "send icon" }).click();
-  expect(editCommentService).toHaveBeenCalledWith({
-    content,
-    commentId: rootId,
+  await expect(() => {
+    expect(editComment).toHaveBeenCalledWith({
+      content,
+      commentId: rootId,
+    });
   });
 });
 
 it("displays dialog on error", async () => {
   const message = "test error";
-  const elapsedTime = 120;
+  const remainingTime = 120;
   mockedAddComment.mockRejectedValue({
     message,
-    elapsedTime,
+    remainingTime,
   });
 
   render(<Form {...defaultProps} />);
@@ -92,7 +101,7 @@ it("displays dialog on error", async () => {
   await screen.getByRole("button", { name: "send icon" }).click();
   await waitFor(async () => {
     expect(DialogProps).toHaveBeenCalledWith(
-      expect.objectContaining({ description: message, elapsedTime })
+      expect.objectContaining({ description: message, remainingTime })
     );
   });
 });

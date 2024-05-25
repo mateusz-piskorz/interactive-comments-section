@@ -20,8 +20,8 @@ export const CommentList: FC<CommentListProps> = ({
 
   return (
     <div className={className}>
-      {comments?.map(({ _id }) => (
-        <Comment nestingLevel={nestingLevel} commentId={_id} key={_id} />
+      {comments?.map(({ id }) => (
+        <Comment nestingLevel={nestingLevel} commentId={id} key={id} />
       ))}
     </div>
   );

@@ -1,7 +1,8 @@
-import { screen, render, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import { LikesButton } from "./index";
-import { addLike } from "../../../../services/comments";
+import { addLike } from "../../services";
 import { user, comment1 } from "../../../../../tests/constants";
+import { render } from "../../../../../tests/render";
 
 const mockedAddLike = addLike as jest.Mock<any>;
 
@@ -12,44 +13,46 @@ jest.mock("../../../Dialog", () => ({
   }),
 }));
 
-jest.mock("../../../../services/comments");
+jest.mock("../../services");
 
 it("displays likes Count", () => {
-  render(<LikesButton commentId={comment1._id} />);
+  render(<LikesButton commentId={comment1.id} />);
   expect(screen.getByText(comment1.likesCount)).toBeInTheDocument();
 });
 
-it("calls clickHandler like after clicking like button", () => {
-  render(<LikesButton commentId={comment1._id} />);
+it("calls clickHandler like after clicking like button", async () => {
+  render(<LikesButton commentId={comment1.id} />);
   screen.getByAltText("plus icon").closest("button")?.click();
-  expect(addLike).toHaveBeenCalledWith({
-    commentId: comment1._id,
-    likeType: "like",
-    userId: user._id,
+  await waitFor(async () => {
+    expect(addLike).toHaveBeenCalledWith({
+      commentId: comment1.id,
+      likeType: "like",
+    });
   });
 });
 
-it("calls clickHandler dislike after clicking dislike button", () => {
-  render(<LikesButton commentId={comment1._id} />);
+it("calls clickHandler dislike after clicking dislike button", async () => {
+  render(<LikesButton commentId={comment1.id} />);
   screen.getByAltText("minus icon").closest("button")?.click();
-  expect(addLike).toHaveBeenCalledWith({
-    commentId: comment1._id,
-    likeType: "dislike",
-    userId: user._id,
+  await waitFor(async () => {
+    expect(addLike).toHaveBeenCalledWith({
+      commentId: comment1.id,
+      likeType: "dislike",
+    });
   });
 });
 
 it("displays dialog on error", async () => {
   const message = "messageTest";
-  const elapsedTime = 120;
-  mockedAddLike.mockRejectedValue({ message, elapsedTime });
-  render(<LikesButton commentId={comment1._id} />);
+  const remainingTime = 120;
+  mockedAddLike.mockRejectedValue({ message, remainingTime });
+  render(<LikesButton commentId={comment1.id} />);
   screen.getByAltText("minus icon").closest("button")?.click();
   await waitFor(async () => {
     expect(DialogProps).toHaveBeenCalledWith(
       expect.objectContaining({
         description: message,
-        elapsedTime,
+        remainingTime,
       })
     );
   });

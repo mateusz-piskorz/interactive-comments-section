@@ -1,10 +1,9 @@
-import React, { FC, useContext, useEffect, ReactNode } from "react";
-import { useAsync } from "../../hooks/useAsync";
+import React, { FC, useContext, ReactNode, useEffect } from "react";
 import { getComments } from "../../services/comments";
 import { ContextType } from "./types";
-import { socket } from "../../socket";
-import { useUser } from "../user";
 import { Comment } from "../../types";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { socket } from "../../socket";
 
 const Context = React.createContext<ContextType | null>(null);
 
@@ -13,49 +12,44 @@ export const useComment = (commentId: string = "root") => {
   if (context === null) {
     throw new Error("useUser context is undefined");
   } else {
-    const comment = context.comments.find(({ _id }) => _id === commentId);
+    const comment = context.comments.find(({ id }) => id === commentId);
     const childComments = context.comments.filter(
       ({ parentId }) => parentId === commentId
     );
-    const { addComment } = context;
-    return { comment, childComments, addComment };
+
+    return { comment, childComments };
   }
 };
 
 export const CommentsProvider: FC<{ children?: ReactNode }> = ({
   children,
 }) => {
-  const { user } = useUser();
-
-  const {
-    resData: comments,
-    error,
-    loading,
-    setResData: setComments,
-  } = useAsync(() => getComments({ userId: user._id }));
-
-  const addComment = (comment: Comment) => {
-    setComments((prev) => [...prev!, comment]);
-  };
+  const queryClient = useQueryClient();
+  const { status, data, error } = useQuery({
+    refetchOnWindowFocus: false,
+    queryFn: getComments,
+    queryKey: ["comments"],
+  });
 
   useEffect(() => {
-    const onCommentAdded = (comment: Comment) => {
-      addComment(comment);
+    const onCommentAdded = (newComment: Comment) => {
+      queryClient.setQueryData(["comments"], (prev: Comment[]) => [
+        ...prev,
+        newComment,
+      ]);
     };
 
-    const onCommentEdited = (comment: Comment) => {
-      setComments((prev) =>
-        prev!.map((prevComment) =>
-          prevComment._id === comment._id
-            ? { ...comment, yourComment: prevComment.yourComment }
-            : prevComment
+    const onCommentEdited = (newComment: Comment) => {
+      queryClient.setQueryData(["comments"], (prev: Comment[]) =>
+        prev.map((comment) =>
+          comment.id === newComment.id ? newComment : comment
         )
       );
     };
 
-    const onCommentRemoved = (props: { commentId: string }) => {
-      setComments((prev) =>
-        prev!.filter((comment) => comment._id !== props.commentId)
+    const onCommentRemoved = (commentId: string) => {
+      queryClient.setQueryData(["comments"], (prev: Comment[]) =>
+        prev.filter((comment) => comment.id !== commentId)
       );
     };
 
@@ -70,15 +64,14 @@ export const CommentsProvider: FC<{ children?: ReactNode }> = ({
     };
   }, []);
 
-  if (error) return <h1>{error.message}</h1>;
+  if (status === "error") return <h1>{error.message}</h1>;
 
-  if (loading) return <h1>Loading...</h1>;
+  if (status === "pending") return <h1>Loading...</h1>;
 
   return (
     <Context.Provider
       value={{
-        comments: comments!,
-        addComment,
+        comments: data,
       }}
     >
       {children}

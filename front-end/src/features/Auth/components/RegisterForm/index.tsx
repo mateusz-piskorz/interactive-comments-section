@@ -1,35 +1,40 @@
-import { FC, useEffect, useId, useState } from "react";
-import { RadioInputList } from "./components/RadioInputList";
+import { FC, useId, useState, FormEvent } from "react";
+import { RadioInputList } from "../RadioInputList";
 import c from "./RegisterForm.module.scss";
-import { Overlay, zIndex } from "../Overlay";
-import { UserDetails, register } from "../../services/user";
-import { useAsyncFn } from "../../hooks/useAsync";
-import { localStorageIdKey } from "../../context/user";
+import { Overlay, zIndex } from "../../../Overlay";
+import { register } from "../../services";
+import { LS_PASSWORD, LS_USERNAME } from "../../constants";
+import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "../../context";
 
-type RegisterFormProps = {
-  onSubmit: (data: UserDetails) => void;
-};
-
-export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {
-  const { execute, resData } = useAsyncFn(register);
-  const [name, setName] = useState("");
+export const RegisterForm: FC = () => {
+  const { setUser } = useAuth();
+  const { mutate, status } = useMutation({
+    onSuccess: (user) => {
+      localStorage.setItem(LS_USERNAME, user.username);
+      localStorage.setItem(LS_PASSWORD, user.password);
+      setUser(user);
+    },
+    mutationFn: register,
+    mutationKey: ["register"],
+  });
+  const [username, setUsername] = useState("");
   const [avatar, setAvatar] = useState("avatar1");
   const [color, setColor] = useState("orange");
   const id = useId();
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+
+  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    execute({ avatar, color, name });
+    mutate({ avatar, color, username });
   };
 
-  useEffect(
-    function onSuccess() {
-      if (resData) {
-        localStorage.setItem(localStorageIdKey, JSON.stringify(resData._id));
-        onSubmit(resData);
-      }
-    },
-    [resData]
-  );
+  if (status === "pending") {
+    return <h1>Loading...</h1>;
+  }
+
+  if (status === "error") {
+    return <h1>register failed, please try again</h1>;
+  }
 
   return (
     <>
@@ -43,8 +48,8 @@ export const RegisterForm: FC<RegisterFormProps> = ({ onSubmit }) => {
             Name
           </label>
           <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
             className={c.Form_input}
             type="text"

@@ -1,6 +1,6 @@
 import { screen, render, waitFor } from "@testing-library/react";
 import { Comment } from "./index";
-import { user, comment1, comment2 } from "../../../tests/constants";
+import { comment1, comment2 } from "../../../tests/constants";
 import { Post } from "./components/Post";
 import { useEffect } from "react";
 
@@ -13,17 +13,17 @@ jest.mock("../Form", () => ({
 }));
 
 it("displays Post", () => {
-  render(<Comment commentId={comment1._id} nestingLevel={0} />);
-  expect(screen.getByText(comment1._id)).toBeInTheDocument();
+  render(<Comment commentId={comment1.id} nestingLevel={0} />);
+  expect(screen.getByText(comment1.id)).toBeInTheDocument();
 });
 
 it("displays Posts children", () => {
-  render(<Comment commentId={comment1._id} nestingLevel={0} />);
-  expect(screen.getByText(comment2._id)).toBeInTheDocument();
+  render(<Comment commentId={comment1.id} nestingLevel={0} />);
+  expect(screen.getByText(comment2.id)).toBeInTheDocument();
 });
 
 it("doesn't display Form by default", async () => {
-  render(<Comment commentId={comment2._id} nestingLevel={0} />);
+  render(<Comment commentId={comment2.id} nestingLevel={0} />);
   expect(screen.queryByText("Form")).toBeNull();
 });
 
@@ -34,6 +34,6 @@ it("displays Form onReply function call", async () => {
     }, []);
     return <h1>Post</h1>;
   });
-  render(<Comment commentId={comment2._id} nestingLevel={0} />);
+  render(<Comment commentId={comment2.id} nestingLevel={0} />);
   expect(screen.getByText("Form")).toBeInTheDocument();
 });

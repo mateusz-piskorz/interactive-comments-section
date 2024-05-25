@@ -1,10 +1,10 @@
 import "@testing-library/jest-dom";
 import { user, comments } from "./constants";
 
-jest.mock("../src/context/user", () => ({
-  useUser: jest.fn(() => ({
+jest.mock("../src/features/Auth/context", () => ({
+  useAuth: jest.fn(() => ({
     user,
-    userId: user._id,
+    setUser: jest.fn(),
   })),
 }));
 jest.mock("../src/socket", () => ({
@@ -13,7 +13,7 @@ jest.mock("../src/socket", () => ({
 
 jest.mock("../src/context/comment", () => ({
   useComment: jest.fn((commentId: string) => {
-    const comment = comments.find(({ _id }) => _id === commentId);
+    const comment = comments.find(({ id }) => id === commentId);
     const childComments = comments.filter(
       ({ parentId }) => parentId === commentId
     );

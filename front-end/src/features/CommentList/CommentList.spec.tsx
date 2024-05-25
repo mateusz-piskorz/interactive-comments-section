@@ -1,4 +1,4 @@
-import { screen, render, waitFor } from "@testing-library/react";
+import { screen, render } from "@testing-library/react";
 import { CommentList } from "./index";
 import { comments } from "../../../tests/constants";
 
@@ -15,7 +15,7 @@ it("displays Comment List", () => {
   expect(screen.getAllByTestId("Comment")).toHaveLength(comments.length);
   for (let comment of comments) {
     expect(CommentProps).toHaveBeenCalledWith({
-      commentId: comment._id,
+      commentId: comment.id,
       nestingLevel: 0,
     });
   }

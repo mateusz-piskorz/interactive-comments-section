@@ -1,10 +1,23 @@
 import { FC } from "react";
 import "./App.css";
+import { useAuth, Auth } from "./features/Auth";
+import { useComment, CommentsProvider } from "./context/comment";
 import { CommentList } from "./features/CommentList";
 import { Form } from "./features/Form";
-import { useComment } from "./context/comment";
 
 const App: FC = () => {
+  const { user } = useAuth();
+
+  return user ? (
+    <CommentsProvider>
+      <CommentsSystem />
+    </CommentsProvider>
+  ) : (
+    <Auth />
+  );
+};
+
+const CommentsSystem = () => {
   const { childComments } = useComment();
   return (
     <>

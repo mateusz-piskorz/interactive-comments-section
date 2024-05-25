@@ -1,25 +1,29 @@
 import { FC } from "react";
 import iconMinus from "../../assets/icon-minus.svg";
 import iconPlus from "../../assets/icon-plus.svg";
-import { useAsyncFn } from "../../../../hooks/useAsync";
-import { addLike } from "../../../../services/comments";
-import { useUser } from "../../../../context/user";
+import { addLike } from "../../services";
 import { useComment } from "../../../../context/comment";
 import { Dialog } from "../../../Dialog";
 import c from "./LikesButton.module.scss";
+import { useAuth } from "../../../Auth";
+import { useMutation } from "@tanstack/react-query";
 
 type LikesBtnProps = {
   commentId: string;
 };
 
 export const LikesButton: FC<LikesBtnProps> = ({ commentId }) => {
-  const { userId } = useUser();
+  const { user } = useAuth();
+  const { id: userId } = user!;
   const { comment } = useComment(commentId);
   const { likes, likesCount, dislikes } = comment!;
-  const { execute, error, setError } = useAsyncFn(addLike);
+  const { mutate, status, reset, error } = useMutation({
+    mutationFn: addLike,
+    mutationKey: ["addLike"],
+  });
 
   const clickHandler = (likeType: "like" | "dislike") => {
-    execute({ commentId, likeType, userId });
+    mutate({ commentId, likeType });
   };
 
   return (
@@ -40,13 +44,12 @@ export const LikesButton: FC<LikesBtnProps> = ({ commentId }) => {
         </button>
       </div>
 
-      {error && (
+      {status === "error" && (
         <Dialog
-          elapsedTime={error.elapsedTime}
+          //@ts-ignore
+          remainingTime={error.remainingTime}
           description={error.message}
-          onCancel={() => {
-            setError(false);
-          }}
+          onCancel={reset}
         />
       )}
     </>
