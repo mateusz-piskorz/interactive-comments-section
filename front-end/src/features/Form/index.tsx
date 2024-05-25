@@ -1,9 +1,9 @@
 import { FC, useEffect, useRef } from "react";
 import c from "./Form.module.scss";
-import { addCommentService, editCommentService } from "./services";
-import { useAsyncFn } from "../../hooks/useAsync";
+import { addComment, editComment } from "./services";
 import { Dialog } from "../Dialog";
 import arrowRight from "../../assets/arrow-right.svg";
+import { useMutation } from "@tanstack/react-query";
 
 type FormProps = {
   parentId: string;
@@ -22,18 +22,22 @@ export const Form: FC<FormProps> = ({
 }) => {
   const input = useRef<HTMLSpanElement>(null);
   const FormClassName = `${c.Form}${` ${fixedPosition ? c.Form___fixed : ""}`}`;
+  const addMutation = useMutation({
+    onSuccess: () => {
+      input.current!.innerText = "";
+      onSubmit && onSubmit();
+    },
+    mutationFn: addComment,
+    mutationKey: ["addComment"],
+  });
+  const editMutation = useMutation({
+    onSuccess: onSubmit,
+    mutationFn: editComment,
+    mutationKey: ["editComment"],
+  });
 
-  const { execute, error, setError, loading } = useAsyncFn(
-    operation === "add" ? addCommentService : editCommentService,
-    {
-      onSuccess: (comment) => {
-        if (operation === "add") {
-          input.current!.innerText = "";
-        }
-        onSubmit && onSubmit();
-      },
-    }
-  );
+  const { status, reset, error } =
+    operation === "add" ? addMutation : editMutation;
 
   const submitHandler = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
@@ -43,9 +47,9 @@ export const Form: FC<FormProps> = ({
     );
     if (!content || content === "") return;
     if (operation === "add") {
-      execute({ content, parentId });
+      addMutation.mutate({ content, parentId });
     } else {
-      execute({ commentId: parentId, content });
+      editMutation.mutate({ commentId: parentId, content });
     }
   };
 
@@ -77,18 +81,21 @@ export const Form: FC<FormProps> = ({
           role="textbox"
           contentEditable
         />
-        <button type="submit" className={c.Form_button} disabled={loading}>
+        <button
+          type="submit"
+          className={c.Form_button}
+          disabled={status === "pending"}
+        >
           <img src={arrowRight} alt="send icon" />
         </button>
       </form>
 
-      {error && (
+      {status === "error" && (
         <Dialog
+          //@ts-ignore
           remainingTime={error.remainingTime}
           description={error.message}
-          onCancel={() => {
-            setError(false);
-          }}
+          onCancel={reset}
         />
       )}
     </>
