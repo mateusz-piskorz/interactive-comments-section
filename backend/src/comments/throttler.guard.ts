@@ -4,6 +4,7 @@ import {
   Injectable,
   mixin,
   HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 
 const timeStorage = {};
@@ -30,7 +31,7 @@ export const ThrottlerGuard = (storageName: string) => {
               message: 'You can only use this action once every 1 minute',
               remainingTime: ttl - diff,
             },
-            429,
+            HttpStatus.TOO_MANY_REQUESTS,
           );
         }
       }
