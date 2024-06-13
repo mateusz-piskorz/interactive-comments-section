@@ -32,7 +32,6 @@ export class UsersService {
 
     response.header('Set-Cookie', [
       `${jwtCookieName}=${access_token}; HttpOnly; Secure; SameSite=None; Max-Age=${JwtExpiresIn}; Path=/;`,
-      'otherCookieAndParams...',
     ]);
 
     return { ...user, expires_in: JwtExpiresIn };

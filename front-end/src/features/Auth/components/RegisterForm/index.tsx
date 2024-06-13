@@ -9,7 +9,7 @@ import { useAuth } from "../../context";
 
 export const RegisterForm: FC = () => {
   const { setUser } = useAuth();
-  const { mutate, status } = useMutation({
+  const { mutate, status, error } = useMutation({
     onSuccess: (user) => {
       localStorage.setItem(LS_USERNAME, user.username);
       localStorage.setItem(LS_PASSWORD, user.password);
@@ -33,7 +33,12 @@ export const RegisterForm: FC = () => {
   }
 
   if (status === "error") {
-    return <h1>register failed, please try again</h1>;
+    return (
+      <>
+        <h1>register failed, please try again</h1>
+        <p>{error.message}</p>
+      </>
+    );
   }
 
   return (

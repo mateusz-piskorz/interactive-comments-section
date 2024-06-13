@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
+  BadRequestException,
   createParamDecorator,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -23,6 +24,7 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException();
     }
+
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
@@ -35,8 +37,8 @@ export class AuthGuard implements CanActivate {
       }
 
       request['user'] = user;
-    } catch {
-      throw new UnauthorizedException();
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
     return true;
   }
