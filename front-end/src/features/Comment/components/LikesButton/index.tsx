@@ -7,12 +7,13 @@ import { Dialog } from "../../../Dialog";
 import c from "./LikesButton.module.scss";
 import { useAuth } from "../../../Auth";
 import { useMutation } from "@tanstack/react-query";
-
+import { useEvent } from "@owcaofficial/web-analytics";
 type LikesBtnProps = {
   commentId: string;
 };
 
 export const LikesButton: FC<LikesBtnProps> = ({ commentId }) => {
+  const sendEvent = useEvent();
   const { user } = useAuth();
   const { id: userId } = user!;
   const { comment } = useComment(commentId);
@@ -24,6 +25,7 @@ export const LikesButton: FC<LikesBtnProps> = ({ commentId }) => {
 
   const clickHandler = (likeType: "like" | "dislike") => {
     mutate({ commentId, likeType });
+    sendEvent("like_action", likeType);
   };
 
   return (

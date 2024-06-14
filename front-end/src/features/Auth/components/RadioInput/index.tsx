@@ -1,6 +1,7 @@
 import { FC, useId } from "react";
 import c from "./RadioInput.module.scss";
 import { ProfileAvatar } from "../../../ProfileAvatar";
+import { useEvent } from "@owcaofficial/web-analytics";
 
 type RadioInputProps = {
   isSelected: boolean;
@@ -15,6 +16,8 @@ export const RadioInput: FC<RadioInputProps> = ({
   value,
   setSelected,
 }) => {
+  const sendEvent = useEvent();
+
   const id = useId();
   const className = `${c.RadioInput}${` ${
     isSelected ? c.RadioInput___selected : ""
@@ -29,7 +32,10 @@ export const RadioInput: FC<RadioInputProps> = ({
         required
         id={id}
         value={value}
-        onChange={() => setSelected(value)}
+        onChange={() => {
+          setSelected(value);
+          sendEvent(`${name}_click`, value);
+        }}
         checked={isSelected}
       />
       {name === "avatar" ? (

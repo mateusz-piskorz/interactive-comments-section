@@ -4,6 +4,7 @@ import { addComment, editComment } from "./services";
 import { Dialog } from "../Dialog";
 import arrowRight from "../../assets/arrow-right.svg";
 import { useMutation } from "@tanstack/react-query";
+import { useEvent } from "@owcaofficial/web-analytics";
 
 type FormProps = {
   parentId: string;
@@ -20,6 +21,7 @@ export const Form: FC<FormProps> = ({
   onSubmit,
   initialContent,
 }) => {
+  const sendEvent = useEvent();
   const input = useRef<HTMLSpanElement>(null);
   const FormClassName = `${c.Form}${` ${fixedPosition ? c.Form___fixed : ""}`}`;
   const addMutation = useMutation({
@@ -51,6 +53,11 @@ export const Form: FC<FormProps> = ({
     } else {
       editMutation.mutate({ commentId: parentId, content });
     }
+
+    sendEvent(
+      "add_comment_form_action",
+      fixedPosition ? "add_comment" : initialContent ? "edit_comment" : "reply"
+    );
   };
 
   useEffect(() => {

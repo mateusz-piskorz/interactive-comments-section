@@ -10,6 +10,7 @@ import { removeComment } from "../../../../services/comments";
 import { useComment } from "../../../../context/comment";
 import { useAuth } from "../../../Auth";
 import { useMutation } from "@tanstack/react-query";
+import { useEvent } from "@owcaofficial/web-analytics";
 
 export type PostProps = {
   commentId: string;
@@ -30,6 +31,7 @@ export const Post: FC<PostProps & ExtraProps> = ({
   onReply,
   onEdit,
 }) => {
+  const sendEvent = useEvent();
   const { user } = useAuth();
   const { id: userId } = user!;
   const { comment } = useComment(commentId);
@@ -51,7 +53,12 @@ export const Post: FC<PostProps & ExtraProps> = ({
 
   const dialogProps = {
     onConfirm:
-      status !== "error" ? () => mutate({ commentId, userId }) : undefined,
+      status !== "error"
+        ? () => {
+            mutate({ commentId, userId });
+            sendEvent("remove_comment_action", "remove_comment");
+          }
+        : undefined,
     onCancel: () => {
       setShowDialog(false);
       reset();
