@@ -1,0 +1,29 @@
+.RadioInput {
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 50%;
+  opacity: 0.7;
+
+  &___selected {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  &_input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  &_label {
+    & img {
+      cursor: pointer;
+      opacity: 1;
+      transform: scale(1);
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
