@@ -1,0 +1,16 @@
+function err() {
+    local text="⛔ coś nie działa"
+    echo ""
+    echo "\033[1;31m${text}\033[0m"
+    echo ""
+    exit 1
+}
+
+npm run lint || err
+npm run prettier:check || err
+npm run client:tsc:check || err
+npm run api:tsc:check || err
+
+echo ""
+echo "\033[1;32m✅ 🚀 Brawo wszystko działa\033[0m"
+echo ""

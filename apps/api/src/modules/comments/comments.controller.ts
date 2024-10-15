@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Controller, Param, Delete, UseGuards, Session } from '@nestjs/common';
+import { Controller, Param, UseGuards, Session } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { AuthGuard } from '../../utils/auth.guard';
 import { ThrottlerGuard } from '../../utils/throttler.guard';

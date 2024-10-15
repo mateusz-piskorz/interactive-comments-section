@@ -1,5 +1,5 @@
 import { getAuth } from '@/utils/auth';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { beforeLoadAuthGuard } from '@/utils/beforeLoadAuthGuard';
@@ -10,7 +10,7 @@ export const Route = createFileRoute('/profile/')({
 });
 
 function ProfilePage() {
-  const [open, setOpen] = useState(false);
+  const [, setOpen] = useState(false);
   const { data, isLoading } = useQuery({
     queryKey: ['getAuth'],
     queryFn: getAuth,

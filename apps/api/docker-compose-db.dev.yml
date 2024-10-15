@@ -1,8 +1,8 @@
-name: "interactive-comments-section-dev"
+name: 'interactive-comments-section-dev'
 
 services:
   db:
-    image: "postgres:15"
+    image: 'postgres:15'
     volumes:
       - postgres:/var/lib/postgresql/data
     environment:

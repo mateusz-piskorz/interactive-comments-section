@@ -30,7 +30,7 @@
     padding: 10px 20px;
 
     &[contenteditable]:empty::before {
-      content: "Add a comment...";
+      content: 'Add a comment...';
       color: gray;
     }
   }
