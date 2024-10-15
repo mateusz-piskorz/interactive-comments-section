@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider = "zod-prisma-types"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Color {
+  orange
+  teal
+  violet
+  seagreen
+  burlywood
+  tomato
+}
+
+enum Avatar {
+  avatar1
+  avatar2
+  avatar3
+  avatar4
+  avatar5
+  avatar6
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
+
+model User {
+  id        String    @id @default(cuid())
+  password  String    @unique @default(uuid())
+  username  String    @unique
+  color     Color
+  avatar    Avatar
+  createdAt DateTime  @default(now())
+  Comments  Comment[]
+}
+
+model Comment {
+  id         String   @id @default(cuid())
+  content    String
+  parentId   String   @default("root")
+  likes      String[] @default([])
+  dislikes   String[] @default([])
+  likesCount Int      @default(0)
+  createdAt  DateTime @default(now())
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id])
+}
