@@ -52,7 +52,7 @@ export const Post = ({
   const removeHandler = async () => {
     try {
       const { body, status } = await removeComment.mutate({
-        body: null,
+        body: {},
         params: { id: commentId },
       });
 
