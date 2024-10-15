@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const ProfileAvatar = ({ avatar }: Props) => {
-  const { data, error, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ['importAvatar', avatar],
     queryFn: async () => await import(`@/assets/avatars/${avatar}.jpg`),
   });

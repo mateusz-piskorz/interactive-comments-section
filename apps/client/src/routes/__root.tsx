@@ -5,7 +5,6 @@ import { tsr } from '../utils/ts-client';
 import { fallback, zodSearchValidator } from '@tanstack/router-zod-adapter';
 import { z } from 'zod';
 import { CustomToaster } from '@/components/common/CustomToaster';
-import { Toaster } from 'sonner';
 
 const globalSearchParams = z.object({
   page: fallback(z.number(), 1).default(1),
