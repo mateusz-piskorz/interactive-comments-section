@@ -3,12 +3,16 @@ import { authContract } from './routes/auth';
 import { usersContract } from './routes/users';
 import { commentsContract } from './routes/comments';
 import { z } from 'zod';
+import { booksContract } from './routes/poterDB/books';
 
 export const contract = contractInstance.router(
   {
     auth: authContract,
     users: usersContract,
     comments: commentsContract,
+    poterDB: {
+      books: booksContract,
+    },
   },
   {
     commonResponses: {

@@ -26,7 +26,7 @@ export class CommentsController {
   }
 
   //GET /comments
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @TsRestHandler(getComments)
   async getComments() {
     return this.commentsService.getComments();

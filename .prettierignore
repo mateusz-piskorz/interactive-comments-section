@@ -5,3 +5,4 @@
 /.nx/workspace-data
 /apps/client/src/routeTree.gen.ts
 /apps/api/prisma/generated/zod/index.ts
+/apps/api/prisma/generated/zod/index.d.ts
