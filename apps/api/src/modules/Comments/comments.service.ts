@@ -190,7 +190,7 @@ export class CommentsService {
     });
   }
 
-  async removeComment(commentId: string, authorId: string) {
+  removeComment(commentId: string, authorId: string) {
     return tsRestHandler(removeComment, async () => {
       const comment = await this.prisma.comment.findUnique({
         where: { id: commentId },
@@ -217,9 +217,5 @@ export class CommentsService {
       await this.socketGateway.server.emit('comment-removed', commentId);
       return { status: 200, body: commentRemoved };
     });
-  }
-
-  async deleteAll() {
-    return await this.prisma.comment.deleteMany();
   }
 }

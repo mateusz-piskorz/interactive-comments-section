@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { beforeLoadAuthGuard } from '@/utils/beforeLoadAuthGuard';
+import { tsr } from '@/utils/ts-client';
 
 export const Route = createFileRoute('/profile/')({
   component: ProfilePage,
@@ -16,9 +17,16 @@ function ProfilePage() {
     queryFn: getAuth,
   });
 
+  const { data: books } = tsr.poterDB.books.getBooks.useQuery({
+    queryKey: ['books'],
+  });
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
+  console.log('books');
+  console.log(books);
 
   return (
     <div className="p-2">

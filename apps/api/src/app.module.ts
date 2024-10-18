@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from './utils/database/database.module';
-import { UsersModule } from './modules/users/users.module';
-import { CommentsModule } from './modules/comments/comments.module';
+import { UsersModule } from './modules/Users/users.module';
+import { CommentsModule } from './modules/Comments/comments.module';
+import { AuthModule } from './modules/Auth/auth.module';
 import { SocketModule } from './utils/socket/socket.module';
-import { AuthModule } from './modules/auth/auth.module';
+import { BooksModule } from './modules/potterDB/Books/books.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { AuthModule } from './modules/auth/auth.module';
     UsersModule,
     CommentsModule,
     AuthModule,
+    BooksModule,
   ],
 })
 export class AppModule {}

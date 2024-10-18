@@ -33,25 +33,33 @@ export const CommentsProvider = ({ children }: { children?: ReactNode }) => {
   });
 
   useEffect(() => {
-    const onCommentAdded = (newComment: Comment) => {
-      tsrQueryClient.setQueryData(['comments'], (prev: any) => [
-        ...prev,
-        newComment,
-      ]);
+    const onCommentAdded = (newComment: CommentWithAuthor) => {
+      tsrQueryClient.comments.getComments.setQueryData(['comments'], (prev) => {
+        if (!prev) return prev;
+        return { ...prev, body: [...prev.body, newComment] };
+      });
     };
 
-    const onCommentEdited = (newComment: any) => {
-      tsrQueryClient.setQueryData(['comments'], (prev: any) =>
-        prev.map((comment: any) =>
-          comment.id === newComment.id ? newComment : comment
-        )
-      );
+    const onCommentEdited = (newComment: CommentWithAuthor) => {
+      tsrQueryClient.comments.getComments.setQueryData(['comments'], (prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          body: prev.body.map((comment) =>
+            comment.id === newComment.id ? newComment : comment
+          ),
+        };
+      });
     };
 
-    const onCommentRemoved = (commentId: string) => {
-      tsrQueryClient.setQueryData(['comments'], (prev: any) =>
-        prev.filter((comment: any) => comment.id !== commentId)
-      );
+    const onCommentRemoved = (commentId: CommentWithAuthor) => {
+      tsrQueryClient.comments.getComments.setQueryData(['comments'], (prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          body: prev.body.filter((comment: any) => comment.id !== commentId),
+        };
+      });
     };
 
     socket.on('comment-added', onCommentAdded);
