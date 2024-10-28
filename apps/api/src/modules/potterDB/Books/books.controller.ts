@@ -8,14 +8,18 @@ import { CacheInterceptor } from '@nestjs/cache-manager';
 const { getBooks } = contract.poterDB.books;
 
 @Controller()
-@UseInterceptors(CacheInterceptor)
 export class BooksController {
   constructor(private readonly commentsService: BooksService) {}
   //GET /books
   // @UseGuards(AuthGuard)
 
+  @UseInterceptors(CacheInterceptor)
   @TsRestHandler(getBooks)
   async getBooks() {
     return this.commentsService.getBooks();
+  }
+
+  async booksWithExtras() {
+    return await this.getBooks();
   }
 }

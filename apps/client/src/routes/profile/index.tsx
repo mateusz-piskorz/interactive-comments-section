@@ -1,9 +1,9 @@
-import { getAuth } from '@/utils/auth';
+import { getAuth } from '@/features/auth';
 import { createFileRoute } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { beforeLoadAuthGuard } from '@/utils/beforeLoadAuthGuard';
-import { tsr } from '@/utils/ts-client';
+import { beforeLoadAuthGuard } from '@/global/utils/beforeLoadAuthGuard';
+import { tsr } from '@/global/utils/ts-client';
 
 export const Route = createFileRoute('/profile/')({
   component: ProfilePage,

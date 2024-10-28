@@ -12,6 +12,7 @@ import {
 const createCommentSchemaDto = z.object({
   content: z.string().min(2),
   parentId: z.string().optional(),
+  bookId: z.string(),
 });
 
 const authorSchema = z.object({

@@ -45,7 +45,7 @@ export class CommentsService {
       }
 
       const newComment = await this.prisma.comment.create({
-        data: { content, authorId, parentId },
+        data: { content, authorId, parentId, bookId: body.bookId },
         include: {
           author: {
             select: { avatar: true, color: true, username: true, id: true },

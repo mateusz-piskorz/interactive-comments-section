@@ -1,10 +1,10 @@
 import { Outlet, createRootRoute, Link } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { tsr } from '../utils/ts-client';
+import { tsr } from '@/global/utils/ts-client';
 import { fallback, zodSearchValidator } from '@tanstack/router-zod-adapter';
 import { z } from 'zod';
-import { CustomToaster } from '@/components/common/CustomToaster';
+import { ToastProvider } from '@/global/providers/ToastProvider';
 
 const globalSearchParams = z.object({
   page: fallback(z.number(), 1).default(1),
@@ -45,7 +45,7 @@ function RootComponent() {
         </header>
         <Outlet />
 
-        <CustomToaster />
+        <ToastProvider />
 
         {import.meta.env.MODE === 'development' && (
           <TanStackRouterDevtools position="bottom-right" />

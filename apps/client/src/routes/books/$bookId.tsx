@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
+import { Comments } from '@/features/comments';
 
 const Component2 = () => {
   const [data, setData] = useState<string>('');
@@ -35,6 +36,10 @@ const Component2 = () => {
           <br />
         </>
       ))}
+
+      <br />
+      <br />
+      <Comments bookId="2" />
     </div>
   );
 };

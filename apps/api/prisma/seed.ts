@@ -32,13 +32,24 @@ const load = async () => {
     //comments
     await db.comment.createMany({
       data: [
-        { authorId: 'user1', content: 'test comment 1', id: 'comment1' },
-        { authorId: 'user2', content: 'test comment 2', id: 'comment2' },
+        {
+          authorId: 'user1',
+          content: 'test comment 1',
+          id: 'comment1',
+          bookId: '6751e7f7-a8b7-488b-bde7-8606822d2338',
+        },
+        {
+          authorId: 'user2',
+          content: 'test comment 2',
+          id: 'comment2',
+          bookId: '6751e7f7-a8b7-488b-bde7-8606822d2338',
+        },
         {
           authorId: 'user3',
           content: 'test comment 3',
           id: 'comment3',
           parentId: 'comment2',
+          bookId: '6751e7f7-a8b7-488b-bde7-8606822d2338',
         },
       ],
     });

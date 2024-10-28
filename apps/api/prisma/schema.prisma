@@ -54,6 +54,7 @@ model Comment {
   dislikes   String[] @default([])
   likesCount Int      @default(0)
   createdAt  DateTime @default(now())
+  bookId     String
   authorId   String
   author     User     @relation(fields: [authorId], references: [id])
 }

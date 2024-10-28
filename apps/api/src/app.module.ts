@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from './utils/database/database.module';
-import { UsersModule } from './modules/Users/users.module';
+import { UsersModule } from './modules/users2/users.module';
 import { CommentsModule } from './modules/Comments/comments.module';
-import { AuthModule } from './modules/Auth/auth.module';
+import { AuthModule } from './modules/auth2/auth.module';
 import { SocketModule } from './utils/socket/socket.module';
 import { BooksModule } from './modules/potterDB/Books/books.module';
 
