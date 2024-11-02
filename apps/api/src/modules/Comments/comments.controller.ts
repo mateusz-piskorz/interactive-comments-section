@@ -14,15 +14,18 @@ const {
   likeComment,
   dislikeComment,
   removeComment,
-} = contract.comments;
+} = contract.books.comments;
 @Controller()
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @UseGuards(AuthGuard, ThrottlerGuard('create-comment', createNewComment))
   @TsRestHandler(createNewComment) //POST /comments
-  async create(@Session() session: SessionType) {
-    return this.commentsService.createNewComment(session.user!.id);
+  async create(
+    @Param('bookSlug') bookSlug: string,
+    @Session() session: SessionType
+  ) {
+    return this.commentsService.createNewComment(bookSlug, session.user!.id);
   }
 
   //GET /comments
@@ -36,7 +39,6 @@ export class CommentsController {
   @UseGuards(AuthGuard, ThrottlerGuard('like-comment', likeComment))
   @TsRestHandler(likeComment)
   likeComment(@Param('id') id: string, @Session() session: SessionTypeU) {
-    console.log('czesc2');
     return this.commentsService.likeComment(id, session.user.id);
   }
 

@@ -16,7 +16,7 @@ export const SessionScalarFieldEnumSchema = z.enum(['id','sid','data','expiresAt
 
 export const UserScalarFieldEnumSchema = z.enum(['id','password','username','color','avatar','createdAt']);
 
-export const CommentScalarFieldEnumSchema = z.enum(['id','content','parentId','likes','dislikes','likesCount','createdAt','authorId']);
+export const CommentScalarFieldEnumSchema = z.enum(['id','content','parentId','likes','dislikes','likesCount','createdAt','bookSlug','authorId']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -74,6 +74,7 @@ export const CommentSchema = z.object({
   dislikes: z.string().array(),
   likesCount: z.number().int(),
   createdAt: z.coerce.date(),
+  bookSlug: z.string(),
   authorId: z.string(),
 })
 
@@ -145,6 +146,7 @@ export const CommentSelectSchema: z.ZodType<Prisma.CommentSelect> = z.object({
   dislikes: z.boolean().optional(),
   likesCount: z.boolean().optional(),
   createdAt: z.boolean().optional(),
+  bookSlug: z.boolean().optional(),
   authorId: z.boolean().optional(),
   author: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
 }).strict()
@@ -312,6 +314,7 @@ export const CommentWhereInputSchema: z.ZodType<Prisma.CommentWhereInput> = z.ob
   dislikes: z.lazy(() => StringNullableListFilterSchema).optional(),
   likesCount: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  bookSlug: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   authorId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   author: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
 }).strict();
@@ -324,6 +327,7 @@ export const CommentOrderByWithRelationInputSchema: z.ZodType<Prisma.CommentOrde
   dislikes: z.lazy(() => SortOrderSchema).optional(),
   likesCount: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
+  bookSlug: z.lazy(() => SortOrderSchema).optional(),
   authorId: z.lazy(() => SortOrderSchema).optional(),
   author: z.lazy(() => UserOrderByWithRelationInputSchema).optional()
 }).strict();
@@ -342,6 +346,7 @@ export const CommentWhereUniqueInputSchema: z.ZodType<Prisma.CommentWhereUniqueI
   dislikes: z.lazy(() => StringNullableListFilterSchema).optional(),
   likesCount: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  bookSlug: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   authorId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   author: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
 }).strict());
@@ -354,6 +359,7 @@ export const CommentOrderByWithAggregationInputSchema: z.ZodType<Prisma.CommentO
   dislikes: z.lazy(() => SortOrderSchema).optional(),
   likesCount: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
+  bookSlug: z.lazy(() => SortOrderSchema).optional(),
   authorId: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => CommentCountOrderByAggregateInputSchema).optional(),
   _avg: z.lazy(() => CommentAvgOrderByAggregateInputSchema).optional(),
@@ -373,6 +379,7 @@ export const CommentScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Comme
   dislikes: z.lazy(() => StringNullableListFilterSchema).optional(),
   likesCount: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
+  bookSlug: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   authorId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
 }).strict();
 
@@ -500,6 +507,7 @@ export const CommentCreateInputSchema: z.ZodType<Prisma.CommentCreateInput> = z.
   dislikes: z.union([ z.lazy(() => CommentCreatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.number().int().optional(),
   createdAt: z.coerce.date().optional(),
+  bookSlug: z.string(),
   author: z.lazy(() => UserCreateNestedOneWithoutCommentsInputSchema)
 }).strict();
 
@@ -511,6 +519,7 @@ export const CommentUncheckedCreateInputSchema: z.ZodType<Prisma.CommentUnchecke
   dislikes: z.union([ z.lazy(() => CommentCreatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.number().int().optional(),
   createdAt: z.coerce.date().optional(),
+  bookSlug: z.string(),
   authorId: z.string()
 }).strict();
 
@@ -522,6 +531,7 @@ export const CommentUpdateInputSchema: z.ZodType<Prisma.CommentUpdateInput> = z.
   dislikes: z.union([ z.lazy(() => CommentUpdatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  bookSlug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   author: z.lazy(() => UserUpdateOneRequiredWithoutCommentsNestedInputSchema).optional()
 }).strict();
 
@@ -533,6 +543,7 @@ export const CommentUncheckedUpdateInputSchema: z.ZodType<Prisma.CommentUnchecke
   dislikes: z.union([ z.lazy(() => CommentUpdatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  bookSlug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   authorId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -544,6 +555,7 @@ export const CommentCreateManyInputSchema: z.ZodType<Prisma.CommentCreateManyInp
   dislikes: z.union([ z.lazy(() => CommentCreatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.number().int().optional(),
   createdAt: z.coerce.date().optional(),
+  bookSlug: z.string(),
   authorId: z.string()
 }).strict();
 
@@ -555,6 +567,7 @@ export const CommentUpdateManyMutationInputSchema: z.ZodType<Prisma.CommentUpdat
   dislikes: z.union([ z.lazy(() => CommentUpdatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  bookSlug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CommentUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CommentUncheckedUpdateManyInput> = z.object({
@@ -565,6 +578,7 @@ export const CommentUncheckedUpdateManyInputSchema: z.ZodType<Prisma.CommentUnch
   dislikes: z.union([ z.lazy(() => CommentUpdatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  bookSlug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   authorId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -750,6 +764,7 @@ export const CommentCountOrderByAggregateInputSchema: z.ZodType<Prisma.CommentCo
   dislikes: z.lazy(() => SortOrderSchema).optional(),
   likesCount: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
+  bookSlug: z.lazy(() => SortOrderSchema).optional(),
   authorId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -763,6 +778,7 @@ export const CommentMaxOrderByAggregateInputSchema: z.ZodType<Prisma.CommentMaxO
   parentId: z.lazy(() => SortOrderSchema).optional(),
   likesCount: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
+  bookSlug: z.lazy(() => SortOrderSchema).optional(),
   authorId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -772,6 +788,7 @@ export const CommentMinOrderByAggregateInputSchema: z.ZodType<Prisma.CommentMinO
   parentId: z.lazy(() => SortOrderSchema).optional(),
   likesCount: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
+  bookSlug: z.lazy(() => SortOrderSchema).optional(),
   authorId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
@@ -1028,7 +1045,8 @@ export const CommentCreateWithoutAuthorInputSchema: z.ZodType<Prisma.CommentCrea
   likes: z.union([ z.lazy(() => CommentCreatelikesInputSchema),z.string().array() ]).optional(),
   dislikes: z.union([ z.lazy(() => CommentCreatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.number().int().optional(),
-  createdAt: z.coerce.date().optional()
+  createdAt: z.coerce.date().optional(),
+  bookSlug: z.string()
 }).strict();
 
 export const CommentUncheckedCreateWithoutAuthorInputSchema: z.ZodType<Prisma.CommentUncheckedCreateWithoutAuthorInput> = z.object({
@@ -1038,7 +1056,8 @@ export const CommentUncheckedCreateWithoutAuthorInputSchema: z.ZodType<Prisma.Co
   likes: z.union([ z.lazy(() => CommentCreatelikesInputSchema),z.string().array() ]).optional(),
   dislikes: z.union([ z.lazy(() => CommentCreatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.number().int().optional(),
-  createdAt: z.coerce.date().optional()
+  createdAt: z.coerce.date().optional(),
+  bookSlug: z.string()
 }).strict();
 
 export const CommentCreateOrConnectWithoutAuthorInputSchema: z.ZodType<Prisma.CommentCreateOrConnectWithoutAuthorInput> = z.object({
@@ -1078,6 +1097,7 @@ export const CommentScalarWhereInputSchema: z.ZodType<Prisma.CommentScalarWhereI
   dislikes: z.lazy(() => StringNullableListFilterSchema).optional(),
   likesCount: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  bookSlug: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   authorId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
 }).strict();
 
@@ -1140,7 +1160,8 @@ export const CommentCreateManyAuthorInputSchema: z.ZodType<Prisma.CommentCreateM
   likes: z.union([ z.lazy(() => CommentCreatelikesInputSchema),z.string().array() ]).optional(),
   dislikes: z.union([ z.lazy(() => CommentCreatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.number().int().optional(),
-  createdAt: z.coerce.date().optional()
+  createdAt: z.coerce.date().optional(),
+  bookSlug: z.string()
 }).strict();
 
 export const CommentUpdateWithoutAuthorInputSchema: z.ZodType<Prisma.CommentUpdateWithoutAuthorInput> = z.object({
@@ -1151,6 +1172,7 @@ export const CommentUpdateWithoutAuthorInputSchema: z.ZodType<Prisma.CommentUpda
   dislikes: z.union([ z.lazy(() => CommentUpdatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  bookSlug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CommentUncheckedUpdateWithoutAuthorInputSchema: z.ZodType<Prisma.CommentUncheckedUpdateWithoutAuthorInput> = z.object({
@@ -1161,6 +1183,7 @@ export const CommentUncheckedUpdateWithoutAuthorInputSchema: z.ZodType<Prisma.Co
   dislikes: z.union([ z.lazy(() => CommentUpdatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  bookSlug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const CommentUncheckedUpdateManyWithoutAuthorInputSchema: z.ZodType<Prisma.CommentUncheckedUpdateManyWithoutAuthorInput> = z.object({
@@ -1171,6 +1194,7 @@ export const CommentUncheckedUpdateManyWithoutAuthorInputSchema: z.ZodType<Prism
   dislikes: z.union([ z.lazy(() => CommentUpdatedislikesInputSchema),z.string().array() ]).optional(),
   likesCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
+  bookSlug: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 /////////////////////////////////////////
