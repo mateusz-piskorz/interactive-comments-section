@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { SocketGateway } from '../../utils/socket/socket.gateway';
-import { DatabaseService } from '../../utils/database/database.service';
+import { SocketGateway } from '../../../utils/socket/socket.gateway';
+import { DatabaseService } from '../../../utils/database/database.service';
 import { contract } from 'apps/shared/contract';
 import { TsRestException, tsRestHandler } from '@ts-rest/nest';
 
@@ -20,9 +20,12 @@ export class CommentsService {
     private prisma: DatabaseService
   ) {}
 
-  getComments() {
+  getComments(bookSlug: string) {
     return tsRestHandler(getComments, async () => {
       const comments = await this.prisma.comment.findMany({
+        where: {
+          bookSlug,
+        },
         include: {
           author: {
             select: { avatar: true, color: true, username: true, id: true },
@@ -45,7 +48,7 @@ export class CommentsService {
       }
 
       const newComment = await this.prisma.comment.create({
-        data: { content, authorId, parentId, bookSlug },
+        data: { content, authorId, parentId, bookSlug: bookSlug },
         include: {
           author: {
             select: { avatar: true, color: true, username: true, id: true },
@@ -58,10 +61,10 @@ export class CommentsService {
     });
   }
 
-  editComment(commentId: string, authorId: string) {
+  editComment(bookSlug: string, commentId: string, authorId: string) {
     return tsRestHandler(editComment, async ({ body: { content } }) => {
       const comment = await this.prisma.comment.findUnique({
-        where: { id: commentId },
+        where: { id: commentId, bookSlug },
       });
 
       if (!comment) {
@@ -86,7 +89,7 @@ export class CommentsService {
       }
 
       const newComment = await this.prisma.comment.update({
-        where: { id: commentId },
+        where: { id: commentId, bookSlug },
         data: { content },
         include: {
           author: {
@@ -100,10 +103,10 @@ export class CommentsService {
     });
   }
 
-  likeComment(commentId: string, authorId: string) {
+  likeComment(bookSlug: string, commentId: string, authorId: string) {
     return tsRestHandler(likeComment, async () => {
       const comment = await this.prisma.comment.findUnique({
-        where: { id: commentId },
+        where: { id: commentId, bookSlug },
       });
       if (!comment) {
         throw new TsRestException(likeComment, {
@@ -127,7 +130,7 @@ export class CommentsService {
       }
 
       const newComment = await this.prisma.comment.update({
-        where: { id: commentId },
+        where: { id: commentId, bookSlug },
         data: {
           likes: likesArr,
           dislikes: dislikesArr,
@@ -145,10 +148,10 @@ export class CommentsService {
     });
   }
 
-  dislikeComment(commentId: string, authorId: string) {
+  dislikeComment(bookSlug: string, commentId: string, authorId: string) {
     return tsRestHandler(dislikeComment, async () => {
       const comment = await this.prisma.comment.findUnique({
-        where: { id: commentId },
+        where: { id: commentId, bookSlug },
       });
       if (!comment) {
         throw new TsRestException(dislikeComment, {
@@ -172,7 +175,7 @@ export class CommentsService {
       }
 
       const newComment = await this.prisma.comment.update({
-        where: { id: commentId },
+        where: { id: commentId, bookSlug },
         data: {
           likes: likesArr,
           dislikes: dislikesArr,
@@ -190,10 +193,10 @@ export class CommentsService {
     });
   }
 
-  removeComment(commentId: string, authorId: string) {
+  removeComment(bookSlug: string, commentId: string, authorId: string) {
     return tsRestHandler(removeComment, async () => {
       const comment = await this.prisma.comment.findUnique({
-        where: { id: commentId },
+        where: { id: commentId, bookSlug },
       });
 
       if (!comment) {
@@ -206,7 +209,7 @@ export class CommentsService {
       if (comment.authorId !== authorId) throw new UnauthorizedException();
 
       const commentRemoved = await this.prisma.comment.delete({
-        where: { id: commentId },
+        where: { id: commentId, bookSlug },
         include: {
           author: {
             select: { avatar: true, color: true, username: true, id: true },

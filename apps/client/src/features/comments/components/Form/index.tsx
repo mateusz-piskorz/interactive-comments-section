@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import c from './main.module.scss';
 import arrowRight from '@/assets/arrow-right.svg';
 import { tsr } from '@/global/utils/ts-client';
+import { useBookSlug } from '../../context/BookSlug';
 
 type Props = {
   parentId: string;
@@ -20,10 +21,11 @@ export const Form = ({
   onSubmit,
   initialContent,
 }: Props) => {
+  const { bookSlug } = useBookSlug();
   const input = useRef<HTMLSpanElement>(null);
   const FormClassName = `${c.Form}${` ${fixedPosition ? c.Form___fixed : ''}`}`;
 
-  const addMutation = tsr.comments.createNewComment.useMutation({
+  const addMutation = tsr.books.comments.createNewComment.useMutation({
     mutationKey: ['createNewComment'],
     onSuccess: () => {
       input.current!.innerText = '';
@@ -31,7 +33,7 @@ export const Form = ({
     },
   });
 
-  const editMutation = tsr.comments.editComment.useMutation({
+  const editMutation = tsr.books.comments.editComment.useMutation({
     onSuccess: onSubmit,
     mutationKey: ['editComment'],
   });
@@ -46,9 +48,15 @@ export const Form = ({
     );
     if (!content || content === '') return;
     if (operation === 'add') {
-      addMutation.mutate({ body: { content, parentId, bookId: 'bookIdTest' } });
+      addMutation.mutate({
+        body: { content, parentId },
+        params: { bookSlug },
+      });
     } else {
-      editMutation.mutate({ body: { content }, params: { id: parentId } });
+      editMutation.mutate({
+        body: { content },
+        params: { id: parentId, bookSlug },
+      });
     }
   };
 

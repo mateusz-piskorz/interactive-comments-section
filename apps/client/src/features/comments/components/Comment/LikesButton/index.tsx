@@ -1,19 +1,21 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
+import { useBookSlug } from '@/features/comments/context/BookSlug';
 import iconMinus from '../../../assets/icon-minus.svg';
 import iconPlus from '../../../assets/icon-plus.svg';
-import { useComment } from '../../../context';
+import { useComment } from '../../../context/Comments';
 import c from './main.module.scss';
 import { useAuth } from '@/features/auth';
 import { tsr } from '@/global/utils/ts-client';
 
-const { likeComment, dislikeComment } = tsr.comments;
+const { likeComment, dislikeComment } = tsr.books.comments;
 
 type Props = {
   commentId: string;
 };
 
 export const LikesButton = ({ commentId }: Props) => {
+  const { bookSlug } = useBookSlug();
   const user = useAuth();
 
   const { comment } = useComment(commentId);
@@ -29,9 +31,9 @@ export const LikesButton = ({ commentId }: Props) => {
 
   const clickHandler = (likeType: 'like' | 'dislike') => {
     if (likeType === 'like') {
-      mutateLike({ params: { id: commentId }, body: {} });
+      mutateLike({ params: { id: commentId, bookSlug }, body: {} });
     } else {
-      mutateDislike({ params: { id: commentId }, body: {} });
+      mutateDislike({ params: { id: commentId, bookSlug }, body: {} });
     }
   };
 

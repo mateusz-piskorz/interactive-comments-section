@@ -36,20 +36,20 @@ const load = async () => {
           authorId: 'user1',
           content: 'test comment 1',
           id: 'comment1',
-          bookId: '6751e7f7-a8b7-488b-bde7-8606822d2338',
+          bookSlug: 'harry-potter-and-the-philosopher-s-stone',
         },
         {
           authorId: 'user2',
           content: 'test comment 2',
           id: 'comment2',
-          bookId: '6751e7f7-a8b7-488b-bde7-8606822d2338',
+          bookSlug: 'harry-potter-and-the-philosopher-s-stone',
         },
         {
           authorId: 'user3',
           content: 'test comment 3',
           id: 'comment3',
           parentId: 'comment2',
-          bookId: '6751e7f7-a8b7-488b-bde7-8606822d2338',
+          bookSlug: 'harry-potter-and-the-philosopher-s-stone',
         },
       ],
     });

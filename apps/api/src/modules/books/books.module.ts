@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { BooksService } from './books.service';
-import { BooksController } from './books.controller';
 import { HttpModule } from '@nestjs/axios';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
+import { BooksController } from './books.controller';
+import { BooksService } from './books.service';
 
 @Module({
   imports: [
@@ -12,7 +12,6 @@ import { redisStore } from 'cache-manager-redis-store';
       // @ts-ignore
       store: async () =>
         await redisStore({
-          // Store-specific configuration:
           socket: {
             host: 'localhost',
             port: 6379,

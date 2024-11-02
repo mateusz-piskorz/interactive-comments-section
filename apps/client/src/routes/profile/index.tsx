@@ -17,7 +17,7 @@ function ProfilePage() {
     queryFn: getAuth,
   });
 
-  const { data: books } = tsr.poterDB.books.getBooks.useQuery({
+  const { data: books } = tsr.books.getBooks.useQuery({
     queryKey: ['books'],
   });
 
@@ -25,8 +25,8 @@ function ProfilePage() {
     return <div>Loading...</div>;
   }
 
-  console.log('books');
-  console.log(books);
+  // console.log('books2');
+  // console.log(books2);
 
   return (
     <div className="p-2">

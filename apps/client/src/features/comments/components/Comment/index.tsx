@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { Post, PostProps } from './Post';
 import { Form } from '../Form';
 import { CommentList } from '../CommentList';
-import { useComment } from '../../context';
+import { useComment } from '../../context/Comments';
 
 export const Comment: FC<PostProps> = (props) => {
   let { nestingLevel } = props;

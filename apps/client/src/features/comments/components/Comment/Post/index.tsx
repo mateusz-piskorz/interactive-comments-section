@@ -5,13 +5,13 @@ import { ProfileAvatar } from '@/global/components/ProfileAvatar';
 import c from './main.module.scss';
 import { ActionButtons } from '../ActionButtons';
 import { LikesButton } from '../LikesButton';
-import { useComment } from '../../../context';
+import { useComment } from '../../../context/Comments';
 import { useAuth } from '@/features/auth';
 import { tsr } from '@/global/utils/ts-client';
 import { ConfirmDialog } from '@/global/components/ConfirmDialog';
 import { toast } from 'sonner';
 
-const { removeComment } = tsr.comments;
+const { removeComment } = tsr.books.comments;
 
 const ClockToast = ({
   message,
@@ -53,7 +53,7 @@ export const Post = ({
     try {
       const { body, status } = await removeComment.mutate({
         body: {},
-        params: { id: commentId },
+        params: { id: commentId, bookSlug: '' },
       });
 
       switch (status) {

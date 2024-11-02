@@ -35,7 +35,7 @@ CREATE TABLE "Comment" (
     "dislikes" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "likesCount" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "bookId" TEXT NOT NULL,
+    "bookSlug" TEXT NOT NULL,
     "authorId" TEXT NOT NULL,
 
     CONSTRAINT "Comment_pkey" PRIMARY KEY ("id")

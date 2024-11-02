@@ -4,6 +4,7 @@ import React, { useContext, ReactNode, useEffect } from 'react';
 import { socket } from '@/global/socket';
 import { tsr } from '@/global/utils/ts-client';
 import { CommentWithAuthor } from '../types/comment';
+import { useBookSlug } from './BookSlug';
 
 export type ContextType = {
   comments: CommentWithAuthor[];
@@ -25,48 +26,52 @@ export const useComment = (commentId = 'root') => {
   }
 };
 
-export const CommentsProvider = ({
-  children,
-  bookId,
-}: {
-  children?: ReactNode;
-  bookId: string;
-}) => {
-  console.log(bookId);
+export const CommentsProvider = ({ children }: { children?: ReactNode }) => {
+  const { bookSlug } = useBookSlug();
   const tsrQueryClient = tsr.useQueryClient();
 
-  const { status, data } = tsr.comments.getComments.useQuery({
+  const { status, data } = tsr.books.comments.getComments.useQuery({
     queryKey: ['comments'],
+    queryData: { params: { bookSlug } },
   });
 
   useEffect(() => {
     const onCommentAdded = (newComment: CommentWithAuthor) => {
-      tsrQueryClient.comments.getComments.setQueryData(['comments'], (prev) => {
-        if (!prev) return prev;
-        return { ...prev, body: [...prev.body, newComment] };
-      });
+      tsrQueryClient.books.comments.getComments.setQueryData(
+        ['comments'],
+        (prev) => {
+          if (!prev) return prev;
+          return { ...prev, body: [...prev.body, newComment] };
+        }
+      );
     };
 
     const onCommentEdited = (newComment: CommentWithAuthor) => {
-      tsrQueryClient.comments.getComments.setQueryData(['comments'], (prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          body: prev.body.map((comment) =>
-            comment.id === newComment.id ? newComment : comment
-          ),
-        };
-      });
+      tsrQueryClient.books.comments.getComments.setQueryData(
+        ['comments'],
+        (prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            body: prev.body.map((comment) =>
+              comment.id === newComment.id ? newComment : comment
+            ),
+          };
+        }
+      );
     };
 
     const onCommentRemoved = (commentId: CommentWithAuthor) => {
-      tsrQueryClient.comments.getComments.setQueryData(['comments'], (prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          body: prev.body.filter((comment: any) => comment.id !== commentId),
-        };
-      });
+      tsrQueryClient.books.comments.getComments.setQueryData(
+        ['comments'],
+        (prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            body: prev.body.filter((comment: any) => comment.id !== commentId),
+          };
+        }
+      );
     };
 
     socket.on('comment-added', onCommentAdded);
