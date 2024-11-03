@@ -5,7 +5,7 @@ import { AuthGuard } from '../../../utils/auth.guard';
 import { TsRestHandler } from '@ts-rest/nest';
 import { contract } from 'apps/shared/contract';
 
-const { getChapter } = contract.books.chapters;
+const { getChapter, getAllChapters } = contract.books.chapters;
 
 type Params = {
   bookSlug: string;
@@ -17,10 +17,17 @@ type Params = {
 export class ChaptersController {
   constructor(private readonly chaptersService: ChaptersService) {}
 
+  //POST /books/:bookSlug/chapters
+  @UseGuards(AuthGuard)
+  @TsRestHandler(getAllChapters)
+  getAllChapters(@Param('bookSlug') bookSlug: string) {
+    return this.chaptersService.getAllChapters(bookSlug);
+  }
+
   //POST /books/:bookSlug/chapters/:chapterNumber
   @UseGuards(AuthGuard)
   @TsRestHandler(getChapter)
   getChapter(@Param() p: Params) {
-    return this.chaptersService.getChapters(p.bookSlug, p.chapterNumber);
+    return this.chaptersService.getChapter(p.bookSlug, p.chapterNumber);
   }
 }

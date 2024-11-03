@@ -6,7 +6,7 @@ import { chaptersContract } from './chapters';
 
 export const booksContract = contractInstance.router(
   {
-    getBooks: {
+    getAllBooks: {
       method: 'GET',
       path: '/',
       responses: {
