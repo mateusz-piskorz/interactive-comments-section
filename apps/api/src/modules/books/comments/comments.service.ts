@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { SocketGateway } from '../../../utils/socket/socket.gateway';
 import { DatabaseService } from '../../../utils/database/database.service';
 import { contract } from 'apps/shared/contract';
@@ -206,7 +206,12 @@ export class CommentsService {
         });
       }
 
-      if (comment.authorId !== authorId) throw new UnauthorizedException();
+      if (comment.authorId !== authorId) {
+        throw new TsRestException(editComment, {
+          status: 401,
+          body: { message: 'Unauthorized' },
+        });
+      }
 
       const commentRemoved = await this.prisma.comment.delete({
         where: { id: commentId, bookSlug },

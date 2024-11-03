@@ -2,6 +2,7 @@ import { contractInstance } from '../../initContract';
 import { unauthorized } from '../../constants';
 import { booksSchema } from '../../../zod/booksSchemaPotterDB';
 import { commentsContract } from './comments';
+import { chaptersContract } from './chapters';
 
 export const booksContract = contractInstance.router(
   {
@@ -14,6 +15,7 @@ export const booksContract = contractInstance.router(
       },
     },
     comments: commentsContract,
+    chapters: chaptersContract,
   },
   {
     pathPrefix: '/books',

@@ -15,8 +15,10 @@ import { Route as IndexImport } from './routes/index'
 import { Route as ProfileIndexImport } from './routes/profile/index'
 import { Route as BooksIndexImport } from './routes/books/index'
 import { Route as AuthIndexImport } from './routes/auth/index'
-import { Route as BooksBookSlugImport } from './routes/books/$bookSlug'
 import { Route as AuthRegisterImport } from './routes/auth/register'
+import { Route as BooksBookSlugIndexImport } from './routes/books/$bookSlug/index'
+import { Route as BooksBookSlugChaptersIndexImport } from './routes/books/$bookSlug/chapters/index'
+import { Route as BooksBookSlugChaptersChapterIndexImport } from './routes/books/$bookSlug/chapters/$chapter/index'
 
 // Create/Update Routes
 
@@ -40,15 +42,28 @@ const AuthIndexRoute = AuthIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const BooksBookSlugRoute = BooksBookSlugImport.update({
-  path: '/books/$bookSlug',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const AuthRegisterRoute = AuthRegisterImport.update({
   path: '/auth/register',
   getParentRoute: () => rootRoute,
 } as any)
+
+const BooksBookSlugIndexRoute = BooksBookSlugIndexImport.update({
+  path: '/books/$bookSlug/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const BooksBookSlugChaptersIndexRoute = BooksBookSlugChaptersIndexImport.update(
+  {
+    path: '/books/$bookSlug/chapters/',
+    getParentRoute: () => rootRoute,
+  } as any,
+)
+
+const BooksBookSlugChaptersChapterIndexRoute =
+  BooksBookSlugChaptersChapterIndexImport.update({
+    path: '/books/$bookSlug/chapters/$chapter/',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -66,13 +81,6 @@ declare module '@tanstack/react-router' {
       path: '/auth/register'
       fullPath: '/auth/register'
       preLoaderRoute: typeof AuthRegisterImport
-      parentRoute: typeof rootRoute
-    }
-    '/books/$bookSlug': {
-      id: '/books/$bookSlug'
-      path: '/books/$bookSlug'
-      fullPath: '/books/$bookSlug'
-      preLoaderRoute: typeof BooksBookSlugImport
       parentRoute: typeof rootRoute
     }
     '/auth/': {
@@ -96,6 +104,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileIndexImport
       parentRoute: typeof rootRoute
     }
+    '/books/$bookSlug/': {
+      id: '/books/$bookSlug/'
+      path: '/books/$bookSlug'
+      fullPath: '/books/$bookSlug'
+      preLoaderRoute: typeof BooksBookSlugIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/books/$bookSlug/chapters/': {
+      id: '/books/$bookSlug/chapters/'
+      path: '/books/$bookSlug/chapters'
+      fullPath: '/books/$bookSlug/chapters'
+      preLoaderRoute: typeof BooksBookSlugChaptersIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/books/$bookSlug/chapters/$chapter/': {
+      id: '/books/$bookSlug/chapters/$chapter/'
+      path: '/books/$bookSlug/chapters/$chapter'
+      fullPath: '/books/$bookSlug/chapters/$chapter'
+      preLoaderRoute: typeof BooksBookSlugChaptersChapterIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -104,29 +133,35 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/books/$bookSlug': typeof BooksBookSlugRoute
   '/auth': typeof AuthIndexRoute
   '/books': typeof BooksIndexRoute
   '/profile': typeof ProfileIndexRoute
+  '/books/$bookSlug': typeof BooksBookSlugIndexRoute
+  '/books/$bookSlug/chapters': typeof BooksBookSlugChaptersIndexRoute
+  '/books/$bookSlug/chapters/$chapter': typeof BooksBookSlugChaptersChapterIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/books/$bookSlug': typeof BooksBookSlugRoute
   '/auth': typeof AuthIndexRoute
   '/books': typeof BooksIndexRoute
   '/profile': typeof ProfileIndexRoute
+  '/books/$bookSlug': typeof BooksBookSlugIndexRoute
+  '/books/$bookSlug/chapters': typeof BooksBookSlugChaptersIndexRoute
+  '/books/$bookSlug/chapters/$chapter': typeof BooksBookSlugChaptersChapterIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/books/$bookSlug': typeof BooksBookSlugRoute
   '/auth/': typeof AuthIndexRoute
   '/books/': typeof BooksIndexRoute
   '/profile/': typeof ProfileIndexRoute
+  '/books/$bookSlug/': typeof BooksBookSlugIndexRoute
+  '/books/$bookSlug/chapters/': typeof BooksBookSlugChaptersIndexRoute
+  '/books/$bookSlug/chapters/$chapter/': typeof BooksBookSlugChaptersChapterIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -134,45 +169,56 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth/register'
-    | '/books/$bookSlug'
     | '/auth'
     | '/books'
     | '/profile'
+    | '/books/$bookSlug'
+    | '/books/$bookSlug/chapters'
+    | '/books/$bookSlug/chapters/$chapter'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth/register'
-    | '/books/$bookSlug'
     | '/auth'
     | '/books'
     | '/profile'
+    | '/books/$bookSlug'
+    | '/books/$bookSlug/chapters'
+    | '/books/$bookSlug/chapters/$chapter'
   id:
     | '__root__'
     | '/'
     | '/auth/register'
-    | '/books/$bookSlug'
     | '/auth/'
     | '/books/'
     | '/profile/'
+    | '/books/$bookSlug/'
+    | '/books/$bookSlug/chapters/'
+    | '/books/$bookSlug/chapters/$chapter/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
-  BooksBookSlugRoute: typeof BooksBookSlugRoute
   AuthIndexRoute: typeof AuthIndexRoute
   BooksIndexRoute: typeof BooksIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
+  BooksBookSlugIndexRoute: typeof BooksBookSlugIndexRoute
+  BooksBookSlugChaptersIndexRoute: typeof BooksBookSlugChaptersIndexRoute
+  BooksBookSlugChaptersChapterIndexRoute: typeof BooksBookSlugChaptersChapterIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRegisterRoute: AuthRegisterRoute,
-  BooksBookSlugRoute: BooksBookSlugRoute,
   AuthIndexRoute: AuthIndexRoute,
   BooksIndexRoute: BooksIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
+  BooksBookSlugIndexRoute: BooksBookSlugIndexRoute,
+  BooksBookSlugChaptersIndexRoute: BooksBookSlugChaptersIndexRoute,
+  BooksBookSlugChaptersChapterIndexRoute:
+    BooksBookSlugChaptersChapterIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -189,10 +235,12 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/auth/register",
-        "/books/$bookSlug",
         "/auth/",
         "/books/",
-        "/profile/"
+        "/profile/",
+        "/books/$bookSlug/",
+        "/books/$bookSlug/chapters/",
+        "/books/$bookSlug/chapters/$chapter/"
       ]
     },
     "/": {
@@ -200,9 +248,6 @@ export const routeTree = rootRoute
     },
     "/auth/register": {
       "filePath": "auth/register.tsx"
-    },
-    "/books/$bookSlug": {
-      "filePath": "books/$bookSlug.tsx"
     },
     "/auth/": {
       "filePath": "auth/index.tsx"
@@ -212,6 +257,15 @@ export const routeTree = rootRoute
     },
     "/profile/": {
       "filePath": "profile/index.tsx"
+    },
+    "/books/$bookSlug/": {
+      "filePath": "books/$bookSlug/index.tsx"
+    },
+    "/books/$bookSlug/chapters/": {
+      "filePath": "books/$bookSlug/chapters/index.tsx"
+    },
+    "/books/$bookSlug/chapters/$chapter/": {
+      "filePath": "books/$bookSlug/chapters/$chapter/index.tsx"
     }
   }
 }
