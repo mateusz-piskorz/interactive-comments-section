@@ -3,7 +3,6 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { beforeLoadAuthGuard } from '@/global/utils/beforeLoadAuthGuard';
-import { tsr } from '@/global/utils/ts-client';
 
 export const Route = createFileRoute('/profile/')({
   component: ProfilePage,
@@ -15,10 +14,6 @@ function ProfilePage() {
   const { data, isLoading } = useQuery({
     queryKey: ['getAuth'],
     queryFn: getAuth,
-  });
-
-  const { data: books } = tsr.books.getBooks.useQuery({
-    queryKey: ['books'],
   });
 
   if (isLoading) {

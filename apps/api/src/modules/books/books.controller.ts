@@ -1,31 +1,21 @@
-import {
-  Controller,
-  UseGuards,
-  // Session,
-  Get,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, UseGuards, Get, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from '../../utils/auth.guard';
-// import { UsersService } from './books.service';
 import { BooksService } from './books.service';
-// import { TsRestHandler } from '@ts-rest/nest';
-// import { contract } from 'apps/shared/contract';
-// import { SessionType } from '../../constants/session';
-import { CacheInterceptor } from '@nestjs/cache-manager';
+import { contract } from 'apps/shared/contract';
 
-// const { createNewUser, getUsers } = contract.users;
+import { TsRestHandler } from '@ts-rest/nest';
 
-//books
+const { getAllBooks } = contract.books;
+
+// /books
 @Controller()
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-  // @TsRestHandler(createNewUser) //POST /users
-
+  // GET /books
   // @UseGuards(AuthGuard)
-  @UseInterceptors(CacheInterceptor)
-  @Get()
-  async getAllBooks() {
+  @TsRestHandler(getAllBooks)
+  getAllChapters() {
     return this.booksService.getAllBooks();
   }
 }

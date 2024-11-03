@@ -1,4 +1,4 @@
-import { createFileRoute, useParams } from '@tanstack/react-router';
+import { createFileRoute, Link, useParams } from '@tanstack/react-router';
 import { tsr } from '@/global/utils/ts-client';
 
 const Component = () => {
@@ -16,9 +16,12 @@ const Component = () => {
   }
 
   return (
-    <span style={{ whiteSpace: 'pre-wrap' }}>
-      {data.body.text.split('\n').join('\n\n')}
-    </span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <Link to={`/books/${bookSlug}/chapters/`}>Go Back</Link>
+      <span style={{ whiteSpace: 'pre-wrap' }}>
+        {data.body.text.split('\n').join('\n\n')}
+      </span>
+    </div>
   );
 };
 
