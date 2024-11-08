@@ -11,214 +11,238 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as IndexImport } from './routes/index'
-import { Route as ProfileIndexImport } from './routes/profile/index'
-import { Route as BooksIndexImport } from './routes/books/index'
-import { Route as AuthIndexImport } from './routes/auth/index'
-import { Route as AuthRegisterImport } from './routes/auth/register'
-import { Route as BooksBookSlugIndexImport } from './routes/books/$bookSlug/index'
-import { Route as BooksBookSlugChaptersIndexImport } from './routes/books/$bookSlug/chapters/index'
-import { Route as BooksBookSlugChaptersChapterIndexImport } from './routes/books/$bookSlug/chapters/$chapter/index'
+import { Route as RegisterImport } from './routes/register'
+import { Route as LoginImport } from './routes/login'
+import { Route as AuthImport } from './routes/_auth'
+import { Route as AuthIndexImport } from './routes/_auth.index'
+import { Route as AuthProfileImport } from './routes/_auth.profile'
+import { Route as AuthBooksImport } from './routes/_auth.books'
+import { Route as AuthBooksBookSlugImport } from './routes/_auth.books_.$bookSlug'
+import { Route as AuthBooksBookSlugChaptersImport } from './routes/_auth.books_.$bookSlug_.chapters'
+import { Route as AuthBooksBookSlugChaptersChapterImport } from './routes/_auth.books_.$bookSlug_.chapters_.$chapter'
 
 // Create/Update Routes
 
-const IndexRoute = IndexImport.update({
-  path: '/',
+const RegisterRoute = RegisterImport.update({
+  path: '/register',
   getParentRoute: () => rootRoute,
 } as any)
 
-const ProfileIndexRoute = ProfileIndexImport.update({
-  path: '/profile/',
+const LoginRoute = LoginImport.update({
+  path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
 
-const BooksIndexRoute = BooksIndexImport.update({
-  path: '/books/',
+const AuthRoute = AuthImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRoute,
 } as any)
 
 const AuthIndexRoute = AuthIndexImport.update({
-  path: '/auth/',
-  getParentRoute: () => rootRoute,
+  path: '/',
+  getParentRoute: () => AuthRoute,
 } as any)
 
-const AuthRegisterRoute = AuthRegisterImport.update({
-  path: '/auth/register',
-  getParentRoute: () => rootRoute,
+const AuthProfileRoute = AuthProfileImport.update({
+  path: '/profile',
+  getParentRoute: () => AuthRoute,
 } as any)
 
-const BooksBookSlugIndexRoute = BooksBookSlugIndexImport.update({
-  path: '/books/$bookSlug/',
-  getParentRoute: () => rootRoute,
+const AuthBooksRoute = AuthBooksImport.update({
+  path: '/books',
+  getParentRoute: () => AuthRoute,
 } as any)
 
-const BooksBookSlugChaptersIndexRoute = BooksBookSlugChaptersIndexImport.update(
-  {
-    path: '/books/$bookSlug/chapters/',
-    getParentRoute: () => rootRoute,
-  } as any,
-)
+const AuthBooksBookSlugRoute = AuthBooksBookSlugImport.update({
+  path: '/books/$bookSlug',
+  getParentRoute: () => AuthRoute,
+} as any)
 
-const BooksBookSlugChaptersChapterIndexRoute =
-  BooksBookSlugChaptersChapterIndexImport.update({
-    path: '/books/$bookSlug/chapters/$chapter/',
-    getParentRoute: () => rootRoute,
+const AuthBooksBookSlugChaptersRoute = AuthBooksBookSlugChaptersImport.update({
+  path: '/books/$bookSlug/chapters',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthBooksBookSlugChaptersChapterRoute =
+  AuthBooksBookSlugChaptersChapterImport.update({
+    path: '/books/$bookSlug/chapters/$chapter',
+    getParentRoute: () => AuthRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/auth/register': {
-      id: '/auth/register'
-      path: '/auth/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthRegisterImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
-    '/auth/': {
-      id: '/auth/'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthIndexImport
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterImport
       parentRoute: typeof rootRoute
     }
-    '/books/': {
-      id: '/books/'
+    '/_auth/books': {
+      id: '/_auth/books'
       path: '/books'
       fullPath: '/books'
-      preLoaderRoute: typeof BooksIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthBooksImport
+      parentRoute: typeof AuthImport
     }
-    '/profile/': {
-      id: '/profile/'
+    '/_auth/profile': {
+      id: '/_auth/profile'
       path: '/profile'
       fullPath: '/profile'
-      preLoaderRoute: typeof ProfileIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthProfileImport
+      parentRoute: typeof AuthImport
     }
-    '/books/$bookSlug/': {
-      id: '/books/$bookSlug/'
+    '/_auth/': {
+      id: '/_auth/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/books/$bookSlug': {
+      id: '/_auth/books/$bookSlug'
       path: '/books/$bookSlug'
       fullPath: '/books/$bookSlug'
-      preLoaderRoute: typeof BooksBookSlugIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthBooksBookSlugImport
+      parentRoute: typeof AuthImport
     }
-    '/books/$bookSlug/chapters/': {
-      id: '/books/$bookSlug/chapters/'
+    '/_auth/books/$bookSlug/chapters': {
+      id: '/_auth/books/$bookSlug/chapters'
       path: '/books/$bookSlug/chapters'
       fullPath: '/books/$bookSlug/chapters'
-      preLoaderRoute: typeof BooksBookSlugChaptersIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthBooksBookSlugChaptersImport
+      parentRoute: typeof AuthImport
     }
-    '/books/$bookSlug/chapters/$chapter/': {
-      id: '/books/$bookSlug/chapters/$chapter/'
+    '/_auth/books/$bookSlug/chapters/$chapter': {
+      id: '/_auth/books/$bookSlug/chapters/$chapter'
       path: '/books/$bookSlug/chapters/$chapter'
       fullPath: '/books/$bookSlug/chapters/$chapter'
-      preLoaderRoute: typeof BooksBookSlugChaptersChapterIndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthBooksBookSlugChaptersChapterImport
+      parentRoute: typeof AuthImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AuthRouteChildren {
+  AuthBooksRoute: typeof AuthBooksRoute
+  AuthProfileRoute: typeof AuthProfileRoute
+  AuthIndexRoute: typeof AuthIndexRoute
+  AuthBooksBookSlugRoute: typeof AuthBooksBookSlugRoute
+  AuthBooksBookSlugChaptersRoute: typeof AuthBooksBookSlugChaptersRoute
+  AuthBooksBookSlugChaptersChapterRoute: typeof AuthBooksBookSlugChaptersChapterRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthBooksRoute: AuthBooksRoute,
+  AuthProfileRoute: AuthProfileRoute,
+  AuthIndexRoute: AuthIndexRoute,
+  AuthBooksBookSlugRoute: AuthBooksBookSlugRoute,
+  AuthBooksBookSlugChaptersRoute: AuthBooksBookSlugChaptersRoute,
+  AuthBooksBookSlugChaptersChapterRoute: AuthBooksBookSlugChaptersChapterRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/auth/register': typeof AuthRegisterRoute
-  '/auth': typeof AuthIndexRoute
-  '/books': typeof BooksIndexRoute
-  '/profile': typeof ProfileIndexRoute
-  '/books/$bookSlug': typeof BooksBookSlugIndexRoute
-  '/books/$bookSlug/chapters': typeof BooksBookSlugChaptersIndexRoute
-  '/books/$bookSlug/chapters/$chapter': typeof BooksBookSlugChaptersChapterIndexRoute
+  '': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/books': typeof AuthBooksRoute
+  '/profile': typeof AuthProfileRoute
+  '/': typeof AuthIndexRoute
+  '/books/$bookSlug': typeof AuthBooksBookSlugRoute
+  '/books/$bookSlug/chapters': typeof AuthBooksBookSlugChaptersRoute
+  '/books/$bookSlug/chapters/$chapter': typeof AuthBooksBookSlugChaptersChapterRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/auth/register': typeof AuthRegisterRoute
-  '/auth': typeof AuthIndexRoute
-  '/books': typeof BooksIndexRoute
-  '/profile': typeof ProfileIndexRoute
-  '/books/$bookSlug': typeof BooksBookSlugIndexRoute
-  '/books/$bookSlug/chapters': typeof BooksBookSlugChaptersIndexRoute
-  '/books/$bookSlug/chapters/$chapter': typeof BooksBookSlugChaptersChapterIndexRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/books': typeof AuthBooksRoute
+  '/profile': typeof AuthProfileRoute
+  '/': typeof AuthIndexRoute
+  '/books/$bookSlug': typeof AuthBooksBookSlugRoute
+  '/books/$bookSlug/chapters': typeof AuthBooksBookSlugChaptersRoute
+  '/books/$bookSlug/chapters/$chapter': typeof AuthBooksBookSlugChaptersChapterRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/auth/register': typeof AuthRegisterRoute
-  '/auth/': typeof AuthIndexRoute
-  '/books/': typeof BooksIndexRoute
-  '/profile/': typeof ProfileIndexRoute
-  '/books/$bookSlug/': typeof BooksBookSlugIndexRoute
-  '/books/$bookSlug/chapters/': typeof BooksBookSlugChaptersIndexRoute
-  '/books/$bookSlug/chapters/$chapter/': typeof BooksBookSlugChaptersChapterIndexRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/_auth/books': typeof AuthBooksRoute
+  '/_auth/profile': typeof AuthProfileRoute
+  '/_auth/': typeof AuthIndexRoute
+  '/_auth/books/$bookSlug': typeof AuthBooksBookSlugRoute
+  '/_auth/books/$bookSlug/chapters': typeof AuthBooksBookSlugChaptersRoute
+  '/_auth/books/$bookSlug/chapters/$chapter': typeof AuthBooksBookSlugChaptersChapterRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/auth/register'
-    | '/auth'
+    | ''
+    | '/login'
+    | '/register'
     | '/books'
     | '/profile'
+    | '/'
     | '/books/$bookSlug'
     | '/books/$bookSlug/chapters'
     | '/books/$bookSlug/chapters/$chapter'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
-    | '/auth/register'
-    | '/auth'
+    | '/login'
+    | '/register'
     | '/books'
     | '/profile'
+    | '/'
     | '/books/$bookSlug'
     | '/books/$bookSlug/chapters'
     | '/books/$bookSlug/chapters/$chapter'
   id:
     | '__root__'
-    | '/'
-    | '/auth/register'
-    | '/auth/'
-    | '/books/'
-    | '/profile/'
-    | '/books/$bookSlug/'
-    | '/books/$bookSlug/chapters/'
-    | '/books/$bookSlug/chapters/$chapter/'
+    | '/_auth'
+    | '/login'
+    | '/register'
+    | '/_auth/books'
+    | '/_auth/profile'
+    | '/_auth/'
+    | '/_auth/books/$bookSlug'
+    | '/_auth/books/$bookSlug/chapters'
+    | '/_auth/books/$bookSlug/chapters/$chapter'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
-  AuthIndexRoute: typeof AuthIndexRoute
-  BooksIndexRoute: typeof BooksIndexRoute
-  ProfileIndexRoute: typeof ProfileIndexRoute
-  BooksBookSlugIndexRoute: typeof BooksBookSlugIndexRoute
-  BooksBookSlugChaptersIndexRoute: typeof BooksBookSlugChaptersIndexRoute
-  BooksBookSlugChaptersChapterIndexRoute: typeof BooksBookSlugChaptersChapterIndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AuthRegisterRoute: AuthRegisterRoute,
-  AuthIndexRoute: AuthIndexRoute,
-  BooksIndexRoute: BooksIndexRoute,
-  ProfileIndexRoute: ProfileIndexRoute,
-  BooksBookSlugIndexRoute: BooksBookSlugIndexRoute,
-  BooksBookSlugChaptersIndexRoute: BooksBookSlugChaptersIndexRoute,
-  BooksBookSlugChaptersChapterIndexRoute:
-    BooksBookSlugChaptersChapterIndexRoute,
+  AuthRoute: AuthRouteWithChildren,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
 }
 
 export const routeTree = rootRoute
@@ -233,39 +257,51 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
-        "/auth/register",
-        "/auth/",
-        "/books/",
-        "/profile/",
-        "/books/$bookSlug/",
-        "/books/$bookSlug/chapters/",
-        "/books/$bookSlug/chapters/$chapter/"
+        "/_auth",
+        "/login",
+        "/register"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/_auth": {
+      "filePath": "_auth.tsx",
+      "children": [
+        "/_auth/books",
+        "/_auth/profile",
+        "/_auth/",
+        "/_auth/books/$bookSlug",
+        "/_auth/books/$bookSlug/chapters",
+        "/_auth/books/$bookSlug/chapters/$chapter"
+      ]
     },
-    "/auth/register": {
-      "filePath": "auth/register.tsx"
+    "/login": {
+      "filePath": "login.tsx"
     },
-    "/auth/": {
-      "filePath": "auth/index.tsx"
+    "/register": {
+      "filePath": "register.tsx"
     },
-    "/books/": {
-      "filePath": "books/index.tsx"
+    "/_auth/books": {
+      "filePath": "_auth.books.tsx",
+      "parent": "/_auth"
     },
-    "/profile/": {
-      "filePath": "profile/index.tsx"
+    "/_auth/profile": {
+      "filePath": "_auth.profile.tsx",
+      "parent": "/_auth"
     },
-    "/books/$bookSlug/": {
-      "filePath": "books/$bookSlug/index.tsx"
+    "/_auth/": {
+      "filePath": "_auth.index.tsx",
+      "parent": "/_auth"
     },
-    "/books/$bookSlug/chapters/": {
-      "filePath": "books/$bookSlug/chapters/index.tsx"
+    "/_auth/books/$bookSlug": {
+      "filePath": "_auth.books_.$bookSlug.tsx",
+      "parent": "/_auth"
     },
-    "/books/$bookSlug/chapters/$chapter/": {
-      "filePath": "books/$bookSlug/chapters/$chapter/index.tsx"
+    "/_auth/books/$bookSlug/chapters": {
+      "filePath": "_auth.books_.$bookSlug_.chapters.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/books/$bookSlug/chapters/$chapter": {
+      "filePath": "_auth.books_.$bookSlug_.chapters_.$chapter.tsx",
+      "parent": "/_auth"
     }
   }
 }

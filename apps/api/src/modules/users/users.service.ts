@@ -4,7 +4,7 @@ import { TsRestException, tsRestHandler } from '@ts-rest/nest';
 import { contract } from 'apps/shared/contract';
 import { User } from '@prisma/client';
 
-const { createNewUser, getUsers } = contract.users;
+const { createNewUser, getUsers, getUser } = contract.users;
 
 @Injectable()
 export class UsersService {
@@ -33,9 +33,27 @@ export class UsersService {
   getUsers() {
     return tsRestHandler(getUsers, async () => {
       const usersList = await this.prisma.user.findMany({
-        select: { avatar: true, color: true, username: true, id: true },
+        select: { avatar: true, color: true, username: true },
       });
       return { status: 200, body: usersList };
+    });
+  }
+
+  getUser(username: string) {
+    return tsRestHandler(getUser, async () => {
+      const user = await this.prisma.user.findUnique({
+        where: { username },
+        select: { avatar: true, color: true, username: true },
+      });
+
+      if (!user) {
+        throw new TsRestException(getUser, {
+          status: 404,
+          body: { message: 'resource not found' },
+        });
+      }
+
+      return { status: 200, body: user };
     });
   }
 }

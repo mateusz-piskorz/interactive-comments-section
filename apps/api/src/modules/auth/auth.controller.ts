@@ -4,13 +4,13 @@ import { AuthService } from './auth.service';
 import { contract } from 'apps/shared/contract';
 import { SessionType } from '../../constants/session';
 
-const { getAuth, singIn } = contract.auth;
+const { getAuth, singIn, singOut } = contract.auth;
 
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @TsRestHandler(getAuth) //POST /auth
+  @TsRestHandler(getAuth) //GET /auth
   async getAuth(@Session() session: SessionType) {
     return this.authService.getAuth(session);
   }
@@ -18,5 +18,10 @@ export class AuthController {
   @TsRestHandler(singIn) //GET /auth/singIn
   async singIn(@Session() session: SessionType) {
     return this.authService.singIn(session);
+  }
+
+  @TsRestHandler(singOut) //POST /auth/singOut
+  async singOut(@Session() session: SessionType) {
+    return this.authService.singOut(session);
   }
 }

@@ -6,10 +6,10 @@ import c from './main.module.scss';
 import { ActionButtons } from '../ActionButtons';
 import { LikesButton } from '../LikesButton';
 import { useComment } from '../../../context/Comments';
-import { useAuth } from '@/features/auth';
 import { tsr } from '@/global/utils/ts-client';
 import { ConfirmDialog } from '@/global/components/ConfirmDialog';
 import { toast } from 'sonner';
+import { useAuth } from '@/features/auth/context/auth';
 
 const { removeComment } = tsr.books.comments;
 
@@ -42,8 +42,8 @@ export const Post = ({
   onReply,
   onEdit,
 }: PostProps & ExtraProps) => {
-  const user = useAuth();
-  const { id: userId } = user || { id: '' };
+  const { user } = useAuth(true);
+
   const { comment } = useComment(commentId);
   const { content, createdAt, author } = comment!;
   const { username, color, avatar, id } = author;
@@ -77,7 +77,7 @@ export const Post = ({
     }
   };
 
-  const isYourComment = userId === id;
+  const isYourComment = user.id === id;
 
   return (
     <div className={c.Post}>

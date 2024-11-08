@@ -1,7 +1,11 @@
 import { tsr } from '@/global/utils/ts-client';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 
-const Component = () => {
+export const Route = createFileRoute('/_auth/books')({
+  component: BooksPage,
+});
+
+function BooksPage() {
   const { data } = tsr.books.getAllBooks.useQuery({
     queryKey: ['get-all-chapters'],
   });
@@ -12,20 +16,16 @@ const Component = () => {
 
   return (
     <div>
-      <p>Hello /books/$bookSlug/chapters/!</p>
+      <h1>Hello /books</h1>
       <div>
         {data.body.data.map((book) => (
           <div key={book.id}>
-            <a href={`/books/${book.attributes.slug}`}>
+            <Link to={`/books/${book.attributes.slug}`}>
               {book.attributes.title}
-            </a>
+            </Link>
           </div>
         ))}
       </div>
     </div>
   );
-};
-
-export const Route = createFileRoute('/books/')({
-  component: Component,
-});
+}

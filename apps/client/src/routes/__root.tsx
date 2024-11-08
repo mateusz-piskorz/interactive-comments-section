@@ -1,24 +1,31 @@
-import { Outlet, createRootRoute, Link } from '@tanstack/react-router';
+import {
+  Outlet,
+  Link,
+  createRootRouteWithContext,
+} from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import { tsr } from '@/global/utils/ts-client';
-import { fallback, zodSearchValidator } from '@tanstack/router-zod-adapter';
 import { z } from 'zod';
-import { ToastProvider } from '@/global/providers/ToastProvider';
+import { AuthContext } from '@/features/auth';
+import { toast, Toaster } from 'sonner';
 
-const globalSearchParams = z.object({
-  page: fallback(z.number(), 1).default(1),
-  toastMsg: fallback(
-    z.object({
-      message: z.string(),
-      type: z.enum(['success', 'error', 'info']).optional(),
-    }),
-    { message: '', type: 'info' }
-  ).default({ message: '', type: 'info' }),
-});
+interface RouterContext {
+  auth: AuthContext;
+}
 
-export const Route = createRootRoute({
-  validateSearch: zodSearchValidator(globalSearchParams),
+const globalSearchParams = z
+  .object({
+    example: z.string().optional(),
+  })
+  .optional();
+
+export const Route = createRootRouteWithContext<RouterContext>()({
+  validateSearch: globalSearchParams,
   component: RootComponent,
   notFoundComponent: () => {
     return (
@@ -30,22 +37,19 @@ export const Route = createRootRoute({
   },
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) => toast.error(`Something went wrong: ${error.message}`),
+  }),
+});
 
 function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <tsr.ReactQueryProvider>
-        <header>
-          <nav style={{ display: 'flex', gap: '8px' }}>
-            <Link to="/profile">profile</Link>
-            <Link to="/auth">auth</Link>
-            <Link to="/auth/register">auth/register</Link>
-          </nav>
-        </header>
         <Outlet />
 
-        <ToastProvider />
+        <Toaster />
 
         {import.meta.env.MODE === 'development' && (
           <TanStackRouterDevtools position="bottom-right" />
