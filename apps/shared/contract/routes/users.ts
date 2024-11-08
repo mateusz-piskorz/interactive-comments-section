@@ -2,7 +2,7 @@ import { contractInstance } from '../initContract';
 import { z } from 'zod';
 import { Avatar, Color } from '@prisma/client';
 import { UserSchema } from '../../../api/prisma/generated/zod';
-import { unauthorized, usernameTaken } from '../constants';
+import { unauthorized, usernameTaken, notFound } from '../constants';
 
 const createUserSchemaDto = z.object({
   username: z.string().min(3),
@@ -10,12 +10,7 @@ const createUserSchemaDto = z.object({
   avatar: z.nativeEnum(Avatar),
 });
 
-const getUserSchema = z.object({
-  avatar: z.nativeEnum(Avatar),
-  color: z.nativeEnum(Color),
-  username: z.string().min(3),
-  id: z.string().min(10),
-});
+const rUser = UserSchema.pick({ username: true, color: true, avatar: true });
 
 export const usersContract = contractInstance.router({
   getUsers: {
@@ -23,7 +18,17 @@ export const usersContract = contractInstance.router({
     path: '/users',
     responses: {
       ...unauthorized,
-      200: z.array(getUserSchema),
+      200: z.array(rUser),
+    },
+  },
+
+  getUser: {
+    method: 'GET',
+    path: '/users/:username',
+    responses: {
+      ...unauthorized,
+      ...notFound,
+      200: rUser,
     },
   },
 

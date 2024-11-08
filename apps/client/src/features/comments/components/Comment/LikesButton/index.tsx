@@ -5,8 +5,8 @@ import iconMinus from '../../../assets/icon-minus.svg';
 import iconPlus from '../../../assets/icon-plus.svg';
 import { useComment } from '../../../context/Comments';
 import c from './main.module.scss';
-import { useAuth } from '@/features/auth';
 import { tsr } from '@/global/utils/ts-client';
+import { useAuth } from '@/features/auth/context/auth';
 
 const { likeComment, dislikeComment } = tsr.books.comments;
 
@@ -16,7 +16,7 @@ type Props = {
 
 export const LikesButton = ({ commentId }: Props) => {
   const { bookSlug } = useBookSlug();
-  const user = useAuth();
+  const { user } = useAuth(true);
 
   const { comment } = useComment(commentId);
   const { likes, likesCount, dislikes } = comment!;
@@ -40,14 +40,14 @@ export const LikesButton = ({ commentId }: Props) => {
   return (
     <div className={c.LikesButton}>
       <button
-        className={btnClassName(likes, user?.id || '')}
+        className={btnClassName(likes, user.id)}
         onClick={() => clickHandler('like')}
       >
         <img src={iconPlus} alt="plus icon" />
       </button>
       <strong className={c.LikesButton_count}>{likesCount}</strong>
       <button
-        className={btnClassName(dislikes, user?.id || '')}
+        className={btnClassName(dislikes, user.id)}
         onClick={() => clickHandler('dislike')}
       >
         <img src={iconMinus} alt="minus icon" />

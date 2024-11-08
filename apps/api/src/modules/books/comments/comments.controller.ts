@@ -3,7 +3,7 @@ import { Controller, Param, UseGuards, Session } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { AuthGuard } from '../../../utils/auth.guard';
 import { ThrottlerGuard } from '../../../utils/throttler.guard';
-import { SessionType, SessionTypeU } from '../../../constants/session';
+import { SessionType } from '../../../constants/session';
 import { TsRestHandler } from '@ts-rest/nest';
 import { contract } from 'apps/shared/contract';
 
@@ -21,13 +21,13 @@ type Params = {
   id: string;
 };
 
-// /books/:bookSlug/comments
 @Controller()
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
+  //POST /books/:bookSlug/comments
   @UseGuards(AuthGuard, ThrottlerGuard('create-comment', createNewComment))
-  @TsRestHandler(createNewComment) //POST /books/:bookSlug/comments
+  @TsRestHandler(createNewComment)
   async create(
     @Param('bookSlug') bookSlug: string,
     @Session() session: SessionType
@@ -36,7 +36,7 @@ export class CommentsController {
   }
 
   //GET /books/:bookSlug/comments
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @TsRestHandler(getComments)
   async getComments(@Param('bookSlug') bookSlug: string) {
     return this.commentsService.getComments(bookSlug);
@@ -45,14 +45,14 @@ export class CommentsController {
   //POST /books/:bookSlug/comments/like/:id
   @UseGuards(AuthGuard, ThrottlerGuard('like-comment', likeComment))
   @TsRestHandler(likeComment)
-  likeComment(@Param() p: Params, @Session() session: SessionTypeU) {
+  likeComment(@Param() p: Params, @Session() session: SessionType<true>) {
     return this.commentsService.likeComment(p.bookSlug, p.id, session.user.id);
   }
 
   //POST /books/:bookSlug/comments/dislike/:id
   @UseGuards(AuthGuard, ThrottlerGuard('like-comment', dislikeComment))
   @TsRestHandler(dislikeComment)
-  dislikeComment(@Param() p: Params, @Session() session: SessionTypeU) {
+  dislikeComment(@Param() p: Params, @Session() session: SessionType<true>) {
     return this.commentsService.dislikeComment(
       p.bookSlug,
       p.id,
@@ -63,14 +63,14 @@ export class CommentsController {
   //PATCH /books/:bookSlug/comments/:id
   @UseGuards(AuthGuard, ThrottlerGuard('update-comment', editComment))
   @TsRestHandler(editComment)
-  editComment(@Param() p: Params, @Session() session: SessionTypeU) {
+  editComment(@Param() p: Params, @Session() session: SessionType<true>) {
     return this.commentsService.editComment(p.bookSlug, p.id, session.user.id);
   }
 
   //DELETE /books/:bookSlug/comments/:id
   @UseGuards(AuthGuard, ThrottlerGuard('remove-comment', removeComment))
   @TsRestHandler(removeComment)
-  removeComment(@Param() p: Params, @Session() session: SessionTypeU) {
+  removeComment(@Param() p: Params, @Session() session: SessionType<true>) {
     return this.commentsService.removeComment(
       p.bookSlug,
       p.id,

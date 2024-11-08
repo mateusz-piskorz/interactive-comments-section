@@ -1,4 +1,3 @@
-export { AuthComponent } from './components/Auth';
 export { RegisterForm } from './components/RegisterForm';
-export { getAuth } from './utils/auth';
-export { useAuth } from './hooks/useAuth';
+export type { AuthContext } from './context/auth';
+export type { rUser } from './types/user';

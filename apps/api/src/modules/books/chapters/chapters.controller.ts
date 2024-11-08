@@ -12,7 +12,6 @@ type Params = {
   chapterNumber: number;
 };
 
-// /books/:bookSlug/comments
 @Controller()
 export class ChaptersController {
   constructor(private readonly chaptersService: ChaptersService) {}
