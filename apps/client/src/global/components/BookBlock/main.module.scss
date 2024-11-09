@@ -1,0 +1,48 @@
+.BookBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid black;
+  padding: 20px;
+  width: 95%;
+  margin: auto;
+
+  &_cover {
+    width: 180px;
+  }
+
+  &_infoBox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+
+    & > div {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    & > h1 {
+      font-size: 1.5rem;
+    }
+
+    & > a {
+      & > button {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .BookBlock {
+    width: 520px;
+    flex-direction: row;
+
+    &_infoBox {
+      align-items: flex-start;
+    }
+  }
+}
